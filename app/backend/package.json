@@ -1,0 +1,28 @@
+{
+  "name": "backend",
+  "private": true,
+  "type": "module",
+  "exports": "./index.ts",
+  "scripts": {
+    "start": "tsx --env-file=.env ./index.ts",
+    "build": "tsdown index.ts -d dist",
+    "create_db": "tsx --env-file=.env ./create_db.ts"
+  },
+  "devDependencies": {
+    "tsx": "4",
+    "typescript": "5"
+  },
+  "dependencies": {
+    "@elysiajs/cors": "^1.4.0",
+    "@elysiajs/jwt": "^1.4.0",
+    "@elysiajs/node": "1",
+    "@types/node": "^22.19.0",
+    "argon2": "^0.44.0",
+    "dotenv": "^17.2.3",
+    "elysia": "1",
+    "kysely": "^0.28.8",
+    "kysely-postgres-js": "^3.0.0",
+    "postgres": "^3.4.7",
+    "tsdown": "^0.16.1"
+  }
+}
