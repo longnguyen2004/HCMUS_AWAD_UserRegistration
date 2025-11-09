@@ -5,10 +5,11 @@
   "exports": "./index.ts",
   "scripts": {
     "start": "tsx --env-file=.env ./index.ts",
-    "build": "tsdown",
+    "build": "tsdown && tsx ./copy_vercel.ts",
     "create_db": "tsx --env-file=.env ./create_db.ts"
   },
   "devDependencies": {
+    "cpy": "^12.1.0",
     "tsx": "4",
     "typescript": "5"
   },
