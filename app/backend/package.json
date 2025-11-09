@@ -5,7 +5,7 @@
   "exports": "./index.ts",
   "scripts": {
     "start": "tsx --env-file=.env ./index.ts",
-    "build": "tsdown index.ts -d dist",
+    "build": "tsdown",
     "create_db": "tsx --env-file=.env ./create_db.ts"
   },
   "devDependencies": {
