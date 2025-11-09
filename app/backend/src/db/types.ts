@@ -2,9 +2,9 @@ import type { Generated } from "kysely";
 
 export interface UserTable {
     id: Generated<number>,
-    username: string,
     email: string,
-    password: string
+    password: string,
+    createdAt: Date | null
 }
 
 export interface Database {

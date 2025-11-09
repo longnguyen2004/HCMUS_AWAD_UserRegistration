@@ -4,13 +4,13 @@ import { db } from "../../db/db.js";
 import type { AuthModel } from "./model.js";
 
 export abstract class AuthService {
-    static async signIn({ username, password }: AuthModel.signInBody) {
+    static async signIn({ email, password }: AuthModel.signInBody) {
         const user = await db.selectFrom("users")
             .select("password")
-            .where("username", "=", username)
+            .where("email", "=", email)
             .executeTakeFirst()
         if (!user || !await argon2.verify(user.password, password))
-            throw status(400, "Invalid username or password" satisfies AuthModel.signInInvalid);
+            throw status(400, "Invalid email or password" satisfies AuthModel.signInInvalid);
         return true;
     }
 }

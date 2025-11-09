@@ -8,7 +8,7 @@ export const user = new Elysia()
         return response;
     }, {
         body: UserModel.registerBody, response: {
-            200: t.Object({ username: t.String() }),
-            400: t.Union([UserModel.registerEmailAlreadyExists, UserModel.registerUsernameAlreadyExists])
+            200: t.Object({ email: t.String() }),
+            400: UserModel.registerEmailAlreadyExists
         }
     })

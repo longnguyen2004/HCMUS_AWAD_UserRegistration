@@ -25,7 +25,7 @@ export const Route = createFileRoute('/login/')({
 })
 
 type Inputs = {
-  username: string,
+  email: string,
   password: string,
 }
 
@@ -63,12 +63,13 @@ export function LoginForm() {
               <form onSubmit={handleSubmit(onSubmit)}>
                 <FieldGroup>
                   <Field>
-                    <FieldLabel htmlFor="username">Username</FieldLabel>
+                    <FieldLabel htmlFor="email">Email</FieldLabel>
                     <Input
-                      id="username"
-                      type="text"
+                      id="email"
+                      type="email"
+                      placeholder="m@example.com"
                       required
-                      {...register("username")}
+                      {...register("email")}
                     />
                   </Field>
                   <Field>

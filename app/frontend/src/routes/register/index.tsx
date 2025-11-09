@@ -24,7 +24,6 @@ export const Route = createFileRoute('/register/')({
 })
 
 type Inputs = {
-  username: string,
   email: string,
   password: string,
   confirmPassword: string
@@ -60,10 +59,6 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
           <CardContent>
             <form onSubmit={handleSubmit(onSubmit)}>
               <FieldGroup>
-                <Field>
-                  <FieldLabel htmlFor="username">Username</FieldLabel>
-                  <Input id="username" type="text" required {...register("username")} />
-                </Field>
                 <Field>
                   <FieldLabel htmlFor="email">Email</FieldLabel>
                   <Input

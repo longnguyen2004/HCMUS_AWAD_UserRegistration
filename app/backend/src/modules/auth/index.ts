@@ -7,7 +7,7 @@ export const auth = new Elysia()
     .use(jwt)
     .post("/login", async ({ body, jwt, cookie: { auth } }) => {
         await AuthService.signIn(body);
-        const token = await jwt.sign({ username: body.username });
+        const token = await jwt.sign({ email: body.email });
         auth.set({
             value: token,
             httpOnly: true,
