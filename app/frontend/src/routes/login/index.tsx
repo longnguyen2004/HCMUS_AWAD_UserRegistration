@@ -44,7 +44,7 @@ export function LoginForm() {
       const { accessToken, refreshToken } = res;
       tokens.accessToken = accessToken;
       tokens.refreshToken = refreshToken;      
-      await queryClient.invalidateQueries({ queryKey: ["user/me"] });
+      await queryClient.invalidateQueries({ queryKey: ["requires_auth"] });
       router.navigate({ to: "/" });
     }
   })
