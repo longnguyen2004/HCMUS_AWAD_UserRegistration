@@ -18,7 +18,7 @@ import { Input } from "@/components/ui/input"
 import { createFileRoute, useRouter } from "@tanstack/react-router"
 import { useMutation } from "@tanstack/react-query"
 import { useForm, type SubmitHandler } from "react-hook-form"
-import { backend } from "@/lib/backend"
+import { backend, tokens } from "@/lib/backend"
 
 export const Route = createFileRoute('/login/')({
   component: LoginForm,
@@ -38,9 +38,12 @@ export function LoginForm() {
       const res = await backend.login.post(data);
       if (res.error)
         throw res.error;
-      return res.response;
+      return res.data;
     },
-    onSuccess: async () => {
+    onSuccess: async (res) => {
+      const { accessToken, refreshToken } = res;
+      tokens.accessToken = accessToken;
+      tokens.refreshToken = refreshToken;      
       await queryClient.invalidateQueries({ queryKey: ["user/me"] });
       router.navigate({ to: "/" });
     }

@@ -15,6 +15,9 @@ function App() {
       <Link to="/register">
         <Button>Register</Button>
       </Link>
+      <Link to="/protected">
+        <Button>Protected Route</Button>
+      </Link>
     </div>
   )
 }

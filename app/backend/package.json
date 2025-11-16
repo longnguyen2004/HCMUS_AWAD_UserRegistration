@@ -21,9 +21,11 @@
     "argon2": "^0.44.0",
     "dotenv": "^17.2.3",
     "elysia": "1",
+    "jose": "^6.1.2",
     "kysely": "^0.28.8",
     "kysely-postgres-js": "^3.0.0",
     "postgres": "^3.4.7",
-    "tsdown": "^0.16.1"
+    "tsdown": "^0.16.1",
+    "typebox": "^1.0.53"
   }
 }
