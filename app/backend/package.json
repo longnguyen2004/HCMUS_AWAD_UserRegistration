@@ -19,6 +19,7 @@
     "@elysiajs/node": "1",
     "@types/node": "^22.19.0",
     "argon2": "^0.44.0",
+    "better-auth": "^1.4.1",
     "dotenv": "^17.2.3",
     "elysia": "1",
     "jose": "^6.1.2",

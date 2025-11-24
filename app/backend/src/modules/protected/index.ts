@@ -3,4 +3,4 @@ import { authGuard } from "../auth/index.js";
 
 export const protectedRoutes = new Elysia()
   .use(authGuard)
-  .get("/protected", async({ token }) => `Hello ${token.email}`);
+  .get("/protected", async({ user }) => `Hello ${user.email}`, { auth: true });

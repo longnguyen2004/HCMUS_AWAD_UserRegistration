@@ -17,7 +17,7 @@ import { Input } from "@/components/ui/input"
 import { createFileRoute, useRouter } from "@tanstack/react-router"
 import { useMutation } from "@tanstack/react-query"
 import { useForm, type SubmitHandler } from "react-hook-form"
-import { backend } from "@/lib/backend"
+import { backendAuth } from "@/lib/backend"
 
 export const Route = createFileRoute('/register/')({
   component: SignupForm,
@@ -26,7 +26,6 @@ export const Route = createFileRoute('/register/')({
 type Inputs = {
   email: string,
   password: string,
-  confirmPassword: string
 }
 
 export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
@@ -34,10 +33,10 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
   const { register, handleSubmit } = useForm<Inputs>();
   const createAccount = useMutation({
     mutationFn: async (data: Inputs) => {
-      const res = await backend.register.post(data);
+      const res = await backendAuth.signUp.email({...data, name: ""});
       if (res.error)
         throw res.error;
-      return res.response;
+      return res;
     },
     onSuccess: async () => {
       router.navigate({ to: "/login" });

@@ -18,7 +18,7 @@ import { Input } from "@/components/ui/input"
 import { createFileRoute, useRouter } from "@tanstack/react-router"
 import { useMutation } from "@tanstack/react-query"
 import { useForm, type SubmitHandler } from "react-hook-form"
-import { backend, tokens } from "@/lib/backend"
+import { backend, backendAuth } from "@/lib/backend"
 
 export const Route = createFileRoute('/login/')({
   component: LoginForm,
@@ -35,15 +35,12 @@ export function LoginForm() {
   const { register, handleSubmit } = useForm<Inputs>();
   const login = useMutation({
     mutationFn: async (data: Inputs) => {
-      const res = await backend.login.post(data);
+      const res = await backendAuth.signIn.email(data);
       if (res.error)
         throw res.error;
       return res.data;
     },
-    onSuccess: async (res) => {
-      const { accessToken, refreshToken } = res;
-      tokens.accessToken = accessToken;
-      tokens.refreshToken = refreshToken;      
+    onSuccess: async (res) => {    
       await queryClient.invalidateQueries({ queryKey: ["requires_auth"] });
       router.navigate({ to: "/" });
     }
