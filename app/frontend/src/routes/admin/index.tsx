@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { createFileRoute, useRouter } from '@tanstack/react-router'
 import { backend } from '@/lib/backend';
 
-export const Route = createFileRoute('/protected/')({
+export const Route = createFileRoute('/admin/')({
   component: RouteComponent,
 })
 
