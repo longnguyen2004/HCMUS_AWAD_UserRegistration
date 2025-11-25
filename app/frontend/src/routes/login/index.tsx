@@ -18,35 +18,54 @@ import { Input } from "@/components/ui/input"
 import { createFileRoute, useRouter } from "@tanstack/react-router"
 import { useMutation } from "@tanstack/react-query"
 import { useForm, type SubmitHandler } from "react-hook-form"
-import { backend, backendAuth } from "@/lib/backend"
+import { backendAuth } from "@/lib/backend"
 
 export const Route = createFileRoute('/login/')({
   component: LoginForm,
 })
 
-type Inputs = {
-  email: string,
-  password: string,
+type LoginInputs = {
+  type: "email_password",
+  data: {
+    email: string,
+    password: string
+  }
+} | {
+  type: "github"
 }
 
 export function LoginForm() {
   const router = useRouter();
   const { queryClient } = Route.useRouteContext();
-  const { register, handleSubmit } = useForm<Inputs>();
+  const { register, handleSubmit } = useForm<{
+    email: string,
+    password: string
+  }>();
   const login = useMutation({
-    mutationFn: async (data: Inputs) => {
-      const res = await backendAuth.signIn.email(data);
+    mutationFn: async (data: LoginInputs) => {
+      let res;
+      switch (data.type) {
+        case "email_password":
+          res = await backendAuth.signIn.email(data.data);
+          break;
+        case "github":
+          res = await backendAuth.signIn.social({ provider: "github", callbackURL: "http://localhost:5173/" });
+          break;
+      }
       if (res.error)
         throw res.error;
       return res.data;
     },
-    onSuccess: async (res) => {    
+    onSuccess: async (res) => {
       await queryClient.invalidateQueries({ queryKey: ["requires_auth"] });
       router.navigate({ to: "/" });
     }
-  })
-  const onSubmit: SubmitHandler<Inputs> = (data) => {
-    login.mutateAsync(data);
+  });
+  const onSubmit: SubmitHandler<{
+    email: string,
+    password: string
+  }> = (data) => {
+    login.mutateAsync({ type: "email_password", data });
   }
   return (
     <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
@@ -76,7 +95,7 @@ export function LoginForm() {
                     <div className="flex items-center">
                       <FieldLabel htmlFor="password">Password</FieldLabel>
                     </div>
-                    <Input id="password" type="password" required {...register("password")}/>
+                    <Input id="password" type="password" required {...register("password")} />
                   </Field>
                   <Field>
                     <Button type="submit" disabled={login.isPending}>Login</Button>
@@ -86,6 +105,7 @@ export function LoginForm() {
                   </Field>
                 </FieldGroup>
               </form>
+              <Button onClick={() => login.mutateAsync({ type: "github" })}>Login with GitHub</Button>
             </CardContent>
           </Card>
         </div>
