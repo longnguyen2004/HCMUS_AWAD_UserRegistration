@@ -1,7 +1,13 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, redirect } from '@tanstack/react-router'
+import { backendAuth } from '@/lib/backend'
 
 export const Route = createFileRoute('/admin/')({
   component: AdminDashboard,
+  beforeLoad: async () => {
+    const { data: session } = await backendAuth.getSession();
+    if (!session)
+      throw redirect({ to: "/login" })
+  }
 })
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
