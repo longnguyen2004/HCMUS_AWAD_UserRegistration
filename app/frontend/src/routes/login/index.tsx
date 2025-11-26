@@ -30,9 +30,8 @@ export default function Login() {
     setIsLoading(true)
     const { data, error } = await backendAuth.signIn.email({ email, password })
     setIsLoading(false)
-    if (error != null)
+    if (error == null)
       router.navigate({ to: "/" });
-
   }
 
   return (
