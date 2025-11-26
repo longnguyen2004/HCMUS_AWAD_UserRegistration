@@ -15,7 +15,6 @@ export const Route = createFileRoute("/login/")({
   component: Login,
 });
 
-import type React from "react";
 import { useState } from "react";
 
 export default function Login() {
@@ -24,13 +23,23 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleLogin = async (type: string) => {
     setError("");
     setIsLoading(true);
-    const { error } = await backendAuth.signIn.email({ email, password });
+    switch (type) {
+      case "email":
+        {
+          const { error } = await backendAuth.signIn.email({ email, password });
+          if (error == null) router.navigate({ to: "/" });
+          break;
+        }
+      case "github":
+        {
+          await backendAuth.signIn.social({ provider: "github", callbackURL: window.location.origin })
+          break;
+        }
+    }
     setIsLoading(false);
-    if (error == null) router.navigate({ to: "/" });
   };
 
   return (
@@ -57,7 +66,7 @@ export default function Login() {
               </div>
             )}
 
-            <form onSubmit={handleLogin} className="space-y-4">
+            <form onSubmit={(e) => { e.preventDefault(); handleLogin("email") }} className="space-y-4">
               <div className="space-y-2">
                 <label className="text-sm font-medium">Email</label>
                 <Input
@@ -82,6 +91,9 @@ export default function Login() {
                 {isLoading ? "Signing in..." : "Sign In"}
               </Button>
             </form>
+            <Button onClick={() => handleLogin("github")} className="w-full" disabled={isLoading}>
+              Sign in with GitHub
+            </Button>
           </CardContent>
         </Card>
       </div>
