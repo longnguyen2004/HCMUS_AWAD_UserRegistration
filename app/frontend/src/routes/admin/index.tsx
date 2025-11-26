@@ -1,39 +1,27 @@
-import { useQuery } from '@tanstack/react-query';
-import { createFileRoute, useRouter } from '@tanstack/react-router'
-import { backend } from '@/lib/backend';
+import { createFileRoute } from '@tanstack/react-router'
 
 export const Route = createFileRoute('/admin/')({
-  component: RouteComponent,
+  component: AdminDashboard,
 })
 
-function RouteComponent() {
-  const router = useRouter();
-  const {status, data, error} = useQuery({
-    queryKey: ["requires_auth"],
-    queryFn: async() => {
-      const res = await backend.protected.get();
-      if (res.error)
-      {
-        if (res.error.status === 401)
-        {
-          await router.navigate({ to: "/login" });
-          return undefined;
-        }
-        else
-        {
-          throw res.error;
-        }
-      }
-      return res.data;
-    }
-  });
-  if (status === "pending") {
-    return <span>Loading...</span>
-  }
-  else if (status === "error") {
-    return <span>Error: {error.message}</span>
-  }
-  else {
-    return <span>{data}</span>
-  }
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import NavBar from "@/components/layout/nav-bar"
+import UserManagement from "@/components/admin/user-management"
+
+export default function AdminDashboard() {
+  return (
+    <div className="min-h-screen bg-background">
+      <NavBar title="Admin Dashboard" />
+      <div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
+        <Tabs defaultValue="users" className="space-y-4">
+          <TabsList className="grid w-full grid-cols-2 max-w-md">
+            <TabsTrigger value="users">User Management</TabsTrigger>
+          </TabsList>
+          <TabsContent value="users" className="space-y-4">
+            <UserManagement />
+          </TabsContent>
+        </Tabs>
+      </div>
+    </div>
+  )
 }
