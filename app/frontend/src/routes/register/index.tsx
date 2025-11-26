@@ -14,13 +14,18 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 
-import { createFileRoute, useRouter } from "@tanstack/react-router";
+import { createFileRoute, redirect, useRouter } from "@tanstack/react-router";
 import { useMutation } from "@tanstack/react-query";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { backendAuth } from "@/lib/backend";
 
 export const Route = createFileRoute("/register/")({
   component: SignupForm,
+  beforeLoad: async() => {
+    const { data: session } = await backendAuth.getSession();
+    if (session)
+      throw redirect({ to: "/" });
+  }
 });
 
 type Inputs = {
