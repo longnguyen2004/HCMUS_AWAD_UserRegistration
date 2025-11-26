@@ -16,9 +16,14 @@ export default function App() {
       </div>
     );
   const loginFragment = (
-    <Link to="/login">
-      <Button>Login</Button>
-    </Link>
+    <div className="flex flex-row gap-4 justify-center">
+      <Link to="/login">
+        <Button>Login</Button>
+      </Link>
+      <Link to="/register">
+        <Button>Register</Button>
+      </Link>
+    </div>
   );
   const loggedInFragment = (
     <div className="flex flex-row gap-4 justify-center">
