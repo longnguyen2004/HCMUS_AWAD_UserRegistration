@@ -1,25 +1,30 @@
-"use client"
+"use client";
 
-import { useState, useEffect } from "react"
-import { Button } from "@/components/ui/button"
-import { Palette } from "lucide-react"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
+import { Palette } from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
-type ColorScheme = "blue" | "green" | "orange" | "purple" | "red"
+type ColorScheme = "blue" | "green" | "orange" | "purple" | "red";
 
 export default function ThemeSwitcher() {
-  const [currentTheme, setCurrentTheme] = useState<ColorScheme>("blue")
+  const [currentTheme, setCurrentTheme] = useState<ColorScheme>("blue");
 
   useEffect(() => {
-    const saved = localStorage.getItem("colorTheme") as ColorScheme
+    const saved = localStorage.getItem("colorTheme") as ColorScheme;
     if (saved) {
-      setCurrentTheme(saved)
-      applyTheme(saved)
+      setCurrentTheme(saved);
+      applyTheme(saved);
     }
-  }, [])
+  }, []);
 
   const applyTheme = (theme: ColorScheme) => {
-    const root = document.documentElement
+    const root = document.documentElement;
     const themes: Record<ColorScheme, Record<string, string>> = {
       blue: {
         "--color-token-primary": "oklch(0.5 0.2 254)",
@@ -56,33 +61,41 @@ export default function ThemeSwitcher() {
         "--color-token-error": "oklch(0.577 0.245 27.325)",
         "--color-token-success": "oklch(0.556 0.15 142)",
       },
-    }
+    };
 
-    const themeColors = themes[theme]
+    const themeColors = themes[theme];
     Object.entries(themeColors).forEach(([key, value]) => {
-      root.style.setProperty(key, value)
-    })
+      root.style.setProperty(key, value);
+    });
 
-    localStorage.setItem("colorTheme", theme)
-    setCurrentTheme(theme)
-  }
+    localStorage.setItem("colorTheme", theme);
+    setCurrentTheme(theme);
+  };
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="outline" size="sm" className="gap-2 bg-transparent">
           <Palette className="w-4 h-4" />
-          <span className="hidden sm:inline text-xs font-medium capitalize">{currentTheme}</span>
+          <span className="hidden sm:inline text-xs font-medium capitalize">
+            {currentTheme}
+          </span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
-        {(["blue", "green", "orange", "purple", "red"] as const).map((theme) => (
-          <DropdownMenuItem key={theme} onClick={() => applyTheme(theme)} className="capitalize">
-            {theme}
-            {currentTheme === theme && " ✓"}
-          </DropdownMenuItem>
-        ))}
+        {(["blue", "green", "orange", "purple", "red"] as const).map(
+          (theme) => (
+            <DropdownMenuItem
+              key={theme}
+              onClick={() => applyTheme(theme)}
+              className="capitalize"
+            >
+              {theme}
+              {currentTheme === theme && " ✓"}
+            </DropdownMenuItem>
+          ),
+        )}
       </DropdownMenuContent>
     </DropdownMenu>
-  )
+  );
 }

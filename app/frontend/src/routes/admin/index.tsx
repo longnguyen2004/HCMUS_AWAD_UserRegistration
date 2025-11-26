@@ -1,18 +1,17 @@
-import { createFileRoute, redirect } from '@tanstack/react-router'
-import { backendAuth } from '@/lib/backend'
+import { createFileRoute, redirect } from "@tanstack/react-router";
+import { backendAuth } from "@/lib/backend";
 
-export const Route = createFileRoute('/admin/')({
+export const Route = createFileRoute("/admin/")({
   component: AdminDashboard,
   beforeLoad: async () => {
     const { data: session } = await backendAuth.getSession();
-    if (!session)
-      throw redirect({ to: "/login" })
-  }
-})
+    if (!session) throw redirect({ to: "/login" });
+  },
+});
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import NavBar from "@/components/layout/nav-bar"
-import UserManagement from "@/components/admin/user-management"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import NavBar from "@/components/layout/nav-bar";
+import UserManagement from "@/components/admin/user-management";
 
 export default function AdminDashboard() {
   return (
@@ -29,5 +28,5 @@ export default function AdminDashboard() {
         </Tabs>
       </div>
     </div>
-  )
+  );
 }

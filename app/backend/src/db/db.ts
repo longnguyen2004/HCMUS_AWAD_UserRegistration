@@ -4,10 +4,10 @@ import { PostgresJSDialect } from "kysely-postgres-js";
 import type { Database } from "./types.js";
 
 if (!process.env.DB_CONNECTION_STRING)
-    throw new Error("DB connection string not specified");
+  throw new Error("DB connection string not specified");
 
 export const dbDialect = new PostgresJSDialect({
-    postgres: postgres(process.env.DB_CONNECTION_STRING)
-})
+  postgres: postgres(process.env.DB_CONNECTION_STRING),
+});
 
 export const db = new Kysely<Database>({ dialect: dbDialect });
