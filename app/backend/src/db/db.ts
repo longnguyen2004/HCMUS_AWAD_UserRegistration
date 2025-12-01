@@ -1,13 +1,14 @@
-import postgres from "postgres";
-import { Kysely } from "kysely";
-import { PostgresJSDialect } from "kysely-postgres-js";
-import type { Database } from "./types.js";
+import { Sequelize } from "sequelize-typescript";
+import { City } from "./models/city.model.js";
+import { BusStop } from "./models/busstop.model.js";
+import { Trip } from "./models/trip.model.js";
+import { Route } from "./models/route.model.js";
+import { RouteStop } from "./models/routeStop.model.js";
+import { env } from "../lib/env.js";
+import pg from "pg";
 
-if (!process.env.DB_CONNECTION_STRING)
-  throw new Error("DB connection string not specified");
-
-export const dbDialect = new PostgresJSDialect({
-  postgres: postgres(process.env.DB_CONNECTION_STRING),
+export const db = new Sequelize(env.DB_CONNECTION_STRING, {
+  models: [City, BusStop, Trip, Route, RouteStop],
+  dialect: "postgres",
+  dialectModule: pg
 });
-
-export const db = new Kysely<Database>({ dialect: dbDialect });
