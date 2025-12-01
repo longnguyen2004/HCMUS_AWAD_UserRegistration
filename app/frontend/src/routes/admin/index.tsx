@@ -12,6 +12,7 @@ export const Route = createFileRoute("/admin/")({
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import NavBar from "@/components/layout/nav-bar";
 import UserManagement from "@/components/admin/user-management";
+import TripManagement from "@/components/admin/trip-management";
 
 export default function AdminDashboard() {
   return (
@@ -21,9 +22,13 @@ export default function AdminDashboard() {
         <Tabs defaultValue="users" className="space-y-4">
           <TabsList className="grid w-full grid-cols-2 max-w-md">
             <TabsTrigger value="users">User Management</TabsTrigger>
+            <TabsTrigger value="trips">User Management</TabsTrigger>
           </TabsList>
           <TabsContent value="users" className="space-y-4">
             <UserManagement />
+          </TabsContent>
+          <TabsContent value="trips" className="space-y-4">
+            <TripManagement />
           </TabsContent>
         </Tabs>
       </div>
