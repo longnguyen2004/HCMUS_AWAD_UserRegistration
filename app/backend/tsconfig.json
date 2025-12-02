@@ -4,6 +4,9 @@
     "target": "es2022",
     "strict": true,
     "moduleResolution": "node16",
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    
   }
 }

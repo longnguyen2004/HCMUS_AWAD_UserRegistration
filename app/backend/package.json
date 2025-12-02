@@ -9,6 +9,9 @@
     "create_db": "tsx --env-file=.env ./create_db.ts"
   },
   "devDependencies": {
+    "@types/node": "^22.19.0",
+    "@types/pg": "^8.15.6",
+    "@types/validator": "^13.15.10",
     "cpy": "^12.1.0",
     "tsx": "4",
     "typescript": "5"
@@ -17,7 +20,7 @@
     "@elysiajs/cors": "^1.4.0",
     "@elysiajs/jwt": "^1.4.0",
     "@elysiajs/node": "1",
-    "@types/node": "^22.19.0",
+    "@t3-oss/env-core": "^0.13.8",
     "argon2": "^0.44.0",
     "better-auth": "^1.4.1",
     "dotenv": "^17.2.3",
@@ -25,8 +28,13 @@
     "jose": "^6.1.2",
     "kysely": "^0.28.8",
     "kysely-postgres-js": "^3.0.0",
+    "pg": "^8.16.3",
     "postgres": "^3.4.7",
+    "reflect-metadata": "^0.2.2",
+    "sequelize": "^6.37.7",
+    "sequelize-typescript": "^2.1.6",
     "tsdown": "^0.16.1",
-    "typebox": "^1.0.53"
+    "typebox": "^1.0.53",
+    "zod": "^4.1.13"
   }
 }

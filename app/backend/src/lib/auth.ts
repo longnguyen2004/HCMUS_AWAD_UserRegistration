@@ -1,15 +1,17 @@
-import { dbDialect } from "../db/db.js";
+import { env } from "./env.js";
 import { betterAuth } from "better-auth";
-
+import { Pool } from "pg";
 export const AuthService = betterAuth({
-  database: dbDialect,
+  database: new Pool({
+    connectionString: env.DB_CONNECTION_STRING
+  }),
   emailAndPassword: {
     enabled: true,
   },
   socialProviders: {
     github: {
-      clientId: process.env.GITHUB_CLIENT_ID as string,
-      clientSecret: process.env.GITHUB_CLIENT_SECRET as string,
+      clientId: env.GITHUB_CLIENT_ID,
+      clientSecret: env.GITHUB_CLIENT_SECRET,
     },
   },
   trustedOrigins: ["http://localhost:*"],
