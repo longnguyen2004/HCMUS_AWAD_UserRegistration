@@ -1,10 +1,10 @@
-import { createFileRoute } from '@tanstack/react-router'
-import TripSearch from '@/components/user/trip-search'
-import NavBar from '@/components/layout/nav-bar'
+import { createFileRoute } from "@tanstack/react-router";
+import TripSearch from "@/components/user/trip-search";
+import NavBar from "@/components/layout/nav-bar";
 
-export const Route = createFileRoute('/search/')({
+export const Route = createFileRoute("/search/")({
   component: RouteComponent,
-})
+});
 
 function RouteComponent() {
   return (
@@ -14,5 +14,5 @@ function RouteComponent() {
         <TripSearch />
       </div>
     </div>
-  )
+  );
 }

@@ -15,7 +15,7 @@ export namespace RouteModel {
   export type createBodyResponse = typeof createBodyResponse.static;
   export const notFound = t.Object({ message: t.String() });
   export type notFound = typeof notFound.static;
-  
+
   export const searchBody = t.Object({
     tripId: t.Optional(t.String()),
     page: t.Optional(t.Integer()),
@@ -26,10 +26,22 @@ export namespace RouteModel {
     data: t.Array(
       t.Object({
         id: t.String(),
-        from: t.Optional(t.Object({ id: t.String(), name: t.String(), city: t.Object({ id: t.String(), name: t.String() }) })),
-        to: t.Optional(t.Object({ id: t.String(), name: t.String(), city: t.Object({ id: t.String(), name: t.String() }) })),
+        from: t.Optional(
+          t.Object({
+            id: t.String(),
+            name: t.String(),
+            city: t.Object({ id: t.String(), name: t.String() }),
+          }),
+        ),
+        to: t.Optional(
+          t.Object({
+            id: t.String(),
+            name: t.String(),
+            city: t.Object({ id: t.String(), name: t.String() }),
+          }),
+        ),
         stops: t.Array(t.String()),
-      })
+      }),
     ),
     total: t.Integer(),
     page: t.Integer(),

@@ -12,7 +12,7 @@ const app = new Elysia({ adapter: node() })
   .use(cors())
   .use(auth)
   .use(CityController)
-  .use(TripController)  
+  .use(TripController)
   .use(RouteController)
   .use(protectedRoutes)
   .listen(3000);

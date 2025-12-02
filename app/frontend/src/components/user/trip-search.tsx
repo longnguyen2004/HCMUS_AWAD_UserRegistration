@@ -1,21 +1,33 @@
-import { useState, useMemo } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { ChevronRight, MapPin, Users, Clock, Zap } from "lucide-react"
+import { useState, useMemo } from "react";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { ChevronRight, MapPin, Users, Clock, Zap } from "lucide-react";
 
 interface Trip {
-  id: string
-  from: string
-  to: string
-  departure: string
-  arrival: string
-  price: number
-  busType: string
-  amenities: string[]
-  capacity: number
-  booked: number
+  id: string;
+  from: string;
+  to: string;
+  departure: string;
+  arrival: string;
+  price: number;
+  busType: string;
+  amenities: string[];
+  capacity: number;
+  booked: number;
 }
 
 const mockTrips: Trip[] = [
@@ -139,57 +151,76 @@ const mockTrips: Trip[] = [
     capacity: 48,
     booked: 35,
   },
-]
+];
 
 export default function TripSearch() {
-  const [origin, setOrigin] = useState("")
-  const [destination, setDestination] = useState("")
-  const [date, setDate] = useState("")
-  const [priceRange, setPriceRange] = useState("all")
-  const [busType, setBusType] = useState("all")
-  const [amenity, setAmenity] = useState("all")
-  const [sortBy, setSortBy] = useState("price")
-  const [currentPage, setCurrentPage] = useState(1)
-  const itemsPerPage = 6
+  const [origin, setOrigin] = useState("");
+  const [destination, setDestination] = useState("");
+  const [date, setDate] = useState("");
+  const [priceRange, setPriceRange] = useState("all");
+  const [busType, setBusType] = useState("all");
+  const [amenity, setAmenity] = useState("all");
+  const [sortBy, setSortBy] = useState("price");
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 6;
 
   const filteredTrips = useMemo(() => {
     const result = mockTrips.filter((trip) => {
-      const matchesOrigin = !origin || trip.from.toLowerCase().includes(origin.toLowerCase())
-      const matchesDestination = !destination || trip.to.toLowerCase().includes(destination.toLowerCase())
+      const matchesOrigin =
+        !origin || trip.from.toLowerCase().includes(origin.toLowerCase());
+      const matchesDestination =
+        !destination ||
+        trip.to.toLowerCase().includes(destination.toLowerCase());
       const matchesPrice =
         priceRange === "all" ||
         (priceRange === "0-50"
           ? trip.price <= 50
           : priceRange === "50-100"
             ? trip.price > 50 && trip.price <= 100
-            : trip.price > 100)
-      const matchesBusType = busType === "all" || trip.busType === busType
-      const matchesAmenity = amenity === "all" || trip.amenities.includes(amenity)
+            : trip.price > 100);
+      const matchesBusType = busType === "all" || trip.busType === busType;
+      const matchesAmenity =
+        amenity === "all" || trip.amenities.includes(amenity);
 
-      return matchesOrigin && matchesDestination && matchesPrice && matchesBusType && matchesAmenity
-    })
+      return (
+        matchesOrigin &&
+        matchesDestination &&
+        matchesPrice &&
+        matchesBusType &&
+        matchesAmenity
+      );
+    });
 
     result.sort((a, b) => {
       if (sortBy === "price") {
-        return a.price - b.price
+        return a.price - b.price;
       } else if (sortBy === "departure") {
-        return new Date(a.departure).getTime() - new Date(b.departure).getTime()
+        return (
+          new Date(a.departure).getTime() - new Date(b.departure).getTime()
+        );
       } else {
-        return b.booked - a.booked
+        return b.booked - a.booked;
       }
-    })
+    });
 
-    return result
-  }, [origin, destination, priceRange, busType, amenity, sortBy])
+    return result;
+  }, [origin, destination, priceRange, busType, amenity, sortBy]);
 
-  const totalPages = Math.ceil(filteredTrips.length / itemsPerPage)
-  const paginatedTrips = filteredTrips.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage)
+  const totalPages = Math.ceil(filteredTrips.length / itemsPerPage);
+  const paginatedTrips = filteredTrips.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage,
+  );
 
   return (
     <div className="space-y-6">
       <div className="flex flex-col gap-2">
-        <h1 className="text-4xl font-bold text-balance text-foreground">Find Your Trip</h1>
-        <p className="text-lg text-muted-foreground">Search and book buses to your destination</p>
+        <h1 className="text-4xl font-bold text-balance text-foreground">
+          Find Your Trip
+        </h1>
+        <p className="text-lg text-muted-foreground">
+          Search and book buses to your destination
+        </p>
       </div>
 
       {/* Search & Filter Card */}
@@ -201,31 +232,37 @@ export default function TripSearch() {
         <CardContent className="space-y-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             <div className="space-y-2">
-              <label className="text-sm font-semibold text-foreground">From</label>
+              <label className="text-sm font-semibold text-foreground">
+                From
+              </label>
               <Input
                 placeholder="Origin city..."
                 value={origin}
                 onChange={(e) => {
-                  setOrigin(e.target.value)
-                  setCurrentPage(1)
+                  setOrigin(e.target.value);
+                  setCurrentPage(1);
                 }}
                 className="bg-background/80 border-border"
               />
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-semibold text-foreground">To</label>
+              <label className="text-sm font-semibold text-foreground">
+                To
+              </label>
               <Input
                 placeholder="Destination city..."
                 value={destination}
                 onChange={(e) => {
-                  setDestination(e.target.value)
-                  setCurrentPage(1)
+                  setDestination(e.target.value);
+                  setCurrentPage(1);
                 }}
                 className="bg-background/80 border-border"
               />
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-semibold text-foreground">Date</label>
+              <label className="text-sm font-semibold text-foreground">
+                Date
+              </label>
               <Input
                 type="date"
                 value={date}
@@ -248,12 +285,14 @@ export default function TripSearch() {
         <CardContent>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
             <div className="space-y-2">
-              <label className="text-sm font-semibold text-foreground">Price</label>
+              <label className="text-sm font-semibold text-foreground">
+                Price
+              </label>
               <Select
                 value={priceRange}
                 onValueChange={(val) => {
-                  setPriceRange(val)
-                  setCurrentPage(1)
+                  setPriceRange(val);
+                  setCurrentPage(1);
                 }}
               >
                 <SelectTrigger className="bg-background border-border">
@@ -268,12 +307,14 @@ export default function TripSearch() {
               </Select>
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-semibold text-foreground">Bus Type</label>
+              <label className="text-sm font-semibold text-foreground">
+                Bus Type
+              </label>
               <Select
                 value={busType}
                 onValueChange={(val) => {
-                  setBusType(val)
-                  setCurrentPage(1)
+                  setBusType(val);
+                  setCurrentPage(1);
                 }}
               >
                 <SelectTrigger className="bg-background border-border">
@@ -288,12 +329,14 @@ export default function TripSearch() {
               </Select>
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-semibold text-foreground">Amenities</label>
+              <label className="text-sm font-semibold text-foreground">
+                Amenities
+              </label>
               <Select
                 value={amenity}
                 onValueChange={(val) => {
-                  setAmenity(val)
-                  setCurrentPage(1)
+                  setAmenity(val);
+                  setCurrentPage(1);
                 }}
               >
                 <SelectTrigger className="bg-background border-border">
@@ -309,7 +352,9 @@ export default function TripSearch() {
               </Select>
             </div>
             <div className="space-y-2">
-              <label className="text-sm font-semibold text-foreground">Sort By</label>
+              <label className="text-sm font-semibold text-foreground">
+                Sort By
+              </label>
               <Select value={sortBy} onValueChange={setSortBy}>
                 <SelectTrigger className="bg-background border-border">
                   <SelectValue placeholder="Sort by" />
@@ -324,14 +369,14 @@ export default function TripSearch() {
             <div className="space-y-2 flex items-end">
               <Button
                 onClick={() => {
-                  setOrigin("")
-                  setDestination("")
-                  setDate("")
-                  setPriceRange("all")
-                  setBusType("all")
-                  setAmenity("all")
-                  setSortBy("price")
-                  setCurrentPage(1)
+                  setOrigin("");
+                  setDestination("");
+                  setDate("");
+                  setPriceRange("all");
+                  setBusType("all");
+                  setAmenity("all");
+                  setSortBy("price");
+                  setCurrentPage(1);
                 }}
                 variant="outline"
                 className="w-full"
@@ -347,11 +392,14 @@ export default function TripSearch() {
       <div className="space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 px-2">
           <div>
-            <p className="text-sm font-semibold text-foreground">{filteredTrips.length} trips found</p>
+            <p className="text-sm font-semibold text-foreground">
+              {filteredTrips.length} trips found
+            </p>
             {paginatedTrips.length > 0 && (
               <p className="text-xs text-muted-foreground mt-1">
                 Showing {(currentPage - 1) * itemsPerPage + 1}–
-                {Math.min(currentPage * itemsPerPage, filteredTrips.length)} of {filteredTrips.length}
+                {Math.min(currentPage * itemsPerPage, filteredTrips.length)} of{" "}
+                {filteredTrips.length}
               </p>
             )}
           </div>
@@ -369,8 +417,12 @@ export default function TripSearch() {
               <div className="text-center space-y-3">
                 <MapPin className="w-12 h-12 text-muted-foreground mx-auto opacity-50" />
                 <div>
-                  <h3 className="text-lg font-semibold text-foreground">No trips found</h3>
-                  <p className="text-muted-foreground text-sm">Try adjusting your search filters</p>
+                  <h3 className="text-lg font-semibold text-foreground">
+                    No trips found
+                  </h3>
+                  <p className="text-muted-foreground text-sm">
+                    Try adjusting your search filters
+                  </p>
                 </div>
               </div>
             </CardContent>
@@ -393,11 +445,17 @@ export default function TripSearch() {
                             {trip.from} → {trip.to}
                           </span>
                         </div>
-                        <p className="text-xs text-muted-foreground ml-6">{trip.departure.split(" ")[0]}</p>
+                        <p className="text-xs text-muted-foreground ml-6">
+                          {trip.departure.split(" ")[0]}
+                        </p>
                       </div>
                       <div className="text-right">
-                        <div className="text-2xl font-bold text-accent">${trip.price}</div>
-                        <p className="text-xs text-muted-foreground">per seat</p>
+                        <div className="text-2xl font-bold text-accent">
+                          ${trip.price}
+                        </div>
+                        <p className="text-xs text-muted-foreground">
+                          per seat
+                        </p>
                       </div>
                     </div>
 
@@ -405,9 +463,13 @@ export default function TripSearch() {
                     <div className="flex items-center gap-3 px-2 py-2 bg-muted/40 rounded-lg">
                       <Clock className="w-4 h-4 text-muted-foreground flex-shrink-0" />
                       <div className="flex items-center justify-between flex-1 gap-2 text-sm">
-                        <div className="font-medium text-foreground">{trip.departure.split(" ")[1]}</div>
+                        <div className="font-medium text-foreground">
+                          {trip.departure.split(" ")[1]}
+                        </div>
                         <div className="flex-1 h-0.5 bg-gradient-to-r from-primary/50 to-accent/50 mx-2"></div>
-                        <div className="font-medium text-foreground">{trip.arrival.split(" ")[1]}</div>
+                        <div className="font-medium text-foreground">
+                          {trip.arrival.split(" ")[1]}
+                        </div>
                       </div>
                     </div>
 
@@ -436,7 +498,8 @@ export default function TripSearch() {
                       <div className="flex items-center gap-1 text-xs text-muted-foreground">
                         <Users className="w-4 h-4" />
                         <span>
-                          {trip.capacity - trip.booked} of {trip.capacity} seats available
+                          {trip.capacity - trip.booked} of {trip.capacity} seats
+                          available
                         </span>
                       </div>
                       <Button size="sm" className="gap-1 ml-auto">
@@ -465,37 +528,56 @@ export default function TripSearch() {
 
               <div className="flex gap-1 items-center">
                 {totalPages <= 7
-                  ? Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                      <Button
-                        key={page}
-                        variant={page === currentPage ? "default" : "outline"}
-                        onClick={() => setCurrentPage(page)}
-                        className="w-10 h-10 p-0"
-                        size="sm"
-                      >
-                        {page}
-                      </Button>
-                    ))
+                  ? Array.from({ length: totalPages }, (_, i) => i + 1).map(
+                      (page) => (
+                        <Button
+                          key={page}
+                          variant={page === currentPage ? "default" : "outline"}
+                          onClick={() => setCurrentPage(page)}
+                          className="w-10 h-10 p-0"
+                          size="sm"
+                        >
+                          {page}
+                        </Button>
+                      ),
+                    )
                   : [
-                      ...Array.from({ length: Math.min(2, totalPages) }, (_, i) => i + 1),
+                      ...Array.from(
+                        { length: Math.min(2, totalPages) },
+                        (_, i) => i + 1,
+                      ),
                       ...(currentPage > 3 ? [null] : []),
-                      ...Array.from({ length: Math.min(3, Math.max(0, totalPages - currentPage + 1)) }, (_, i) =>
-                        Math.max(currentPage - 1, i + 1),
+                      ...Array.from(
+                        {
+                          length: Math.min(
+                            3,
+                            Math.max(0, totalPages - currentPage + 1),
+                          ),
+                        },
+                        (_, i) => Math.max(currentPage - 1, i + 1),
                       ),
                       ...(currentPage < totalPages - 2 ? [null] : []),
-                      ...Array.from({ length: Math.min(2, totalPages - currentPage + 1) }, (_, i) => totalPages - i),
+                      ...Array.from(
+                        { length: Math.min(2, totalPages - currentPage + 1) },
+                        (_, i) => totalPages - i,
+                      ),
                     ]
                       .filter((v, i, a) => v !== null && a.indexOf(v) === i)
                       .sort((a, b) => (a ?? 0) - (b ?? 0))
                       .map((page, idx) =>
                         page === null ? (
-                          <span key={`ellipsis-${idx}`} className="px-2 text-muted-foreground">
+                          <span
+                            key={`ellipsis-${idx}`}
+                            className="px-2 text-muted-foreground"
+                          >
                             …
                           </span>
                         ) : (
                           <Button
                             key={page}
-                            variant={page === currentPage ? "default" : "outline"}
+                            variant={
+                              page === currentPage ? "default" : "outline"
+                            }
                             onClick={() => setCurrentPage(page)}
                             className="w-10 h-10 p-0"
                             size="sm"
@@ -508,7 +590,9 @@ export default function TripSearch() {
 
               <Button
                 variant="outline"
-                onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+                onClick={() =>
+                  setCurrentPage(Math.min(totalPages, currentPage + 1))
+                }
                 disabled={currentPage === totalPages}
                 className="gap-2"
               >
@@ -519,5 +603,5 @@ export default function TripSearch() {
         )}
       </div>
     </div>
-  )
+  );
 }

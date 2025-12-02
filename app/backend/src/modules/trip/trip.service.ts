@@ -51,13 +51,19 @@ export abstract class TripService {
     const busStops = stopIdsArray.length
       ? await BusStop.findAll({ where: { id: stopIdsArray }, include: [City] })
       : [];
-    type BusStopMapItem = { id: string; name: string; city?: { id: string; name: string } | null };
+    type BusStopMapItem = {
+      id: string;
+      name: string;
+      city?: { id: string; name: string } | null;
+    };
     const busStopMap: Record<string, BusStopMapItem> = {};
     for (const b of busStops) {
       busStopMap[b.id] = {
         id: b.id,
         name: b.name,
-        city: b.city ? { id: b.city.id ?? "", name: b.city.name ?? "" } : undefined,
+        city: b.city
+          ? { id: b.city.id ?? "", name: b.city.name ?? "" }
+          : undefined,
       };
     }
 

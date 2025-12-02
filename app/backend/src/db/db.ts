@@ -9,5 +9,5 @@ import pg from "pg";
 export const db = new Sequelize(env.DB_CONNECTION_STRING, {
   models: [City, BusStop, Trip, Route],
   dialect: "postgres",
-  dialectModule: pg
+  dialectModule: pg,
 });

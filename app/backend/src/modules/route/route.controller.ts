@@ -13,7 +13,10 @@ export const RouteController = new Elysia({ prefix: "/route" })
     },
     {
       body: RouteModel.createBody,
-      response: { 200: RouteModel.createBodyResponse, 404: RouteModel.notFound },
+      response: {
+        200: RouteModel.createBodyResponse,
+        404: RouteModel.notFound,
+      },
     },
   )
   //.use(authGuard)

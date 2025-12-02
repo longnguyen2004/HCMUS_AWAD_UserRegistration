@@ -21,11 +21,10 @@ import { backendAuth } from "@/lib/backend";
 
 export const Route = createFileRoute("/register/")({
   component: SignupForm,
-  beforeLoad: async() => {
+  beforeLoad: async () => {
     const { data: session } = await backendAuth.getSession();
-    if (session)
-      throw redirect({ to: "/" });
-  }
+    if (session) throw redirect({ to: "/" });
+  },
 });
 
 type Inputs = {
