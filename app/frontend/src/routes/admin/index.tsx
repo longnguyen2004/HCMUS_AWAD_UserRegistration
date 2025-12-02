@@ -22,7 +22,7 @@ export default function AdminDashboard() {
         <Tabs defaultValue="users" className="space-y-4">
           <TabsList className="grid w-full grid-cols-2 max-w-md">
             <TabsTrigger value="users">User Management</TabsTrigger>
-            <TabsTrigger value="trips">User Management</TabsTrigger>
+            <TabsTrigger value="trips">Trip Management</TabsTrigger>
           </TabsList>
           <TabsContent value="users" className="space-y-4">
             <UserManagement />
