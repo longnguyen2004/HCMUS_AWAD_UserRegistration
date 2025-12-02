@@ -174,7 +174,7 @@ export default function TripSearch() {
           </div>
         </CardContent>
       </Card>
-      Filter & Sort Card
+      {/*Filter & Sort Card*/}
       <Card className="border-border">
         <CardHeader className="pb-4">
           <CardTitle className="text-lg flex items-center gap-2">
