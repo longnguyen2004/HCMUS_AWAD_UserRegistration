@@ -29,7 +29,7 @@ export const TripController = new Elysia({ prefix: "/trip" })
     {
       body: TripModel.createBody,
       response: {
-        200: TripModel.createBodyResponse,
+        200: TripModel.createResponse,
         404: TripModel.notFound,
       },
     },

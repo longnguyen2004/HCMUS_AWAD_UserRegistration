@@ -18,6 +18,7 @@ export namespace TripModel {
         stops: t.Array(
           t.Object({
             id: t.String(),
+            name: t.String(),
             order: t.Number(),
           }),
         ),
