@@ -33,7 +33,8 @@ export abstract class TripService {
       )
     `),
       order: [["departure", "ASC"]],
-      limit, offset,
+      limit,
+      offset,
     });
 
     if (trips.length === 0) {
@@ -41,57 +42,57 @@ export abstract class TripService {
         data: [],
         total: count,
         page: Math.ceil(count / limit),
-        per_page: limit
-      } satisfies TripModel.searchResponse
+        per_page: limit,
+      } satisfies TripModel.searchResponse;
     }
 
     const tripsWithRoute = await Trip.findAll({
       where: {
         id: {
-          [Op.in]: trips.map(t => t.id)
-        }
+          [Op.in]: trips.map((t) => t.id),
+        },
       },
       include: [
         {
           model: TripBusStop,
-          as: 'tripBusStops',
+          as: "tripBusStops",
           include: [
             {
               model: BusStop,
-              as: 'busStop',
+              as: "busStop",
               include: [
                 {
                   model: City,
-                  as: 'city',
-                }
-              ]
-            }
-          ]
-        }
+                  as: "city",
+                },
+              ],
+            },
+          ],
+        },
       ],
       order: [
-        ['departure', 'ASC'],
-        [{ model: TripBusStop, as: 'tripBusStops' }, 'order', 'ASC']
-      ]
+        ["departure", "ASC"],
+        [{ model: TripBusStop, as: "tripBusStops" }, "order", "ASC"],
+      ],
     });
 
-    const prettyTrips = tripsWithRoute.map(trip => ({
+    const prettyTrips = tripsWithRoute.map((trip) => ({
       id: trip.id,
       departure: trip.departure,
       arrival: trip.arrival,
       price: trip.price,
-      stops: trip.tripBusStops.map(el => ({
+      stops: trip.tripBusStops.map((el) => ({
         id: el.busStopId,
         name: el.busStop.name,
-        order: el.order
-      }))
-    }))
+        order: el.order,
+      })),
+    }));
     return {
       data: prettyTrips,
       total: count,
       page,
-      per_page: limit
-    } satisfies TripModel.searchResponse
+      per_page: limit,
+    } satisfies TripModel.searchResponse;
   }
 
   static async create(
@@ -103,13 +104,17 @@ export abstract class TripService {
       price: body.price ?? undefined,
       status: body.status ?? undefined,
     };
-    const result = await db.transaction(async t => {
+    const result = await db.transaction(async (t) => {
       const trip = await Trip.create(payload, { transaction: t });
       await TripBusStop.bulkCreate(
-        body.stops.map((stop, i) => ({ tripId: trip.id, busStopId: stop, order: i + 1 }))
+        body.stops.map((stop, i) => ({
+          tripId: trip.id,
+          busStopId: stop,
+          order: i + 1,
+        })),
       );
       return trip.id;
-    })
+    });
 
     return { id: result };
   }

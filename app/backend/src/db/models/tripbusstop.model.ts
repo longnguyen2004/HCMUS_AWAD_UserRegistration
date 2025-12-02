@@ -23,11 +23,11 @@ export class TripBusStop extends Model {
   @PrimaryKey
   @ForeignKey(() => BusStop)
   @Column({ type: DataTypes.UUID })
-  declare busStopId: string
+  declare busStopId: string;
 
   @BelongsTo(() => BusStop, "busStopId")
-  declare busStop: BusStop
+  declare busStop: BusStop;
 
   @Column({ type: DataTypes.SMALLINT })
-  declare order: number
+  declare order: number;
 }

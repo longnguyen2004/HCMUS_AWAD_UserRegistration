@@ -51,7 +51,7 @@ try {
     TripBusStop.create({ tripId: trip1.id, busStopId: stopC1.id, order: 3 }),
     TripBusStop.create({ tripId: trip2.id, busStopId: stopA1.id, order: 1 }),
     TripBusStop.create({ tripId: trip2.id, busStopId: stopC1.id, order: 2 }),
-  ])
+  ]);
 
   console.log("Database synced and seeded successfully.");
   process.exit(0);
