@@ -15,7 +15,10 @@ export const AuthService = betterAuth({
       clientSecret: env.GITHUB_CLIENT_SECRET,
     },
   },
-  trustedOrigins: ["http://localhost:*"],
+  trustedOrigins: [
+    "http://localhost:*",
+    "https://hcmus-awad-busticket.vercel.app",
+  ],
   plugins: [admin()],
 });
 
