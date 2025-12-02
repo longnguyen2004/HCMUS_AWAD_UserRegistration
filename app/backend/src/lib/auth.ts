@@ -1,5 +1,6 @@
 import { env } from "./env.js";
 import { betterAuth } from "better-auth";
+import { admin } from "better-auth/plugins"
 import { Pool } from "pg";
 export const AuthService = betterAuth({
   database: new Pool({
@@ -15,6 +16,9 @@ export const AuthService = betterAuth({
     },
   },
   trustedOrigins: ["http://localhost:*"],
+  plugins: [
+    admin()
+  ]
 });
 
 export const auth = AuthService;
