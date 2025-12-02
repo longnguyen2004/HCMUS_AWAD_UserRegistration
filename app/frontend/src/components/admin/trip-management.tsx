@@ -93,10 +93,10 @@ export default function TripManagement() {
     })
 
     result.sort((a, b) => {
-      let aVal: any = a[sortBy as keyof Trip]
-      let bVal: any = b[sortBy as keyof Trip]
+      let aVal = a[sortBy as keyof Trip]
+      let bVal = b[sortBy as keyof Trip]
 
-      if (typeof aVal === "string") {
+      if (typeof aVal === "string" && typeof bVal === "string") {
         aVal = aVal.toLowerCase()
         bVal = bVal.toLowerCase()
       }

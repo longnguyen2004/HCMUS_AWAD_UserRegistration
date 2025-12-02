@@ -487,7 +487,7 @@ export default function TripSearch() {
                     ]
                       .filter((v, i, a) => v !== null && a.indexOf(v) === i)
                       .sort((a, b) => (a ?? 0) - (b ?? 0))
-                      .map((page, idx, arr) =>
+                      .map((page, idx) =>
                         page === null ? (
                           <span key={`ellipsis-${idx}`} className="px-2 text-muted-foreground">
                             …
