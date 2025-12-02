@@ -56,7 +56,7 @@ importers:
         version: 0.44.0
       better-auth:
         specifier: ^1.4.1
-        version: 1.4.1(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(solid-js@1.9.10)
+        version: 1.4.1
       dotenv:
         specifier: ^17.2.3
         version: 17.2.3
@@ -66,18 +66,9 @@ importers:
       jose:
         specifier: ^6.1.2
         version: 6.1.2
-      kysely:
-        specifier: ^0.28.8
-        version: 0.28.8
-      kysely-postgres-js:
-        specifier: ^3.0.0
-        version: 3.0.0(kysely@0.28.8)(postgres@3.4.7)
       pg:
         specifier: ^8.16.3
         version: 8.16.3
-      postgres:
-        specifier: ^3.4.7
-        version: 3.4.7
       reflect-metadata:
         specifier: ^0.2.2
         version: 0.2.2
@@ -2966,16 +2957,6 @@ packages:
     resolution: {integrity: sha512-Rczb6FMM6JT0lvrOlP5WUOCB7s9XKxzwgErzhKlKde1bEV90FXplV1o87fpt4PU/asJFiqjYJxAJyzJhcrxOsQ==}
     engines: {node: '>=18'}
 
-  kysely-postgres-js@3.0.0:
-    resolution: {integrity: sha512-o2t/xNSYJQDW6rVGGFPXKmZ0BEz2dGn66c2B+cO/k9ZNcU2qPWPycQPQ+B+P2MBXbKYq0xV9BZmFIvkUrmFWAQ==}
-    engines: {bun: '>=1.2', node: '>=20'}
-    peerDependencies:
-      kysely: '>= 0.24.0 < 1'
-      postgres: ^3.4.0
-    peerDependenciesMeta:
-      postgres:
-        optional: true
-
   kysely@0.28.8:
     resolution: {integrity: sha512-QUOgl5ZrS9IRuhq5FvOKFSsD/3+IA6MLE81/bOOTRA/YQpKDza2sFdN5g6JCB9BOpqMJDGefLCQ9F12hRS13TA==}
     engines: {node: '>=20.0.0'}
@@ -3379,10 +3360,6 @@ packages:
   postgres-interval@1.2.0:
     resolution: {integrity: sha512-9ZhXKM/rw350N1ovuWHbGxnGh/SNJ4cnxHiM0rxE4VN41wsg8P8zWn9hv/buK00RP4WvlOyr/RBDiptyxVbkZQ==}
     engines: {node: '>=0.10.0'}
-
-  postgres@3.4.7:
-    resolution: {integrity: sha512-Jtc2612XINuBjIl/QTWsV5UvE8UHuNblcO3vVADSrKsrc6RqGX6lOW1cEo3CM2v0XG4Nat8nI+YM7/f26VxXLw==}
-    engines: {node: '>=12'}
 
   prelude-ls@1.2.1:
     resolution: {integrity: sha512-vkcDPrRZo1QZLbn5RLGPpg/WmIQ65qoWWhcGKf/b5eplkkarX0m9z8ppCat4mlOqUsWpyNuYgO3VRyrYHSzX5g==}
@@ -5995,6 +5972,22 @@ snapshots:
 
   baseline-browser-mapping@2.8.25: {}
 
+  better-auth@1.4.1:
+    dependencies:
+      '@better-auth/core': 1.4.1(@better-auth/utils@0.3.0)(@better-fetch/fetch@1.1.18)(better-call@1.1.0)(jose@6.1.2)(kysely@0.28.8)(nanostores@1.1.0)
+      '@better-auth/telemetry': 1.4.1(@better-auth/core@1.4.1(@better-auth/utils@0.3.0)(@better-fetch/fetch@1.1.18)(better-call@1.1.0)(jose@6.1.2)(kysely@0.28.8)(nanostores@1.1.0))
+      '@better-auth/utils': 0.3.0
+      '@better-fetch/fetch': 1.1.18
+      '@noble/ciphers': 2.0.1
+      '@noble/hashes': 2.0.1
+      '@standard-schema/spec': 1.0.0
+      better-call: 1.1.0
+      defu: 6.1.4
+      jose: 6.1.2
+      kysely: 0.28.8
+      nanostores: 1.1.0
+      zod: 4.1.13
+
   better-auth@1.4.1(react-dom@19.2.0(react@19.2.0))(react@19.2.0)(solid-js@1.9.10):
     dependencies:
       '@better-auth/core': 1.4.1(@better-auth/utils@0.3.0)(@better-fetch/fetch@1.1.18)(better-call@1.1.0)(jose@6.1.2)(kysely@0.28.8)(nanostores@1.1.0)
@@ -7031,12 +7024,6 @@ snapshots:
 
   ky@1.14.0: {}
 
-  kysely-postgres-js@3.0.0(kysely@0.28.8)(postgres@3.4.7):
-    dependencies:
-      kysely: 0.28.8
-    optionalDependencies:
-      postgres: 3.4.7
-
   kysely@0.28.8: {}
 
   levn@0.4.1:
@@ -7424,8 +7411,6 @@ snapshots:
   postgres-interval@1.2.0:
     dependencies:
       xtend: 4.0.2
-
-  postgres@3.4.7: {}
 
   prelude-ls@1.2.1: {}
 
