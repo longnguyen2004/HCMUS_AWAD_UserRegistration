@@ -42,6 +42,11 @@ export default function App() {
             Bus Booking & Management System
           </p>
           <div className="mt-2">
+            <Link to="/search">
+              <Button>Book a trip</Button>
+            </Link>
+          </div>
+          <div className="mt-2">
             {session ? loggedInFragment : loginFragment}
           </div>
         </div>
