@@ -1,4 +1,5 @@
 import { City } from "./city.model.js";
+import { TripBusStop } from "./tripbusstop.model.js";
 import { DataTypes } from "sequelize";
 import {
   Table,
@@ -6,6 +7,7 @@ import {
   Column,
   ForeignKey,
   BelongsTo,
+  HasMany,
 } from "sequelize-typescript";
 
 @Table
@@ -26,4 +28,7 @@ export class BusStop extends Model {
 
   @BelongsTo(() => City, "cityId")
   declare city: City;
+
+  @HasMany(() => TripBusStop, "busStopId")
+  declare tripBusStops: TripBusStop[];
 }

@@ -2,7 +2,7 @@ import { db } from "./src/db/db.js";
 import { City } from "./src/db/models/city.model.js";
 import { BusStop } from "./src/db/models/busstop.model.js";
 import { Trip } from "./src/db/models/trip.model.js";
-import { Route } from "./src/db/models/route.model.js";
+import { TripBusStop } from "./src/db/models/tripbusstop.model.js";
 
 // Sync DB and seed sample data for development.
 // Run with: `pnpm exec tsx --env-file=.env ./create_db.ts`
@@ -32,7 +32,7 @@ try {
     return d;
   };
   // Create trips
-  const [trip1] = await Promise.all([
+  const [trip1, trip2] = await Promise.all([
     Trip.create({
       departure: makeDate(1, 9),
       arrival: makeDate(1, 11),
@@ -46,9 +46,12 @@ try {
   ]);
 
   await Promise.all([
-    Route.create({ tripId: trip1.id, stops: [stopA1.id, stopB1.id] }),
-    Route.create({ tripId: trip1.id, stops: [stopA1.id, stopC1.id] }),
-  ]);
+    TripBusStop.create({ tripId: trip1.id, busStopId: stopA1.id, order: 1 }),
+    TripBusStop.create({ tripId: trip1.id, busStopId: stopB1.id, order: 2 }),
+    TripBusStop.create({ tripId: trip1.id, busStopId: stopC1.id, order: 3 }),
+    TripBusStop.create({ tripId: trip2.id, busStopId: stopA1.id, order: 1 }),
+    TripBusStop.create({ tripId: trip2.id, busStopId: stopC1.id, order: 2 }),
+  ])
 
   console.log("Database synced and seeded successfully.");
   process.exit(0);

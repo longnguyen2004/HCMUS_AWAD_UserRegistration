@@ -1,6 +1,6 @@
 import { DataTypes } from "sequelize";
-import { Route } from "./route.model.js";
 import { Table, Model, Column, HasMany } from "sequelize-typescript";
+import { TripBusStop } from "./tripbusstop.model.js";
 
 @Table
 export class Trip extends Model {
@@ -22,6 +22,7 @@ export class Trip extends Model {
 
   @Column({ type: DataTypes.STRING })
   declare status: string;
-  @HasMany(() => Route)
-  declare routes?: Route[];
+
+  @HasMany(() => TripBusStop, "tripId")
+  declare tripBusStops: TripBusStop[];
 }
