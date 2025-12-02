@@ -1,10 +1,10 @@
 import { Elysia } from "elysia";
 import { TripModel } from "./trip.model.js";
 import { TripService } from "./trip.service.js";
-//import { authGuard } from "../auth/index.js";
+import { authGuard } from "../auth/index.js";
 
 export const TripController = new Elysia({ prefix: "/trip" })
-  //	.use(authGuard)
+  .use(authGuard)
   .get(
     "/search",
     async ({ query }) => {
@@ -27,6 +27,7 @@ export const TripController = new Elysia({ prefix: "/trip" })
       return response;
     },
     {
+      auth: true,
       body: TripModel.createBody,
       response: {
         200: TripModel.createResponse,
