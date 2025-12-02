@@ -34,7 +34,7 @@ export namespace TripModel {
     export type searchResponse = typeof searchResponse.static;
     
     export const createBody = t.Object({
-        routeId: t.String(),
+        routeId: t.Optional(t.String()),
         departure: t.Date(),
         arrival: t.Date(),
         price: t.Optional(t.Integer()),
@@ -44,7 +44,7 @@ export namespace TripModel {
 
     export const createBodyResponse = t.Object({
         id: t.String(),
-        routeId: t.String(),
+        routeId: t.Optional(t.String()),
         departure: t.Date(),
         arrival: t.Date(),
         price: t.Optional(t.Integer()),

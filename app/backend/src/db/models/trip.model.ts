@@ -1,12 +1,6 @@
 import { DataTypes } from "sequelize";
 import { Route } from "./route.model.js";
-import {
-  Table,
-  Model,
-  Column,
-  ForeignKey,
-  BelongsTo,
-} from "sequelize-typescript";
+import { Table, Model, Column, HasMany } from "sequelize-typescript";
 
 @Table
 export class Trip extends Model {
@@ -28,11 +22,6 @@ export class Trip extends Model {
 
   @Column({ type: DataTypes.STRING })
   declare status: string;
-
-  @ForeignKey(() => Route)
-  @Column({ type: DataTypes.UUID, allowNull: true })
-  declare routeId?: string;
-
-  @BelongsTo(() => Route, "routeId")
-  declare route?: Route;
+  @HasMany(() => Route)
+  declare routes?: Route[];
 }

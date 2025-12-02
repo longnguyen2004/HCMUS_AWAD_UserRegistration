@@ -1,27 +1,19 @@
 import { DataTypes } from "sequelize";
-import { Table, Model, Column, ForeignKey, BelongsTo, HasMany } from "sequelize-typescript";
-import { BusStop } from "./busstop.model.js";
-import { RouteStop } from "./routeStop.model.js";
+import { Table, Model, Column, ForeignKey, BelongsTo } from "sequelize-typescript";
+import { Trip } from "./trip.model.js";
 
 @Table
 export class Route extends Model {
   @Column({ type: DataTypes.UUID, defaultValue: DataTypes.UUIDV4, primaryKey: true })
   declare id: string;
+  
+  @ForeignKey(() => Trip)
+  @Column({ type: DataTypes.UUID, allowNull: true })
+  declare tripId?: string;
 
-  @ForeignKey(() => BusStop)
-  @Column({ type: DataTypes.UUID })
-  declare fromId: string;
+  @BelongsTo(() => Trip, "tripId")
+  declare trip?: Trip;
 
-  @BelongsTo(() => BusStop, "fromId")
-  declare from: BusStop;
-
-  @ForeignKey(() => BusStop)
-  @Column({ type: DataTypes.UUID })
-  declare toId: string;
-
-  @BelongsTo(() => BusStop, "toId")
-  declare to: BusStop;
-
-  @HasMany(() => RouteStop)
-  declare stops: RouteStop[];
+  @Column({ type: DataTypes.ARRAY(DataTypes.UUID), allowNull: true })
+  declare stops: string[];
 }

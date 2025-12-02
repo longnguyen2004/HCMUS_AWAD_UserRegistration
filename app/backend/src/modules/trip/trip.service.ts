@@ -25,69 +25,110 @@ export abstract class TripService {
 
     const result = await Trip.findAndCountAll({
       where: tripWhere,
-      include: [
-        {
-          model: Route,
-          as: "route",
-          required: true,
-          include: [
-            {
-              model: BusStop,
-              as: "from",
-              required: true,
-              include: [
-                {
-                  model: City,
-                  required: true,
-                  where: { id: body.from },
-                },
-              ],
-            },
-            {
-              model: BusStop,
-              as: "to",
-              required: true,
-              include: [
-                {
-                  model: City,
-                  required: true,
-                  where: { id: body.to },
-                },
-              ],
-            },
-          ],
-        },
-      ],
       limit,
       offset,
       order: [["departure", "ASC"]],
     });
 
-    const data = result.rows.map((t: Trip) => {
-      const route = t.route;
-      const from = route?.from;
-      const to = route?.to;
-      return {
-        id: t.id,
-        departure: t.departure,
-        arrival: t.arrival,
-        price: t.price,
-        from: {
-          id: from?.id ?? "",
-          name: from?.name ?? "",
-          city: { id: from?.city?.id ?? "", name: from?.city?.name ?? "" },
-        },
-        to: {
-          id: to?.id ?? "",
-          name: to?.name ?? "",
-          city: { id: to?.city?.id ?? "", name: to?.city?.name ?? "" },
-        },
+    const trips = result.rows as Trip[];
+    const tripIds = trips.map((t) => t.id);
+
+    const routes = await Route.findAll({ where: { tripId: tripIds } });
+    const routesByTrip: Record<string, Route[]> = {};
+    for (const r of routes) {
+      if (!r.tripId) continue;
+      routesByTrip[r.tripId] = routesByTrip[r.tripId] || [];
+      routesByTrip[r.tripId].push(r);
+    }
+
+    const allStopIds = new Set<string>();
+    for (const r of routes) {
+      const s = (r.stops as unknown as string[]) || [];
+      for (const id of s) allStopIds.add(id);
+    }
+
+    const stopIdsArray = Array.from(allStopIds);
+    const busStops = stopIdsArray.length
+      ? await BusStop.findAll({ where: { id: stopIdsArray }, include: [City] })
+      : [];
+    type BusStopMapItem = { id: string; name: string; city?: { id: string; name: string } | null };
+    const busStopMap: Record<string, BusStopMapItem> = {};
+    for (const b of busStops) {
+      busStopMap[b.id] = {
+        id: b.id,
+        name: b.name,
+        city: b.city ? { id: b.city.id ?? "", name: b.city.name ?? "" } : undefined,
       };
-    });
+    }
+
+    const data: TripModel.searchResponse["data"] = [];
+
+    for (const t of trips) {
+      const candidateRoutes = routesByTrip[t.id] || [];
+      let matched = false;
+      for (const r of candidateRoutes) {
+        const sids = (r.stops as unknown as string[]) || [];
+        const stops = sids.map((id) => busStopMap[id]).filter(Boolean);
+        if (!stops.length) continue;
+
+        const first = stops[0];
+        const last = stops[stops.length - 1];
+        if (!first || !last) continue;
+        if (body.from && first.city?.id !== body.from) continue;
+        if (body.to && last.city?.id !== body.to) continue;
+
+        const from = first;
+        const to = last;
+
+        data.push({
+          id: t.id,
+          departure: t.departure,
+          arrival: t.arrival,
+          price: t.price,
+          from: {
+            id: from.id ?? "",
+            name: from.name ?? "",
+            city: { id: from.city?.id ?? "", name: from.city?.name ?? "" },
+          },
+          to: {
+            id: to.id ?? "",
+            name: to.name ?? "",
+            city: { id: to.city?.id ?? "", name: to.city?.name ?? "" },
+          },
+        });
+        matched = true;
+        break;
+      }
+      if (!matched && !body.from && !body.to && candidateRoutes.length) {
+        const r = candidateRoutes[0];
+        const sids = (r.stops as unknown as string[]) || [];
+        const stops = sids.map((id) => busStopMap[id]).filter(Boolean);
+        const from = stops[0];
+        const to = stops[stops.length - 1];
+        if (from && to) {
+          data.push({
+            id: t.id,
+            departure: t.departure,
+            arrival: t.arrival,
+            price: t.price,
+            from: {
+              id: from.id ?? "",
+              name: from.name ?? "",
+              city: { id: from.city?.id ?? "", name: from.city?.name ?? "" },
+            },
+            to: {
+              id: to.id ?? "",
+              name: to.name ?? "",
+              city: { id: to.city?.id ?? "", name: to.city?.name ?? "" },
+            },
+          });
+        }
+      }
+    }
 
     return {
       data,
-      total: result.count,
+      total: result.count as number,
       page,
       perPage: limit,
     } satisfies TripModel.searchResponse;
@@ -96,43 +137,51 @@ export abstract class TripService {
   static async create(
     body: TripModel.createBody,
   ): Promise<TripModel.createBodyResponse> {
-    const route = await Route.findByPk(body.routeId, {
-      include: [
-        { model: BusStop, as: "from", include: [City] },
-        { model: BusStop, as: "to", include: [City] },
-      ],
-    });
+    let route: Route | null = null;
+    let respFrom: BusStop | null = null;
+    let respTo: BusStop | null = null;
+    if (body.routeId) {
+      route = await Route.findByPk(body.routeId);
+      if (!route)
+        throw new Response(JSON.stringify({ message: "Route not found" }), {
+          status: 404,
+          headers: { "content-type": "application/json" },
+        });
 
-    if (!route)
-      throw new Response(JSON.stringify({ message: "Route not found" }), {
-        status: 404,
-        headers: { "content-type": "application/json" },
-      });
+      const sids = (route.stops as unknown as string[]) || [];
+      if (sids.length) {
+        const needed = [sids[0], sids[sids.length - 1]].filter(Boolean);
+        const stops = await BusStop.findAll({
+          where: { id: needed },
+          include: [City],
+        });
+        const map: Record<string, BusStop | undefined> = {};
+        for (const b of stops) map[b.id] = b;
+        respFrom = map[sids[0]] ?? null;
+        respTo = map[sids[sids.length - 1]] ?? null;
+      }
+    }
 
-    type TripCreatePayload = {
-      routeId: string;
-      departure: Date;
-      arrival: Date;
-      price?: number;
-      status?: string;
-    };
-
-    const payload: TripCreatePayload = {
-      routeId: route.id,
+    const payload = {
       departure: body.departure,
       arrival: body.arrival,
       price: body.price ?? undefined,
       status: body.status ?? undefined,
     };
-    
+
     const trip = await Trip.create(payload);
 
-    const from = route.from;
-    const to = route.to;
+    if (route) {
+      route.tripId = trip.id;
+      await route.save();
+    }
+
+    const from = respFrom;
+    const to = respTo;
 
     const resp: TripModel.createBodyResponse = {
       id: trip.id,
-      routeId: route.id,
+      routeId: route?.id ?? "",
       departure: trip.departure,
       arrival: trip.arrival,
       price: trip.price ?? undefined,

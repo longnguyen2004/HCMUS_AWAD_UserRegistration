@@ -3,7 +3,6 @@ import { City } from "./src/db/models/city.model.js";
 import { BusStop } from "./src/db/models/busstop.model.js";
 import { Trip } from "./src/db/models/trip.model.js";
 import { Route } from "./src/db/models/route.model.js";
-import { RouteStop } from "./src/db/models/routeStop.model.js";
 
 // Sync DB and seed sample data for development.
 // Run with: `pnpm exec tsx --env-file=.env ./create_db.ts`
@@ -32,35 +31,15 @@ try {
 		d.setHours(hour, minute, 0, 0);
 		return d;
 	};
-
 	// Create trips
-
-	// Create routes (one route per from->to pair)
-	const routeAB = await Route.create({ fromId: stopA1.id, toId: stopB1.id });
-	const routeBC = await Route.create({ fromId: stopB1.id, toId: stopC1.id });
-
-	// Add ordered stops to routes (for routeAB we have stopA1 then stopB1)
-	await Promise.all([
-		RouteStop.create({ routeId: routeAB.id, busStopId: stopA1.id, order: 1 }),
-		RouteStop.create({ routeId: routeAB.id, busStopId: stopB1.id, order: 2 }),
-		RouteStop.create({ routeId: routeBC.id, busStopId: stopB1.id, order: 1 }),
-		RouteStop.create({ routeId: routeBC.id, busStopId: stopC1.id, order: 2 }),
+	const [trip1] = await Promise.all([
+		Trip.create({ departure: makeDate(1, 9), arrival: makeDate(1, 11), price: 120 }),
+		Trip.create({ departure: makeDate(2, 14), arrival: makeDate(2, 17), price: 200 }),
 	]);
 
-	// Create trips and link them to the routes
 	await Promise.all([
-		Trip.create({
-			routeId: routeAB.id,
-			departure: makeDate(1, 9),
-			arrival: makeDate(1, 11),
-			price: 120,
-		}),
-		Trip.create({
-			routeId: routeBC.id,
-			departure: makeDate(2, 14),
-			arrival: makeDate(2, 17),
-			price: 200,
-		}),
+		Route.create({ tripId: trip1.id, stops: [stopA1.id, stopB1.id] }),
+		Route.create({ tripId: trip1.id, stops: [stopA1.id, stopC1.id] }),
 	]);
 
 	console.log("Database synced and seeded successfully.");
