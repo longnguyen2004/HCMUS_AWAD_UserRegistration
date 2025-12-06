@@ -55,15 +55,15 @@ try {
   // Create trips
   const trip1 = await Trip.create({
     busId: bus1.id,
-    departureTime: makeDate(1, 9),
-    arrivalTime: makeDate(1, 11),
+    departure: makeDate(1, 9),
+    arrival: makeDate(1, 11),
     price: 120,
     status: "scheduled",
   });
   const trip2 = await Trip.create({
     busId: bus1.id,
-    departureTime: makeDate(2, 14),
-    arrivalTime: makeDate(2, 17),
+    departure: makeDate(2, 14),
+    arrival: makeDate(2, 17),
     price: 200,
     status: "scheduled",
   });
