@@ -3,6 +3,18 @@ import { City } from "./src/db/models/city.model.js";
 import { BusStop } from "./src/db/models/busstop.model.js";
 import { Trip } from "./src/db/models/trip.model.js";
 import { TripBusStop } from "./src/db/models/tripbusstop.model.js";
+import { Bus } from "./src/db/models/bus.model.js";
+import { Seat } from "./src/db/models/seat.model.js";
+import { Ticket } from "./src/db/models/ticket.model.js";
+import { User } from "./src/db/models/user.model.js";
+
+// Helper to build departure/arrival times
+const makeDate = (daysFromNow: number, hour: number, minute = 0) => {
+  const d = new Date();
+  d.setDate(d.getDate() + daysFromNow);
+  d.setHours(hour, minute, 0, 0);
+  return d;
+};
 
 // Sync DB and seed sample data for development.
 // Run with: `pnpm exec tsx --env-file=.env ./create_db.ts`
@@ -24,26 +36,37 @@ try {
     BusStop.create({ name: "East Terminal", cityId: cityC.id }),
   ]);
 
-  // Helper to build departure/arrival times
-  const makeDate = (daysFromNow: number, hour: number, minute = 0) => {
-    const d = new Date();
-    d.setDate(d.getDate() + daysFromNow);
-    d.setHours(hour, minute, 0, 0);
-    return d;
-  };
-  // Create trips
-  const [trip1, trip2] = await Promise.all([
-    Trip.create({
-      departure: makeDate(1, 9),
-      arrival: makeDate(1, 11),
-      price: 120,
-    }),
-    Trip.create({
-      departure: makeDate(2, 14),
-      arrival: makeDate(2, 17),
-      price: 200,
-    }),
+  // Create bus
+  const bus1 = await Bus.create({
+    licensePlate: "51A-12345",
+    model: "Hyundai County",
+    capacity: 30,
+    status: "active",
+  });
+
+  // Create seats for bus1
+  const seats = await Promise.all([
+    Seat.create({ busId: bus1.id, seatNumber: "A1", type: "regular" }),
+    Seat.create({ busId: bus1.id, seatNumber: "A2", type: "regular" }),
+    Seat.create({ busId: bus1.id, seatNumber: "B1", type: "vip" }),
+    Seat.create({ busId: bus1.id, seatNumber: "B2", type: "vip" }),
   ]);
+
+  // Create trips
+  const trip1 = await Trip.create({
+    busId: bus1.id,
+    departureTime: makeDate(1, 9),
+    arrivalTime: makeDate(1, 11),
+    price: 120,
+    status: "scheduled",
+  });
+  const trip2 = await Trip.create({
+    busId: bus1.id,
+    departureTime: makeDate(2, 14),
+    arrivalTime: makeDate(2, 17),
+    price: 200,
+    status: "scheduled",
+  });
 
   await Promise.all([
     TripBusStop.create({ tripId: trip1.id, busStopId: stopA1.id, order: 1 }),
@@ -51,6 +74,32 @@ try {
     TripBusStop.create({ tripId: trip1.id, busStopId: stopC1.id, order: 3 }),
     TripBusStop.create({ tripId: trip2.id, busStopId: stopA1.id, order: 1 }),
     TripBusStop.create({ tripId: trip2.id, busStopId: stopC1.id, order: 2 }),
+  ]);
+
+  // Create users (after db.sync so the Users table exists)
+  const [userA, userB] = await Promise.all([
+    User.create({ username: "alice", email: "alice@example.com", passwordHash: "hash1", fullName: "Alice Nguyen" }),
+    User.create({ username: "bob", email: "bob@example.com", passwordHash: "hash2", fullName: "Bob Tran" }),
+  ]);
+
+  // Create tickets for trip1
+  await Promise.all([
+    Ticket.create({
+      tripId: trip1.id,
+      seatId: seats[0].id,
+      userId: userA.id,
+      price: 120,
+      status: "booked",
+      bookedAt: new Date(),
+    }),
+    Ticket.create({
+      tripId: trip1.id,
+      seatId: seats[1].id,
+      userId: userB.id,
+      price: 120,
+      status: "booked",
+      bookedAt: new Date(),
+    }),
   ]);
 
   console.log("Database synced and seeded successfully.");

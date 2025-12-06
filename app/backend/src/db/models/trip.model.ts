@@ -1,5 +1,13 @@
 import { DataTypes } from "sequelize";
-import { Table, Model, Column, HasMany } from "sequelize-typescript";
+import {
+  Table,
+  Model,
+  Column,
+  ForeignKey,
+  BelongsTo,
+  HasMany,
+} from "sequelize-typescript";
+import { Bus } from "./bus.model.js";
 import { TripBusStop } from "./tripbusstop.model.js";
 
 @Table
@@ -10,6 +18,13 @@ export class Trip extends Model {
     primaryKey: true,
   })
   declare id: string;
+
+  @ForeignKey(() => Bus)
+  @Column({ type: DataTypes.UUID })
+  declare busId: string;
+
+  @BelongsTo(() => Bus, "busId")
+  declare bus: Bus;
 
   @Column({ type: DataTypes.DATE })
   declare departure: Date;
