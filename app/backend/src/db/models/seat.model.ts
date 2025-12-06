@@ -1,6 +1,12 @@
 import { DataTypes } from "sequelize";
-import { Table, Model, Column } from "sequelize-typescript";
+import { Table, Model, Column, createIndexDecorator } from "sequelize-typescript";
 import type { Bus } from "./index.js";
+
+const SeatUniqueIndex = createIndexDecorator({
+  name: "seat_unique",
+  type: "UNIQUE",
+  unique: true
+})
 
 @Table
 export class Seat extends Model {
@@ -11,6 +17,7 @@ export class Seat extends Model {
   })
   declare id: string;
 
+  @SeatUniqueIndex
   @Column({ type: DataTypes.UUID })
   declare busId: string;
 
@@ -21,4 +28,12 @@ export class Seat extends Model {
 
   @Column({ type: DataTypes.STRING })
   declare type: string;
+
+  @SeatUniqueIndex
+  @Column({ type: DataTypes.SMALLINT })
+  declare row: number;
+
+  @SeatUniqueIndex
+  @Column({ type: DataTypes.SMALLINT })
+  declare col: number;
 }

@@ -46,10 +46,12 @@ try {
 
   // Create seats for bus1
   const seats = await Promise.all([
-    Seat.create({ busId: bus1.id, seatNumber: "A1", type: "regular" }),
-    Seat.create({ busId: bus1.id, seatNumber: "A2", type: "regular" }),
-    Seat.create({ busId: bus1.id, seatNumber: "B1", type: "vip" }),
-    Seat.create({ busId: bus1.id, seatNumber: "B2", type: "vip" }),
+    Seat.create({ busId: bus1.id, seatNumber: "A1", type: "regular", row: 0, col: 0 }),
+    Seat.create({ busId: bus1.id, seatNumber: "A2", type: "regular", row: 0, col: 1 }),
+    Seat.create({ busId: bus1.id, seatNumber: "A3", type: "regular", row: 0, col: 2 }),
+    Seat.create({ busId: bus1.id, seatNumber: "A4", type: "regular", row: 0, col: 3 }),
+    Seat.create({ busId: bus1.id, seatNumber: "B1", type: "vip", row: 1, col: 0 }),
+    Seat.create({ busId: bus1.id, seatNumber: "B2", type: "vip", row: 1, col: 1 }),
   ]);
 
   // Create trips
