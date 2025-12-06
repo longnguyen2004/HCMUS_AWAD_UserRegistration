@@ -1,6 +1,6 @@
 import { DataTypes } from "sequelize";
 import { Table, Model, Column, ForeignKey, BelongsTo } from "sequelize-typescript";
-import { Bus } from "./bus.model.js";
+import { Bus } from "./index.js";
 
 @Table
 export class Seat extends Model {

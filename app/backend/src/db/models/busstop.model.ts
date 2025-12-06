@@ -1,5 +1,4 @@
-import { City } from "./city.model.js";
-import { TripBusStop } from "./tripbusstop.model.js";
+import { City, TripBusStop } from "./index.js";
 import { DataTypes } from "sequelize";
 import {
   Table,

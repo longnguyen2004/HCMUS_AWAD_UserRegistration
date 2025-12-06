@@ -6,9 +6,7 @@ import {
   ForeignKey,
   BelongsTo,
 } from "sequelize-typescript";
-import { Trip } from "./trip.model.js";
-import { Seat } from "./seat.model.js";
-import { User } from "./user.model.js";
+import { Trip, Seat, User } from "./index.js";
 
 @Table
 export class Ticket extends Model {

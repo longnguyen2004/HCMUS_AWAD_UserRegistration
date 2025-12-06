@@ -1,4 +1,4 @@
-import { BusStop } from "./busstop.model.js";
+import { BusStop } from "./index.js";
 import { DataTypes } from "sequelize";
 import { Model, Table, Column, HasMany } from "sequelize-typescript";
 

@@ -7,8 +7,7 @@ import {
   BelongsTo,
   HasMany,
 } from "sequelize-typescript";
-import { Bus } from "./bus.model.js";
-import { TripBusStop } from "./tripbusstop.model.js";
+import { Bus, TripBusStop } from "./index.js";
 
 @Table
 export class Trip extends Model {
