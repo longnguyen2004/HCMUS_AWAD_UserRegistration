@@ -1,6 +1,6 @@
-import { BusStop } from "./index.js";
+import type { BusStop } from "./index.js";
 import { DataTypes } from "sequelize";
-import { Model, Table, Column, HasMany } from "sequelize-typescript";
+import { Model, Table, Column } from "sequelize-typescript";
 
 @Table
 export class City extends Model {
@@ -14,6 +14,5 @@ export class City extends Model {
   @Column({ type: DataTypes.STRING })
   declare name: string;
 
-  @HasMany(() => BusStop, "cityId")
   declare busStops: BusStop[];
 }

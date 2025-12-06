@@ -1,13 +1,6 @@
 import { DataTypes } from "sequelize";
-import {
-  Table,
-  Model,
-  Column,
-  ForeignKey,
-  BelongsTo,
-  HasMany,
-} from "sequelize-typescript";
-import { Bus, TripBusStop } from "./index.js";
+import { Table, Model, Column } from "sequelize-typescript";
+import type { Bus, TripBusStop } from "./index.js";
 
 @Table
 export class Trip extends Model {
@@ -18,11 +11,9 @@ export class Trip extends Model {
   })
   declare id: string;
 
-  @ForeignKey(() => Bus)
   @Column({ type: DataTypes.UUID })
   declare busId: string;
 
-  @BelongsTo(() => Bus, "busId")
   declare bus: Bus;
 
   @Column({ type: DataTypes.DATE })
@@ -37,6 +28,5 @@ export class Trip extends Model {
   @Column({ type: DataTypes.STRING })
   declare status: string;
 
-  @HasMany(() => TripBusStop, "tripId")
   declare tripBusStops: TripBusStop[];
 }

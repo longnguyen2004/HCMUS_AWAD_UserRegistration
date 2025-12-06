@@ -3,7 +3,11 @@ import { Table, Model, Column } from "sequelize-typescript";
 
 @Table
 export class Bus extends Model {
-  @Column({ type: DataTypes.UUID, defaultValue: DataTypes.UUIDV4, primaryKey: true })
+  @Column({
+    type: DataTypes.UUID,
+    defaultValue: DataTypes.UUIDV4,
+    primaryKey: true,
+  })
   declare id: string;
 
   @Column({ type: DataTypes.STRING, unique: true })
