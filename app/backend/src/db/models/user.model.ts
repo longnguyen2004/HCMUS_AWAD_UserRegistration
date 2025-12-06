@@ -12,6 +12,9 @@ export class User extends Model {
   @Column({ type: DataTypes.STRING, unique: true })
   declare email: string;
 
+  @Column({ type: DataTypes.STRING, unique: true })
+  declare phone: string;
+
   @Column({ type: DataTypes.STRING })
   declare passwordHash: string;
 

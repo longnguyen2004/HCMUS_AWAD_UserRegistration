@@ -6,6 +6,7 @@ import { Trip } from "../../db/models/trip.model.js";
 import { TripBusStop } from "../../db/models/tripbusstop.model.js";
 import { BusStop } from "../../db/models/busstop.model.js";
 import { City } from "../../db/models/city.model.js";
+import { Seat } from "../../db/models/seat.model.js";
 
 const TICKET_PER_PAGE = 5;
 
@@ -20,6 +21,8 @@ export abstract class TicketService {
 
     if (body.price) where.price = body.price;
     if (body.status) where.status = body.status;
+    if (body.phone) where.phone = body.phone;
+    if (body.email) where.email = body.email;
 
     if (body.departure) {
       const parsed = new Date(String(body.departure));
@@ -97,15 +100,6 @@ export abstract class TicketService {
       });
     }
 
-    include.push({
-      model: User,
-      as: "user",
-      where: body.email
-        ? { email: { [Op.iLike]: `%${body.email}%` } }
-        : undefined,
-      required: !!body.email,
-    });
-
     const result = await Ticket.findAndCountAll({
       where,
       include,
@@ -113,7 +107,7 @@ export abstract class TicketService {
       offset,
       order: [
         [
-          "bookedAt",
+          "createdAt",
           body?.order && String(body.order).toUpperCase() === "ASC"
             ? "ASC"
             : "DESC",
@@ -132,12 +126,13 @@ export abstract class TicketService {
         id: t.id,
         tripId: t.tripId,
         seatId: t.seatId,
-        email: user?.email ?? "",
+        email: t.email ?? user?.email ?? "",
+        phone: t.phone ?? user?.phone ?? "",
         departure,
         arrival,
         price: t.price,
         status: t.status,
-        createAt: t.bookedAt ?? t.createdAt,
+        createAt: t.createdAt,
       };
     });
 
@@ -147,5 +142,57 @@ export abstract class TicketService {
       page,
       per_page: limit,
     } as unknown as TicketModel.searchResponse;
+  }
+
+  static async create(
+    body: TicketModel.createBody,
+  ): Promise<TicketModel.createResponse> {
+    const trip = await Trip.findByPk(body.tripId);
+    if (!trip) throw new Error("Trip not found");
+
+    const seat = await Seat.findByPk(body.seatId);
+    if (!seat) throw new Error("Seat not found");
+
+    const seatTaken = await Ticket.findOne({
+      where: { tripId: body.tripId, seatId: body.seatId },
+    });
+    if (seatTaken) throw new Error("Seat already booked");
+
+    const isUserBooking = "userId" in body;
+    const isGuestBooking = "email" in body && "phone" in body;
+
+    const payload: {
+      status: string;
+      tripId: typeof body.tripId;
+      seatId: typeof body.seatId;
+      price: typeof trip.price;
+      userId: string | null;
+      email: string | null;
+      phone: string | null;
+    } = {
+      status: "pending",
+      tripId: body.tripId,
+      seatId: body.seatId,
+      price: trip.price,
+      userId: null,
+      email: null,
+      phone: null,
+    };
+
+    if (isUserBooking) {
+      const user = await User.findByPk(body.userId);
+      if (!user) throw new Error("User not found");
+
+      payload.userId = user.id;
+      payload.email = user.email;
+      payload.phone = user.phone;
+    } else if (isGuestBooking) {
+      payload.email = body.email;
+      payload.phone = body.phone;
+    }
+
+    const ticket = await Ticket.create(payload);
+
+    return { id: ticket.id };
   }
 }

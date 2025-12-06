@@ -78,8 +78,8 @@ try {
 
   // Create users (after db.sync so the Users table exists)
   const [userA, userB] = await Promise.all([
-    User.create({ username: "alice", email: "alice@example.com", passwordHash: "hash1", fullName: "Alice Nguyen" }),
-    User.create({ username: "bob", email: "bob@example.com", passwordHash: "hash2", fullName: "Bob Tran" }),
+    User.create({ username: "alice", email: "alice@example.com", phone: "084901234567", passwordHash: "hash1", fullName: "Alice Nguyen" }),
+    User.create({ username: "bob", email: "bob@example.com", phone: "084907654321", passwordHash: "hash2", fullName: "Bob Tran" }),
   ]);
 
   // Create tickets for trip1
@@ -90,7 +90,8 @@ try {
       userId: userA.id,
       price: 120,
       status: "booked",
-      bookedAt: new Date(),
+      email: userA.email,
+      phone: userA.phone,
     }),
     Ticket.create({
       tripId: trip1.id,
@@ -98,7 +99,8 @@ try {
       userId: userB.id,
       price: 120,
       status: "booked",
-      bookedAt: new Date(),
+      email: userB.email,
+      phone: userB.phone,
     }),
   ]);
 

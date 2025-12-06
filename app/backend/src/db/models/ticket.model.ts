@@ -46,6 +46,10 @@ export class Ticket extends Model {
   @Column({ type: DataTypes.STRING })
   declare status: string;
 
-  @Column({ type: DataTypes.DATE })
-  declare bookedAt: Date;
+  @Column({ type: DataTypes.STRING })
+  declare email: string;
+
+  @Column({ type: DataTypes.STRING })
+  declare phone: string;
+
 }
