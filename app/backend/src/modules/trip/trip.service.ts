@@ -1,10 +1,16 @@
 import type { TripModel } from "./trip.model.js";
-import { Trip } from "../../db/models/trip.model.js";
-import { BusStop } from "../../db/models/busstop.model.js";
-import { City } from "../../db/models/city.model.js";
-import { TripBusStop } from "../../db/models/tripbusstop.model.js";
+import {
+  Trip,
+  BusStop,
+  Bus,
+  Seat,
+  City,
+  TripBusStop,
+  Ticket,
+} from "../../db/models/index.js";
 import { db } from "../../db/db.js";
 import { literal, Op } from "sequelize";
+import { status } from "elysia";
 
 const TRIP_PER_PAGE = 2;
 
@@ -95,6 +101,75 @@ export abstract class TripService {
     } satisfies TripModel.searchResponse;
   }
 
+  static async get(body: TripModel.getBody): Promise<TripModel.getResponse> {
+    const trip = await Trip.findOne({
+      where: {
+        id: body.id,
+      },
+      include: [
+        {
+          model: TripBusStop,
+          as: "tripBusStops",
+          include: [
+            {
+              model: BusStop,
+              as: "busStop",
+              include: [
+                {
+                  model: City,
+                  as: "city",
+                },
+              ],
+            },
+          ],
+        },
+        {
+          model: Bus,
+          as: "bus",
+          include: [
+            {
+              model: Seat,
+              as: "seats",
+            },
+          ],
+        },
+      ],
+      order: [[{ model: TripBusStop, as: "tripBusStops" }, "order", "ASC"]],
+    });
+    if (!trip)
+      throw status(404, { message: "Not found" } satisfies TripModel.notFound);
+    return {
+      id: trip.id,
+      departure: trip.departure,
+      arrival: trip.arrival,
+      price: trip.price,
+      stops: trip.tripBusStops.map((el) => ({
+        id: el.busStopId,
+        name: el.busStop.name,
+        order: el.order,
+      })),
+      seats: trip.bus.seats.map((el) => ({
+        id: el.id,
+        label: el.seatNumber,
+        row: el.row,
+        col: el.col,
+      })),
+    };
+  }
+
+  static async getSeatsOccupied(
+    body: TripModel.getSeatsOccupiedBody,
+  ): Promise<TripModel.getSeatsOccupiedResponse> {
+    const seats = await Ticket.findAll({
+      attributes: ["seatId"],
+      where: {
+        tripId: body.id,
+      },
+    });
+    return seats.map(
+      (el) => el.seatId,
+    ) satisfies TripModel.getSeatsOccupiedResponse;
+  }
   static async create(
     body: TripModel.createBody,
   ): Promise<TripModel.createResponse> {

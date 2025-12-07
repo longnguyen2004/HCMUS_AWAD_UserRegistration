@@ -30,6 +30,41 @@ export namespace TripModel {
   });
   export type searchResponse = typeof searchResponse.static;
 
+  export const getBody = t.Object({
+    id: t.String({ format: "uuid" }),
+  });
+  export type getBody = typeof getBody.static;
+
+  export const getResponse = t.Object({
+    id: t.String(),
+    departure: t.Date(),
+    arrival: t.Date(),
+    price: t.Integer(),
+    stops: t.Array(
+      t.Object({
+        id: t.String(),
+        name: t.String(),
+        order: t.Number(),
+      }),
+    ),
+    seats: t.Array(
+      t.Object({
+        id: t.String(),
+        label: t.String(),
+        row: t.Number(),
+        col: t.Number(),
+      }),
+    ),
+  });
+  export type getResponse = typeof getResponse.static;
+
+  export const getSeatsOccupiedBody = t.Object({
+    id: t.String({ format: "uuid" }),
+  });
+  export type getSeatsOccupiedBody = typeof getSeatsOccupiedBody.static;
+  export const getSeatsOccupiedResponse = t.Array(t.String({ format: "uuid" }));
+  export type getSeatsOccupiedResponse = typeof getSeatsOccupiedResponse.static;
+
   export const createBody = t.Object({
     departure: t.Date(),
     arrival: t.Date(),

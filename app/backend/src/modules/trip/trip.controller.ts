@@ -20,6 +20,31 @@ export const TripController = new Elysia({ prefix: "/trip" })
       },
     },
   )
+  .get(
+    "/:id",
+    async ({ params: { id } }) => {
+      const response = await TripService.get({ id });
+      return response;
+    },
+    {
+      response: {
+        200: TripModel.getResponse,
+        404: TripModel.notFound,
+      },
+    },
+  )
+  .get(
+    "/:id/seats_occupied",
+    async ({ params: { id } }) => {
+      const response = await TripService.getSeatsOccupied({ id });
+      return response;
+    },
+    {
+      response: {
+        200: TripModel.getSeatsOccupiedResponse,
+      },
+    },
+  )
   .post(
     "/create",
     async ({ body }) => {
