@@ -5,6 +5,8 @@ import { BusModel } from "./bus.model.js";
 import { UniqueConstraintError } from "sequelize";
 import { status } from "elysia";
 
+const BUS_PER_PAGE = 5;
+
 export abstract class BusService {
   static async create(
     body: BusModel.createBody,
@@ -68,6 +70,118 @@ export abstract class BusService {
         error: "Internal server error",
         details: String(err),
       });
+    }
+  }
+  static async getAll(
+    query?: Partial<BusModel.getAllQuery>,
+  ): Promise<BusModel.getAllResponse> {
+    const page = query?.page ?? 1;
+    const limit = BUS_PER_PAGE;
+    const offset = (page - 1) * limit;
+    const { count, rows } = await Bus.findAndCountAll({
+      order: [["licensePlate", "ASC"]],
+      limit,
+      offset,
+    });
+
+    const data = rows.map((b) => ({
+      id: b.id,
+      licensePlate: b.licensePlate,
+      model: b.model,
+      capacity: b.capacity,
+      status: b.status,
+    }));
+
+    return {
+      data,
+      total: count,
+      page,
+      per_page: limit,
+    };
+  }
+
+  static async getOne(id: string): Promise<BusModel.getOneResponse> {
+    const bus = await Bus.findByPk(id, {
+      include: [
+        {
+          model: Seat,
+          as: "seats",
+        },
+      ],
+      order: [
+        [{ model: Seat, as: "seats" }, "row", "ASC"],
+        [{ model: Seat, as: "seats" }, "col", "ASC"],
+      ],
+    });
+
+    if (!bus) throw status(404, { error: "Not found" });
+
+    return {
+      id: bus.id,
+      licensePlate: bus.licensePlate,
+      model: bus.model,
+      capacity: bus.capacity,
+      status: bus.status,
+      seats: (bus.seats || []).map((s) => ({
+        id: s.id,
+        seatNumber: s.seatNumber,
+        row: s.row,
+        col: s.col,
+      })),
+    };
+  }
+
+  static async modify(
+    id: string,
+    body: BusModel.modifyBody,
+  ): Promise<BusModel.modifyResponse> {
+    try {
+      const bus = await Bus.findByPk(id);
+      if (!bus) {
+        throw status(404, { error: "Not found" });
+      }
+
+      const updates: Partial<Record<string, unknown>> = {};
+      if (body.licensePlate) updates.licensePlate = body.licensePlate;
+      if (body.model) updates.model = body.model;
+      if (body.status) updates.status = body.status;
+
+      await bus.update(updates);
+
+      const updated = await Bus.findByPk(id, {
+        include: [{ model: Seat, as: "seats" }],
+        order: [
+          [{ model: Seat, as: "seats" }, "row", "ASC"],
+          [{ model: Seat, as: "seats" }, "col", "ASC"],
+        ],
+      });
+
+      if (!updated) throw status(500, { error: "Could not reload bus" });
+
+      return {
+        id: updated.id,
+        licensePlate: updated.licensePlate,
+        model: updated.model,
+        capacity: updated.capacity,
+        status: updated.status,
+        seats: (updated.seats || []).map((s) => ({
+          id: s.id,
+          seatNumber: s.seatNumber,
+          row: s.row,
+          col: s.col,
+        })),
+      };
+    } catch (err) {
+        if (err && typeof err === "object" && "status" in err) throw err;
+
+        if (err instanceof UniqueConstraintError) {
+          throw status(409, { error: "Duplicate", details: err.errors });
+        }
+
+        throw status(500, {
+          error: "Internal server error",
+          details: String(err),
+        });
     }
   }
 }
