@@ -1,6 +1,6 @@
 import { DataTypes } from "sequelize";
 import { Table, Model, Column } from "sequelize-typescript";
-import type { Trip, Seat, User } from "./index.js";
+import type { Trip, Seat } from "./index.js";
 
 @Table
 export class Ticket extends Model {
@@ -23,8 +23,6 @@ export class Ticket extends Model {
 
   @Column({ type: DataTypes.UUID, allowNull: true })
   declare userId?: string;
-
-  declare user?: User;
 
   @Column({ type: DataTypes.INTEGER })
   declare price: number;

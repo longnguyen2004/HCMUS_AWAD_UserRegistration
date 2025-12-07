@@ -120,15 +120,14 @@ export abstract class TicketService {
 
     const data = result.rows.map((t: TicketRow) => {
       const trip = t.trip;
-      const user = t.user;
       const departure = trip?.departure ?? trip?.departure ?? undefined;
       const arrival = trip?.arrival ?? trip?.arrival ?? undefined;
       return {
         id: t.id,
         tripId: t.tripId,
         seatId: t.seatId,
-        email: t.email ?? user?.email ?? "",
-        phone: t.phone ?? user?.phone ?? "",
+        email: t.email,
+        phone: t.phone,
         departure,
         arrival,
         price: t.price,
