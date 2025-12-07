@@ -15,3 +15,23 @@ export const useSearchTrips = (params: Partial<SearchTripParams>) =>
     enabled: !!params.from && !!params.to && !!params.departure,
     placeholderData: keepPreviousData,
   });
+
+export const useGetTrip = (id: string) =>
+  useQuery({
+    queryKey: ["trip", id],
+    queryFn: async () => {
+      const res = await backend.trip({ id }).get();
+      if (res.error) throw res.error;
+      return res.data;
+    },
+  });
+
+export const useGetOccupiedSeats = (id: string) =>
+  useQuery({
+    queryKey: ["trip_seat", id],
+    queryFn: async () => {
+      const res = await backend.trip({ id }).seats_occupied.get();
+      if (res.error) throw res.error;
+      return res.data;
+    },
+  });

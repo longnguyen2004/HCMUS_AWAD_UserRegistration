@@ -24,9 +24,9 @@ import {
   PaginationNext,
 } from "@/components/ui/pagination";
 
-import { /*ChevronRight,*/ MapPin, /*Users,*/ Clock, Zap } from "lucide-react";
-
+import { ChevronRight, MapPin, Users, Clock, Zap } from "lucide-react";
 import { format } from "date-fns";
+import { Link } from "@tanstack/react-router";
 import { useGetCities } from "@/lib/crud/city";
 import { useSearchTrips } from "@/lib/crud/trip";
 
@@ -385,20 +385,21 @@ export default function TripSearch() {
                       )}
                     </div> */}
 
-                      {/* Availability and CTA
-                    <div className="flex items-center justify-between gap-3 pt-2">
-                      <div className="flex items-center gap-1 text-xs text-muted-foreground">
-                        <Users className="w-4 h-4" />
-                        <span>
-                          {trip.capacity - trip.booked} of {trip.capacity} seats
-                          available
-                        </span>
+                      <div className="flex items-center justify-between gap-3 pt-2">
+                        <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                          <Users className="w-4 h-4" />
+                          <span>
+                            {/* {trip.capacity - trip.booked} of {trip.capacity} seats
+                          available */}
+                          </span>
+                        </div>
+                        <Link to="/$tripId/book" params={{ tripId: trip.id }}>
+                          <Button size="sm" className="gap-1 ml-auto">
+                            Book
+                            <ChevronRight className="w-3 h-3" />
+                          </Button>
+                        </Link>
                       </div>
-                      <Button size="sm" className="gap-1 ml-auto">
-                        Book
-                        <ChevronRight className="w-3 h-3" />
-                      </Button>
-                    </div> */}
                     </div>
                   </CardContent>
                 </Card>
