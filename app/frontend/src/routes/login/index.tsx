@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 
-import { createFileRoute, useRouter } from "@tanstack/react-router";
+import { createFileRoute, useRouter, Link } from "@tanstack/react-router";
 import { backendAuth } from "@/lib/backend";
 
 export const Route = createFileRoute("/login/")({
@@ -16,6 +16,7 @@ export const Route = createFileRoute("/login/")({
 });
 
 import { useState } from "react";
+import { FieldDescription } from "@/components/ui/field";
 
 export default function Login() {
   const router = useRouter();
@@ -44,7 +45,7 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/5 to-accent/5 p-4">
+    <div className="min-h-screen flex items-center justify-center from-primary/5 to-accent/5 p-4">
       <div className="w-full max-w-md space-y-4">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-primary mb-2">TravelHub</h1>
@@ -105,6 +106,13 @@ export default function Login() {
             >
               Sign in with GitHub
             </Button>
+
+            <FieldDescription className="text-center text-sm pt-2">
+              Don&apos;t have an account?{' '}
+              <Link to="/register" className="text-blue-600 underline">
+                Create one
+              </Link>
+            </FieldDescription>
           </CardContent>
         </Card>
       </div>

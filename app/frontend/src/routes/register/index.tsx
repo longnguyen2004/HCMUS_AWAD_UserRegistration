@@ -14,7 +14,12 @@ import {
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 
-import { createFileRoute, redirect, useRouter } from "@tanstack/react-router";
+import {
+  createFileRoute,
+  Link,
+  redirect,
+  useRouter,
+} from "@tanstack/react-router";
 import { useMutation } from "@tanstack/react-query";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { backendAuth } from "@/lib/backend";
@@ -95,7 +100,7 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
                       Create Account
                     </Button>
                     <FieldDescription className="px-6 text-center">
-                      Already have an account? <a href="#">Sign in</a>
+                      Already have an account? <Link to="/login">Log in</Link>
                     </FieldDescription>
                   </Field>
                 </FieldGroup>
