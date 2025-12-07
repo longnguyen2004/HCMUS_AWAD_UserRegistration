@@ -9,7 +9,6 @@ export function setupAssociations() {
 
   Models.Ticket.belongsTo(Models.Trip, { foreignKey: "tripId", as: "trip" });
   Models.Ticket.belongsTo(Models.Seat, { foreignKey: "seatId", as: "seat" });
-  Models.Ticket.belongsTo(Models.User, { foreignKey: "userId", as: "user" });
 
   Models.Trip.belongsTo(Models.Bus, { foreignKey: "busId", as: "bus" });
 
