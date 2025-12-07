@@ -116,7 +116,7 @@ export abstract class TicketService {
       ],
     });
 
-    type TicketRow = Ticket & { trip?: Trip; user?: User; createdAt?: Date };
+    type TicketRow = Ticket & { trip?: Trip; createdAt?: Date };
 
     const data = result.rows.map((t: TicketRow) => {
       const trip = t.trip;
