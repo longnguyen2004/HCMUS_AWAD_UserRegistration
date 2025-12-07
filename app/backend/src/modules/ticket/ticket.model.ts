@@ -35,15 +35,13 @@ export namespace TicketModel {
   });
   export type searchResponse = typeof searchResponse.static;
 
-  export const createBody = t.Union([
-    t.Object({
-      tripId: t.String(),
-      seatId: t.String(),
-      userId: t.Optional(t.String()),
-      email: t.String({ format: "email" }),
-      phone: t.String({ pattern: "^[0-9\\s\\-]{7,20}$" }),
-    }),
-  ]);
+  export const createBody = t.Object({
+    tripId: t.String(),
+    seatId: t.String(),
+    userId: t.Optional(t.String()),
+    email: t.String({ format: "email" }),
+    phone: t.String({ pattern: "^[0-9\\s\\-]{7,20}$" }),
+  });
   export type createBody = typeof createBody.static;
 
   export const createResponse = t.Object({
