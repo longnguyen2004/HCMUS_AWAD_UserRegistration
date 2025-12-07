@@ -5,4 +5,3 @@ export * from "./seat.model.js";
 export * from "./ticket.model.js";
 export * from "./trip.model.js";
 export * from "./tripbusstop.model.js";
-export * from "./user.model.js";
