@@ -1,5 +1,4 @@
-"use client";
-
+import TripModal from "./trip-modal";
 import { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -12,111 +11,33 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Plus, Edit2, Trash2, ArrowUpDown } from "lucide-react";
-
-interface Trip {
-  id: string;
-  from: string;
-  to: string;
-  departure: string;
-  arrival: string;
-  price: number;
-  busType: string;
-  amenities: string[];
-  capacity: number;
-  booked: number;
-  status: "active" | "completed" | "cancelled";
-}
-
-const mockTrips: Trip[] = [
-  {
-    id: "1",
-    from: "New York",
-    to: "Boston",
-    departure: "2024-01-15 08:00",
-    arrival: "2024-01-15 12:00",
-    price: 45,
-    busType: "Standard",
-    amenities: ["WiFi", "AC"],
-    capacity: 50,
-    booked: 42,
-    status: "active",
-  },
-  {
-    id: "2",
-    from: "Los Angeles",
-    to: "San Francisco",
-    departure: "2024-01-15 10:00",
-    arrival: "2024-01-15 18:00",
-    price: 75,
-    busType: "Premium",
-    amenities: ["WiFi", "AC", "Charging", "Food"],
-    capacity: 40,
-    booked: 38,
-    status: "active",
-  },
-  {
-    id: "3",
-    from: "Chicago",
-    to: "Detroit",
-    departure: "2024-01-15 06:00",
-    arrival: "2024-01-15 10:30",
-    price: 35,
-    busType: "Economy",
-    amenities: ["AC"],
-    capacity: 60,
-    booked: 45,
-    status: "active",
-  },
-  {
-    id: "4",
-    from: "Dallas",
-    to: "Houston",
-    departure: "2024-01-14 15:00",
-    arrival: "2024-01-14 18:00",
-    price: 30,
-    busType: "Economy",
-    amenities: ["AC"],
-    capacity: 55,
-    booked: 55,
-    status: "completed",
-  },
-];
+import { format } from "date-fns";
+import { useSearchTrips } from "@/lib/crud/trip";
+import { useGetCities } from "@/lib/crud/city";
 
 export default function TripManagement() {
-  const [trips, setTrips] = useState<Trip[]>(mockTrips);
-  const [searchTerm, setSearchTerm] = useState("");
+  const { data: cities } = useGetCities();
+  const [fromCity, setFromCity] = useState("");
+  const [toCity, setToCity] = useState("");
+  const [date, setDate] = useState("");
+  const [page, ] = useState(1);
+  const { data: tripData } = useSearchTrips({
+    from: fromCity,
+    to: toCity,
+    departure: date,
+    page
+  });
   const [filterStatus, setFilterStatus] = useState("all");
   const [sortBy, setSortBy] = useState("departure");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
 
   const filteredAndSortedTrips = useMemo(() => {
-    const result = trips.filter((trip) => {
-      const matchesSearch =
-        trip.from.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        trip.to.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesStatus =
-        filterStatus === "all" || trip.status === filterStatus;
-      return matchesSearch && matchesStatus;
-    });
-
-    result.sort((a, b) => {
-      let aVal = a[sortBy as keyof Trip];
-      let bVal = b[sortBy as keyof Trip];
-
-      if (typeof aVal === "string" && typeof bVal === "string") {
-        aVal = aVal.toLowerCase();
-        bVal = bVal.toLowerCase();
-      }
-
-      if (sortOrder === "asc") {
-        return aVal > bVal ? 1 : -1;
-      } else {
-        return aVal < bVal ? 1 : -1;
-      }
+    const result = (tripData?.data || []).filter(() => {
+      return true;
     });
 
     return result;
-  }, [trips, searchTerm, filterStatus, sortBy, sortOrder]);
+  }, [tripData, filterStatus, sortBy, sortOrder]);
 
   const toggleSort = (field: string) => {
     if (sortBy === field) {
@@ -128,8 +49,12 @@ export default function TripManagement() {
   };
 
   const handleDelete = (id: string) => {
-    setTrips(trips.filter((trip) => trip.id !== id));
+    console.log(id);
+    //setTrips(trips.filter((trip) => trip.id !== id));
   };
+
+  //const [editingTrip, setEditingTrip] = useState<Trip | undefined>();
+  const [tripEditOpen, ] = useState(false);
 
   return (
     <div className="space-y-6">
@@ -151,19 +76,52 @@ export default function TripManagement() {
           <CardTitle>Filters & Search</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
             <div className="space-y-2">
-              <label className="text-sm font-medium">Search by route</label>
+              <label className="text-sm font-medium">From City</label>
+              <Select value={fromCity} onValueChange={setFromCity}>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select a city" />
+                </SelectTrigger>
+                <SelectContent>
+                  {(cities || []).map((city) => (
+                    <SelectItem key={city.id} value={city.id}>
+                      {city.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm font-medium">To City</label>
+              <Select value={toCity} onValueChange={setToCity}>
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select a city" />
+                </SelectTrigger>
+                <SelectContent>
+                  {(cities || []).map((city) => (
+                    <SelectItem key={city.id} value={city.id}>
+                      {city.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
+              <label className="text-sm text-foreground">
+                Date
+              </label>
               <Input
-                placeholder="Search from/to city..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
+                type="date"
+                value={date}
+                onChange={(e) => setDate(e.currentTarget.value)}
+                className="bg-background/80 border-border"
               />
             </div>
             <div className="space-y-2">
               <label className="text-sm font-medium">Filter by status</label>
               <Select value={filterStatus} onValueChange={setFilterStatus}>
-                <SelectTrigger>
+                <SelectTrigger className="w-full">
                   <SelectValue placeholder="All Status" />
                 </SelectTrigger>
                 <SelectContent>
@@ -239,30 +197,30 @@ export default function TripManagement() {
               >
                 <td className="px-4 py-4">
                   <div className="font-medium">
-                    {trip.from} → {trip.to}
+                    {trip.stops.at(0)?.name} → {trip.stops.at(-1)?.name}
                   </div>
                 </td>
-                <td className="px-4 py-4 text-sm">{trip.departure}</td>
+                <td className="px-4 py-4 text-sm">{format(trip.departure, "dd/MM/yyyy HH:mm")}</td>
                 <td className="px-4 py-4 font-semibold text-accent">
                   ${trip.price}
                 </td>
-                <td className="px-4 py-4 text-sm">{trip.busType}</td>
+                {/* <td className="px-4 py-4 text-sm">{trip.busType}</td>
                 <td className="px-4 py-4 text-sm">
                   {trip.booked}/{trip.capacity}
                 </td>
                 <td className="px-4 py-4">
                   <span
-                    className={`inline-block px-3 py-1 text-xs font-medium rounded-full ${
-                      trip.status === "active"
+                    className={`inline-block px-3 py-1 text-xs font-medium rounded-full ${trip.status === "active"
                         ? "bg-green-100 text-green-800"
                         : trip.status === "completed"
                           ? "bg-blue-100 text-blue-800"
                           : "bg-red-100 text-red-800"
-                    }`}
+                      }`}
                   >
                     {trip.status.charAt(0).toUpperCase() + trip.status.slice(1)}
                   </span>
-                </td>
+                </td> */}
+                <td></td><td></td><td></td>
                 <td className="px-4 py-4">
                   <div className="flex gap-2">
                     <Button
@@ -289,6 +247,7 @@ export default function TripManagement() {
           </tbody>
         </table>
       </div>
+      <TripModal isOpen={tripEditOpen} />
     </div>
   );
 }
