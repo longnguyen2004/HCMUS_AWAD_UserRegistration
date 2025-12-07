@@ -7,7 +7,7 @@ export const Route = createFileRoute("/$tripId/book")({
 import { useState } from "react";
 import { useRouter } from "@tanstack/react-router";
 import NavBar from "@/components/layout/nav-bar";
-import SeatMap from "@/components/user/seat-map";
+import SeatMap, { type BookingInfo } from "@/components/user/seat-map";
 import { useGetTrip } from "@/lib/crud/trip";
 
 export default function RouteComponent() {
@@ -16,7 +16,7 @@ export default function RouteComponent() {
   const [bookingSuccess, setBookingSuccess] = useState(false);
   const router = useRouter();
 
-  const handleBookingComplete = (booking: unknown) => {
+  const handleBookingComplete = (booking: BookingInfo) => {
     console.log("[v0] Booking completed:", booking);
     setBookingSuccess(true);
     setTimeout(() => {

@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -10,6 +10,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { AlertCircle, Check, MapPin } from "lucide-react";
 import { format } from "date-fns";
+import { backendAuth } from "@/lib/backend";
 import { useGetOccupiedSeats } from "@/lib/crud/trip";
 import type { useGetTrip } from "@/lib/crud/trip";
 
@@ -46,7 +47,7 @@ const generateSeats = (
   return displaySeats;
 };
 
-interface BookingInfo {
+export interface BookingInfo {
   tripId: string;
   seatId: string;
   name: string;
@@ -73,6 +74,7 @@ export default function SeatMap({
   onBookingComplete,
   onCancel,
 }: SeatMapProps) {
+  const { data: session } = backendAuth.useSession();
   const { data: occupiedSeats } = useGetOccupiedSeats(trip.id);
   const [selectedSeat, setSelectedSeat] = useState(null as string | null);
   const seats = useMemo(
@@ -83,6 +85,15 @@ export default function SeatMap({
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
+  useEffect(() => {
+    if (session)
+    {
+      if (!name)
+        setName(session.user.name);
+      if (!email)
+        setName(session.user.email);
+    }
+  }, [session]);
 
   const totalPrice = trip.price;
 
