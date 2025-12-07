@@ -15,7 +15,7 @@ import { Route as RegisterIndexRouteImport } from './routes/register/index'
 import { Route as LoginIndexRouteImport } from './routes/login/index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as TicketTicketIdRouteImport } from './routes/ticket/$ticketId'
-import { Route as TripIdBookRouteImport } from './routes/$tripId/book'
+import { Route as TripTripIdBookRouteImport } from './routes/trip/$tripId/book'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -47,78 +47,78 @@ const TicketTicketIdRoute = TicketTicketIdRouteImport.update({
   path: '/ticket/$ticketId',
   getParentRoute: () => rootRouteImport,
 } as any)
-const TripIdBookRoute = TripIdBookRouteImport.update({
-  id: '/$tripId/book',
-  path: '/$tripId/book',
+const TripTripIdBookRoute = TripTripIdBookRouteImport.update({
+  id: '/trip/$tripId/book',
+  path: '/trip/$tripId/book',
   getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/$tripId/book': typeof TripIdBookRoute
   '/ticket/$ticketId': typeof TicketTicketIdRoute
   '/admin': typeof AdminIndexRoute
   '/login': typeof LoginIndexRoute
   '/register': typeof RegisterIndexRoute
   '/search': typeof SearchIndexRoute
+  '/trip/$tripId/book': typeof TripTripIdBookRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/$tripId/book': typeof TripIdBookRoute
   '/ticket/$ticketId': typeof TicketTicketIdRoute
   '/admin': typeof AdminIndexRoute
   '/login': typeof LoginIndexRoute
   '/register': typeof RegisterIndexRoute
   '/search': typeof SearchIndexRoute
+  '/trip/$tripId/book': typeof TripTripIdBookRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/$tripId/book': typeof TripIdBookRoute
   '/ticket/$ticketId': typeof TicketTicketIdRoute
   '/admin/': typeof AdminIndexRoute
   '/login/': typeof LoginIndexRoute
   '/register/': typeof RegisterIndexRoute
   '/search/': typeof SearchIndexRoute
+  '/trip/$tripId/book': typeof TripTripIdBookRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/$tripId/book'
     | '/ticket/$ticketId'
     | '/admin'
     | '/login'
     | '/register'
     | '/search'
+    | '/trip/$tripId/book'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/$tripId/book'
     | '/ticket/$ticketId'
     | '/admin'
     | '/login'
     | '/register'
     | '/search'
+    | '/trip/$tripId/book'
   id:
     | '__root__'
     | '/'
-    | '/$tripId/book'
     | '/ticket/$ticketId'
     | '/admin/'
     | '/login/'
     | '/register/'
     | '/search/'
+    | '/trip/$tripId/book'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  TripIdBookRoute: typeof TripIdBookRoute
   TicketTicketIdRoute: typeof TicketTicketIdRoute
   AdminIndexRoute: typeof AdminIndexRoute
   LoginIndexRoute: typeof LoginIndexRoute
   RegisterIndexRoute: typeof RegisterIndexRoute
   SearchIndexRoute: typeof SearchIndexRoute
+  TripTripIdBookRoute: typeof TripTripIdBookRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -165,11 +165,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TicketTicketIdRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/$tripId/book': {
-      id: '/$tripId/book'
-      path: '/$tripId/book'
-      fullPath: '/$tripId/book'
-      preLoaderRoute: typeof TripIdBookRouteImport
+    '/trip/$tripId/book': {
+      id: '/trip/$tripId/book'
+      path: '/trip/$tripId/book'
+      fullPath: '/trip/$tripId/book'
+      preLoaderRoute: typeof TripTripIdBookRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -177,12 +177,12 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  TripIdBookRoute: TripIdBookRoute,
   TicketTicketIdRoute: TicketTicketIdRoute,
   AdminIndexRoute: AdminIndexRoute,
   LoginIndexRoute: LoginIndexRoute,
   RegisterIndexRoute: RegisterIndexRoute,
   SearchIndexRoute: SearchIndexRoute,
+  TripTripIdBookRoute: TripTripIdBookRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
