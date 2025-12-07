@@ -4,28 +4,27 @@ export const Route = createFileRoute("/$tripId/book")({
   component: RouteComponent,
 });
 
-import { useState } from "react";
 import { useRouter } from "@tanstack/react-router";
 import NavBar from "@/components/layout/nav-bar";
 import SeatMap, { type BookingInfo } from "@/components/user/seat-map";
 import { useGetTrip } from "@/lib/crud/trip";
+import { useCreateTicket } from "@/lib/crud/ticket";
 
 export default function RouteComponent() {
   const { tripId } = Route.useParams();
   const { data: trip, isLoading } = useGetTrip(tripId);
-  const [bookingSuccess, setBookingSuccess] = useState(false);
+  const createTicket = useCreateTicket();
   const router = useRouter();
 
-  const handleBookingComplete = (booking: BookingInfo) => {
-    console.log("[v0] Booking completed:", booking);
-    setBookingSuccess(true);
-    setTimeout(() => {
-      router.push("/user");
-    }, 2000);
-  };
-
-  const handleCancel = () => {
-    router.push("/user");
+  const handleBookingComplete = async (booking: BookingInfo) => {
+    await createTicket.mutateAsync(booking);
+    if (createTicket.isSuccess)
+      setTimeout(() => {
+        router.navigate({
+          to: "/ticket/$ticketId",
+          params: { ticketId: createTicket.data.id },
+        });
+      }, 2000);
   };
 
   if (isLoading) {
@@ -40,7 +39,7 @@ export default function RouteComponent() {
     return <div></div>;
   }
 
-  if (bookingSuccess) {
+  if (createTicket.isSuccess) {
     return (
       <div className="min-h-screen bg-background">
         <NavBar title="Booking Confirmation" />
@@ -77,11 +76,7 @@ export default function RouteComponent() {
     <div className="min-h-screen bg-background">
       <NavBar title="Complete Your Booking" />
       <div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
-        <SeatMap
-          trip={trip}
-          onBookingComplete={handleBookingComplete}
-          onCancel={handleCancel}
-        />
+        <SeatMap trip={trip} onBookingComplete={handleBookingComplete} />
       </div>
     </div>
   );

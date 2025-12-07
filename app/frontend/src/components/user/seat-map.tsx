@@ -52,6 +52,7 @@ export interface BookingInfo {
   seatId: string;
   name: string;
   email: string;
+  phone: string;
   timestamp: Date;
 }
 
@@ -84,14 +85,12 @@ export default function SeatMap({
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [error, setError] = useState("");
   useEffect(() => {
-    if (session)
-    {
-      if (!name)
-        setName(session.user.name);
-      if (!email)
-        setName(session.user.email);
+    if (session) {
+      if (!name) setName(session.user.name);
+      if (!email) setName(session.user.email);
     }
   }, [session]);
 
@@ -110,7 +109,7 @@ export default function SeatMap({
       return;
     }
 
-    const allFilled = name && email;
+    const allFilled = name && email && phone;
     if (!allFilled) {
       setError("Please fill in passenger details");
       return;
@@ -121,6 +120,7 @@ export default function SeatMap({
       seatId: selectedSeat,
       name,
       email,
+      phone,
       timestamp: new Date(),
     } satisfies BookingInfo;
 
@@ -249,6 +249,17 @@ export default function SeatMap({
                       placeholder="John Doe"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
+                      className="bg-background"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <label className="text-xs font-medium text-muted-foreground">
+                      Phone
+                    </label>
+                    <Input
+                      placeholder="0123456789"
+                      value={phone}
+                      onChange={(e) => setPhone(e.target.value)}
                       className="bg-background"
                     />
                   </div>
