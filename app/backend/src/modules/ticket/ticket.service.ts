@@ -1,12 +1,13 @@
 import type { TicketModel } from "./ticket.model.js";
-import { User } from "../../db/models/user.model.js";
-import { Ticket } from "../../db/models/ticket.model.js";
 import { WhereOptions, IncludeOptions, Op, literal } from "sequelize";
-import { Trip } from "../../db/models/trip.model.js";
-import { TripBusStop } from "../../db/models/tripbusstop.model.js";
-import { BusStop } from "../../db/models/busstop.model.js";
-import { City } from "../../db/models/city.model.js";
-import { Seat } from "../../db/models/seat.model.js";
+import {
+  Ticket,
+  Trip,
+  TripBusStop,
+  BusStop,
+  City,
+  Seat,
+} from "../../db/models/index.js";
 
 const TICKET_PER_PAGE = 5;
 
@@ -141,7 +142,7 @@ export abstract class TicketService {
       total: result.count as number,
       page,
       per_page: limit,
-    } as unknown as TicketModel.searchResponse;
+    } as TicketModel.searchResponse;
   }
 
   static async create(
@@ -150,7 +151,12 @@ export abstract class TicketService {
     const trip = await Trip.findByPk(body.tripId);
     if (!trip) throw new Error("Trip not found");
 
-    const seat = await Seat.findByPk(body.seatId);
+    const seat = await Seat.findOne({
+      where: {
+        id: body.seatId,
+        busId: trip.busId,
+      },
+    });
     if (!seat) throw new Error("Seat not found");
 
     const seatTaken = await Ticket.findOne({
@@ -158,38 +164,15 @@ export abstract class TicketService {
     });
     if (seatTaken) throw new Error("Seat already booked");
 
-    const isUserBooking = "userId" in body;
-    const isGuestBooking = "email" in body && "phone" in body;
-
-    const payload: {
-      status: string;
-      tripId: typeof body.tripId;
-      seatId: typeof body.seatId;
-      price: typeof trip.price;
-      userId: string | null;
-      email: string | null;
-      phone: string | null;
-    } = {
+    const payload = {
       status: "pending",
       tripId: body.tripId,
       seatId: body.seatId,
       price: trip.price,
-      userId: null,
-      email: null,
-      phone: null,
+      userId: body.userId ?? null,
+      email: body.email,
+      phone: body.phone,
     };
-
-    if (isUserBooking) {
-      const user = await User.findByPk(body.userId);
-      if (!user) throw new Error("User not found");
-
-      payload.userId = user.id;
-      payload.email = user.email;
-      payload.phone = user.phone;
-    } else if (isGuestBooking) {
-      payload.email = body.email;
-      payload.phone = body.phone;
-    }
 
     const ticket = await Ticket.create(payload);
 

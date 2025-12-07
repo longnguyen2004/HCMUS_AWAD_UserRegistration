@@ -6,7 +6,6 @@ import { TripBusStop } from "./src/db/models/tripbusstop.model.js";
 import { Bus } from "./src/db/models/bus.model.js";
 import { Seat } from "./src/db/models/seat.model.js";
 import { Ticket } from "./src/db/models/ticket.model.js";
-import { User } from "./src/db/models/user.model.js";
 
 // Helper to build departure/arrival times
 const makeDate = (daysFromNow: number, hour: number, minute = 0) => {
@@ -46,12 +45,48 @@ try {
 
   // Create seats for bus1
   const seats = await Promise.all([
-    Seat.create({ busId: bus1.id, seatNumber: "A1", type: "regular", row: 0, col: 0 }),
-    Seat.create({ busId: bus1.id, seatNumber: "A2", type: "regular", row: 0, col: 1 }),
-    Seat.create({ busId: bus1.id, seatNumber: "A3", type: "regular", row: 0, col: 2 }),
-    Seat.create({ busId: bus1.id, seatNumber: "A4", type: "regular", row: 0, col: 3 }),
-    Seat.create({ busId: bus1.id, seatNumber: "B1", type: "vip", row: 1, col: 0 }),
-    Seat.create({ busId: bus1.id, seatNumber: "B2", type: "vip", row: 1, col: 1 }),
+    Seat.create({
+      busId: bus1.id,
+      seatNumber: "A1",
+      type: "regular",
+      row: 0,
+      col: 0,
+    }),
+    Seat.create({
+      busId: bus1.id,
+      seatNumber: "A2",
+      type: "regular",
+      row: 0,
+      col: 1,
+    }),
+    Seat.create({
+      busId: bus1.id,
+      seatNumber: "A3",
+      type: "regular",
+      row: 0,
+      col: 2,
+    }),
+    Seat.create({
+      busId: bus1.id,
+      seatNumber: "A4",
+      type: "regular",
+      row: 0,
+      col: 3,
+    }),
+    Seat.create({
+      busId: bus1.id,
+      seatNumber: "B1",
+      type: "vip",
+      row: 1,
+      col: 0,
+    }),
+    Seat.create({
+      busId: bus1.id,
+      seatNumber: "B2",
+      type: "vip",
+      row: 1,
+      col: 1,
+    }),
   ]);
 
   // Create trips
@@ -78,43 +113,23 @@ try {
     TripBusStop.create({ tripId: trip2.id, busStopId: stopC1.id, order: 2 }),
   ]);
 
-  // Create users (after db.sync so the Users table exists)
-  const [userA, userB] = await Promise.all([
-    User.create({
-      username: "alice",
-      email: "alice@example.com",
-      phone: "084901234567",
-      passwordHash: "hash1",
-      fullName: "Alice Nguyen",
-    }),
-    User.create({
-      username: "bob",
-      email: "bob@example.com",
-      phone: "084907654321",
-      passwordHash: "hash2",
-      fullName: "Bob Tran",
-    }),
-  ]);
-
   // Create tickets for trip1
   await Promise.all([
     Ticket.create({
       tripId: trip1.id,
       seatId: seats[0].id,
-      userId: userA.id,
       price: 120,
       status: "booked",
-      email: userA.email,
-      phone: userA.phone,
+      email: "johndoe@example.com",
+      phone: "0123456789",
     }),
     Ticket.create({
       tripId: trip1.id,
       seatId: seats[1].id,
-      userId: userB.id,
       price: 120,
       status: "booked",
-      email: userB.email,
-      phone: userB.phone,
+      email: "bob@example.com",
+      phone: "0987654321",
     }),
   ]);
 

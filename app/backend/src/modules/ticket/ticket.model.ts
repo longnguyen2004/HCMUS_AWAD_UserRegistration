@@ -37,13 +37,9 @@ export namespace TicketModel {
 
   export const createBody = t.Union([
     t.Object({
-      userId: t.String(),
       tripId: t.String(),
       seatId: t.String(),
-    }),
-    t.Object({
-      tripId: t.String(),
-      seatId: t.String(),
+      userId: t.Optional(t.String()),
       email: t.String({ format: "email" }),
       phone: t.String({ pattern: "^[0-9\\s\\-]{7,20}$" }),
     }),
