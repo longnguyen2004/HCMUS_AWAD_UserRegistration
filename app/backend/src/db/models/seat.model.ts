@@ -1,12 +1,17 @@
 import { DataTypes } from "sequelize";
-import { Table, Model, Column, createIndexDecorator } from "sequelize-typescript";
+import {
+  Table,
+  Model,
+  Column,
+  createIndexDecorator,
+} from "sequelize-typescript";
 import type { Bus } from "./index.js";
 
 const SeatUniqueIndex = createIndexDecorator({
   name: "seat_unique",
   type: "UNIQUE",
-  unique: true
-})
+  unique: true,
+});
 
 @Table
 export class Seat extends Model {

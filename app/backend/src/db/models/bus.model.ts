@@ -1,5 +1,6 @@
 import { DataTypes } from "sequelize";
 import { Table, Model, Column } from "sequelize-typescript";
+import type { Seat } from "./seat.model.js";
 
 @Table
 export class Bus extends Model {
@@ -21,4 +22,6 @@ export class Bus extends Model {
 
   @Column({ type: DataTypes.STRING })
   declare status: string;
+
+  declare seats: Seat[];
 }
