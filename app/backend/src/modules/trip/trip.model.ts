@@ -66,6 +66,7 @@ export namespace TripModel {
   export type getSeatsOccupiedResponse = typeof getSeatsOccupiedResponse.static;
 
   export const createBody = t.Object({
+    busId: t.Optional(t.String()),
     departure: t.Date(),
     arrival: t.Date(),
     price: t.Optional(t.Integer()),

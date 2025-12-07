@@ -170,15 +170,23 @@ export abstract class TripService {
       (el) => el.seatId,
     ) satisfies TripModel.getSeatsOccupiedResponse;
   }
+
   static async create(
     body: TripModel.createBody,
   ): Promise<TripModel.createResponse> {
+    if (body.busId) {
+      const bus = await Bus.findByPk(body.busId);
+      if (!bus) throw status(400, { message: "Bus not found" });
+    }
+
     const payload = {
+      busId: body.busId,
       departure: body.departure,
       arrival: body.arrival,
       price: body.price ?? undefined,
       status: body.status ?? undefined,
     };
+
     const result = await db.transaction(async (t) => {
       const trip = await Trip.create(payload, { transaction: t });
       await TripBusStop.bulkCreate(
@@ -187,6 +195,7 @@ export abstract class TripService {
           busStopId: stop,
           order: i + 1,
         })),
+        { transaction: t },
       );
       return trip.id;
     });
