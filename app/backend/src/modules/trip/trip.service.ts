@@ -75,13 +75,24 @@ export abstract class TripService {
             },
           ],
         },
+        {
+          model: Bus,
+          as: "bus",
+          attributes: ["id"],
+          include: [
+            {
+              model: Seat,
+              as: "seats",
+              attributes: ["id"]
+            }
+          ]
+        },
       ],
       order: [
         ["departure", "ASC"],
         [{ model: TripBusStop, as: "tripBusStops" }, "order", "ASC"],
       ],
     });
-
     const prettyTrips = tripsWithRoute.map((trip) => ({
       id: trip.id,
       departure: trip.departure,
@@ -92,6 +103,7 @@ export abstract class TripService {
         name: el.busStop.name,
         order: el.order,
       })),
+      capacity: trip.bus?.seats?.length ?? 0,
     }));
     return {
       data: prettyTrips,

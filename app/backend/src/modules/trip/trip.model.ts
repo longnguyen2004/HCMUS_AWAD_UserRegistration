@@ -22,6 +22,7 @@ export namespace TripModel {
             order: t.Number(),
           }),
         ),
+        capacity: t.Number()
       }),
     ),
     total: t.Integer(),
