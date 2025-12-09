@@ -21,6 +21,7 @@
     "@elysiajs/cors": "^1.4.0",
     "@elysiajs/jwt": "^1.4.0",
     "@elysiajs/node": "1",
+    "@payos/node": "^2.0.3",
     "@t3-oss/env-core": "^0.13.8",
     "argon2": "^0.44.0",
     "better-auth": "^1.4.1",

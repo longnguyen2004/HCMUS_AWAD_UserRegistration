@@ -6,6 +6,11 @@ export const env = createEnv({
     GITHUB_CLIENT_ID: z.string(),
     GITHUB_CLIENT_SECRET: z.string(),
     DB_CONNECTION_STRING: z.url(),
+    BE_HOST: z.url(),
+
+    PAYOS_CLIENT_ID:z.string(),
+    PAYOS_API_KEY:z.string(),
+    PAYOS_CHECKSUM_KEY:z.string(),
   },
   runtimeEnv: process.env,
   emptyStringAsUndefined: true,

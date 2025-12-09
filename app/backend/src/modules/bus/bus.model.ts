@@ -66,7 +66,7 @@ export namespace BusModel {
   export const modifyBody = t.Object({
     licensePlate: t.Optional(t.String()),
     model: t.Optional(t.String()),
-    status: t.Optional(t.Union([t.Literal("active"), t.Literal("inactive")])),
+    status: t.Optional(t.UnionEnum(["active", "inactive"])),
   });
   export type modifyBody = typeof modifyBody.static;
 
