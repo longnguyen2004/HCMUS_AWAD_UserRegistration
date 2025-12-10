@@ -1,5 +1,5 @@
 import { DataTypes } from "sequelize";
-import { Table, Model, Column } from "sequelize-typescript";
+import {  Table, Model, Column } from "sequelize-typescript";
 import type { Trip, Seat } from "./index.js";
 
 @Table
@@ -35,4 +35,7 @@ export class Ticket extends Model {
 
   @Column({ type: DataTypes.STRING })
   declare phone: string;
+
+  @Column({ type: DataTypes.BIGINT, allowNull: true })
+  declare orderId?: number;
 }

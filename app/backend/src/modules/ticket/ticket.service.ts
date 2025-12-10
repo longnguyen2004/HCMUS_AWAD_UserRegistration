@@ -1,5 +1,11 @@
 import type { TicketModel } from "./ticket.model.js";
-import { WhereOptions, IncludeOptions, Op, literal } from "sequelize";
+import {
+  WhereOptions,
+  IncludeOptions,
+  Op,
+  literal,
+  ValidationError,
+} from "sequelize";
 import {
   Ticket,
   Trip,
@@ -8,8 +14,17 @@ import {
   City,
   Seat,
 } from "../../db/models/index.js";
+import { status } from "elysia";
+import { PayOS } from "@payos/node";
+import { env } from "../../lib/env.js";
 
 const TICKET_PER_PAGE = 5;
+
+const payOS = new PayOS({
+  clientId: env.PAYOS_CLIENT_ID,
+  apiKey: env.PAYOS_API_KEY,
+  checksumKey: env.PAYOS_CHECKSUM_KEY,
+});
 
 export abstract class TicketService {
   static async search(body: TicketModel.searchBody) {
@@ -174,6 +189,69 @@ export abstract class TicketService {
     };
 
     const ticket = await Ticket.create(payload);
+
+    return { id: ticket.id };
+  }
+
+  static async modify(
+    id: string,
+    body: TicketModel.modifyBody,
+  ): Promise<TicketModel.modifyResponse> {
+    const ticket = await Ticket.findByPk(id);
+    if (!ticket) throw status(404, "Ticket not found");
+
+    try {
+      ticket.status = body.status;
+      await ticket.save();
+      return { id: ticket.id };
+    } catch (error) {
+      if (error instanceof ValidationError) {
+        throw status(400, { message: error.errors.map((e) => e.message) });
+      }
+      throw status(400, { message: (error as Error).message });
+    }
+  }
+
+  static async initPayment(id: string): Promise<TicketModel.initPayResponse> {
+    const YOUR_DOMAIN = env.BE_HOST;
+    const orderCode = Math.floor(100000000 + Math.random() * 900000000);
+
+    const ticket = await Ticket.findByPk(id);
+    if (!ticket) throw status(404, { message: "Ticket not found" });
+
+    const body = {
+      orderCode,
+      amount: ticket.price,
+      description: `Payment for trip ticket.`,
+      returnUrl: `${YOUR_DOMAIN}`,
+      cancelUrl: `${YOUR_DOMAIN}`,
+    };
+
+    try {
+      const paymentLinkResponse = await payOS.paymentRequests.create(body);
+
+      ticket.orderId = orderCode;
+      await ticket.save();
+
+      return { paymentLinkResponse };
+    } catch (error) {
+      throw status(400, { message: (error as Error).message });
+    }
+  }
+
+  static async processPayment(
+    body: TicketModel.processPaymentBody,
+  ): Promise<TicketModel.modifyResponse> {
+    const orderCode = Number(body.data.orderCode);
+    const ticket = await Ticket.findOne({ where: { orderId: orderCode } });
+    if (!ticket) throw status(404, { message: "Ticket not found" });
+
+    if (body.success) {
+      ticket.status = "booked";
+      await ticket.save();
+    } else {
+      throw status(400, { message: body.data.desc });
+    }
 
     return { id: ticket.id };
   }
