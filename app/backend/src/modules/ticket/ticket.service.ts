@@ -213,7 +213,7 @@ export abstract class TicketService {
   }
 
   static async initPayment(id: string): Promise<TicketModel.initPayResponse> {
-    const YOUR_DOMAIN = env.BE_HOST;
+    const YOUR_DOMAIN = env.FE_HOST;
     const orderCode = Math.floor(100000000 + Math.random() * 900000000);
 
     const ticket = await Ticket.findByPk(id);
