@@ -8,6 +8,7 @@ import { TripController } from "./src/modules/trip/trip.controller.js";
 import { protectedRoutes } from "./src/modules/protected/index.js";
 import { TicketController } from "./src/modules/ticket/ticket.controller.js";
 import BusController from "./src/modules/bus/bus.controller.js";
+import { EmailController } from "./src/modules/email/email.controller.js";
 
 const app = new Elysia({ adapter: node() })
   .use(cors())
@@ -17,6 +18,7 @@ const app = new Elysia({ adapter: node() })
   .use(protectedRoutes)
   .use(TicketController)
   .use(BusController)
+  .use(EmailController)
   .listen(3000);
 
 export type App = typeof app;
