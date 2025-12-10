@@ -60,7 +60,6 @@ export abstract class EmailService {
   }
 
   static async sendMail(body: EmailModel.sendBody) {
-
       const transporter = nodemailer.createTransport({
         service: "gmail",
         auth: {
@@ -85,6 +84,5 @@ export abstract class EmailService {
         ],
       });
       return info;
-
   }
 }
