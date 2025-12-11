@@ -108,7 +108,7 @@ export default function Login() {
             </Button>
 
             <FieldDescription className="text-center text-sm pt-2">
-              Don&apos;t have an account?{' '}
+              Don&apos;t have an account?{" "}
               <Link to="/register" className="text-blue-600 underline">
                 Create one
               </Link>

@@ -58,22 +58,22 @@ export namespace TicketModel {
   export type modifyResponse = typeof modifyResponse.static;
 
   export const initPayResponse = t.Object({
-    paymentLinkResponse : t.Record(t.String(), t.Unknown()),
+    paymentLinkResponse: t.Record(t.String(), t.Unknown()),
     orderCode: t.Optional(t.Number()),
-  })
+  });
   export type initPayResponse = typeof initPayResponse.static;
 
   export const processPaymentBody = t.Object({
     code: t.String(),
     desc: t.String(),
-    success:t.Optional(t.Boolean()),
-    data:t.Object({
-      orderCode:t.Number(),
-      amount:t.Number(),
-      currency:t.String(),
-      desc:t.String(),
+    success: t.Optional(t.Boolean()),
+    data: t.Object({
+      orderCode: t.Number(),
+      amount: t.Number(),
+      currency: t.String(),
+      desc: t.String(),
     }),
-    signature:t.String(),
-  })
+    signature: t.String(),
+  });
   export type processPaymentBody = typeof processPaymentBody.static;
 }

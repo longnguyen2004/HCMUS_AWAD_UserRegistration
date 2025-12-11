@@ -1,5 +1,5 @@
 import { DataTypes } from "sequelize";
-import {  Table, Model, Column } from "sequelize-typescript";
+import { Table, Model, Column } from "sequelize-typescript";
 import type { Trip, Seat } from "./index.js";
 
 @Table

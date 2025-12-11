@@ -47,15 +47,14 @@ export const TicketController = new Elysia({ prefix: "/ticket" })
   )
   .post(
     "/processPayment",
-    async({body}) =>{
-      const response = await TicketService.processPayment(body)
-      return response
+    async ({ body }) => {
+      const response = await TicketService.processPayment(body);
+      return response;
     },
     {
       body: TicketModel.processPaymentBody,
       response: {
         200: TicketModel.modifyResponse,
       },
-    }
-  )
-
+    },
+  );

@@ -9,6 +9,7 @@ export const env = createEnv({
     FE_HOST: z.url(),
     GOOGLE_APP_PASSWORD: z.string(),
     EMAIL_SENDER: z.email(),
+    BE_HOST: z.url(),
     PAYOS_CLIENT_ID: z.string(),
     PAYOS_API_KEY: z.string(),
     PAYOS_CHECKSUM_KEY: z.string(),

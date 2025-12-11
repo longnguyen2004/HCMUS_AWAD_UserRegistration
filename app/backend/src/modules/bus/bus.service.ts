@@ -172,16 +172,16 @@ export abstract class BusService {
         })),
       };
     } catch (err) {
-        if (err && typeof err === "object" && "status" in err) throw err;
+      if (err && typeof err === "object" && "status" in err) throw err;
 
-        if (err instanceof UniqueConstraintError) {
-          throw status(409, { error: "Duplicate", details: err.errors });
-        }
+      if (err instanceof UniqueConstraintError) {
+        throw status(409, { error: "Duplicate", details: err.errors });
+      }
 
-        throw status(500, {
-          error: "Internal server error",
-          details: String(err),
-        });
+      throw status(500, {
+        error: "Internal server error",
+        details: String(err),
+      });
     }
   }
 }
