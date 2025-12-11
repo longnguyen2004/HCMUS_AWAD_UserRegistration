@@ -3,10 +3,6 @@ import { TicketModel } from "./ticket.model.js";
 import { TicketService } from "./ticket.service.js";
 
 export const TicketController = new Elysia({ prefix: "/ticket" })
-  .onError(({ error }) => {
-    console.log(error);
-    return error;
-  })
   .get(
     "/search",
     async ({ query }) => {
