@@ -9,6 +9,7 @@ import NavBar from "@/components/layout/nav-bar";
 import SeatMap, { type BookingInfo } from "@/components/user/seat-map";
 import { useGetTrip } from "@/lib/crud/trip";
 import { useCreateTicket } from "@/lib/crud/ticket";
+import { useEffect } from "react";
 
 export default function RouteComponent() {
   const { tripId } = Route.useParams();
@@ -18,6 +19,9 @@ export default function RouteComponent() {
 
   const handleBookingComplete = async (booking: BookingInfo) => {
     await createTicket.mutateAsync(booking);
+  };
+
+  useEffect(() => {
     if (createTicket.isSuccess)
       setTimeout(() => {
         router.navigate({
@@ -25,7 +29,7 @@ export default function RouteComponent() {
           params: { ticketId: createTicket.data.id },
         });
       }, 2000);
-  };
+  }, [createTicket])
 
   if (isLoading) {
     return (
