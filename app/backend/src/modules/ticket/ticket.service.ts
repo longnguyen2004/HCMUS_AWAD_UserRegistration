@@ -13,10 +13,13 @@ import {
   BusStop,
   City,
   Seat,
+  Bus,
 } from "../../db/models/index.js";
+import { EmailService } from "../email/email.service.js";
 import { status } from "elysia";
 import { PayOS } from "@payos/node";
 import { env } from "../../lib/env.js";
+import { EmailModel } from "../email/email.model.js";
 
 const TICKET_PER_PAGE = 5;
 
@@ -213,7 +216,7 @@ export abstract class TicketService {
   }
 
   static async initPayment(id: string): Promise<TicketModel.initPayResponse> {
-    const YOUR_DOMAIN = env.BE_HOST;
+    const YOUR_DOMAIN = env.FE_HOST;
     const orderCode = Math.floor(100000000 + Math.random() * 900000000);
 
     const ticket = await Ticket.findByPk(id);
@@ -249,10 +252,92 @@ export abstract class TicketService {
     if (body.success) {
       ticket.status = "booked";
       await ticket.save();
+      await TicketService.sendEmailTicket(ticket.id);
     } else {
       throw status(400, { message: body.data.desc });
     }
 
     return { id: ticket.id };
+  }
+
+  static async sendEmailTicket(id: string) {
+    try {
+      const ticket = await Ticket.findByPk(id, {
+        include: [
+          {
+            model: Trip,
+            as: "trip",
+            include: [
+              {
+                model: TripBusStop,
+                as: "tripBusStops",
+                include: [
+                  {
+                    model: BusStop,
+                    as: "busStop",
+                    include: [{ model: City, as: "city" }],
+                  },
+                ],
+              },
+            ],
+          },
+          { model: Seat, as: "seat", include: [{ model: Bus, as: "bus" }] },
+        ],
+      });
+
+      if (!ticket) throw status(404, { message: "Ticket not found" });
+
+      const recipient = ticket.email;
+      if (!recipient)
+        throw status(400, { message: "Ticket has no email address" });
+
+      let fromCity: string | undefined = undefined;
+      let toCity: string | undefined = undefined;
+      const t = ticket.trip as unknown as
+        | {
+            tripBusStops?: Array<{ busStop?: { city?: { name?: string } } }>;
+            departure?: Date;
+            arrival?: Date;
+          }
+        | undefined;
+      if (t?.tripBusStops && t.tripBusStops.length > 0) {
+        const first = t.tripBusStops[0];
+        const last = t.tripBusStops[t.tripBusStops.length - 1];
+        fromCity = first?.busStop?.city?.name;
+        toCity = last?.busStop?.city?.name;
+      }
+
+      const pdfBody = {
+        ticketId: ticket.id,
+        passengerName: undefined,
+        tripId: ticket.tripId,
+        licensePlate: ticket.seat.bus.licensePlate,
+        seat: ticket.seat?.seatNumber,
+        departure: ticket.trip?.departure?.toISOString(),
+        arrival: ticket.trip?.arrival?.toISOString(),
+        fromCity,
+        toCity,
+        price: ticket.price,
+        orderId: ticket.orderId,
+      };
+
+      const pdf = await EmailService.createPdf(
+        pdfBody as EmailModel.createPdfBody,
+      );
+
+      const mailBody = {
+        email: recipient,
+        subject: `Your TravelHub Ticket ${ticket.id}`,
+        text: `Thank you for booking with TravelHub.`,
+        filename: pdf.filename,
+        content: pdf.content,
+      };
+
+      const info = await EmailService.sendMail(mailBody as EmailModel.sendBody);
+      return { ok: true, info };
+    } catch (err) {
+      if (err && typeof err === "object" && "status" in err) throw err;
+      throw status(500, { message: String(err) });
+    }
   }
 }
