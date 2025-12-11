@@ -25,6 +25,7 @@ export const useGetTrip = (id: string) =>
       return res.data;
     },
   });
+export type Trip = ReturnType<typeof useGetTrip>["data"];
 
 export const useGetOccupiedSeats = (id: string) =>
   useQuery({
