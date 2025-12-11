@@ -45,6 +45,19 @@ export const TicketController = new Elysia({ prefix: "/ticket" })
       },
     },
   )
+  .get(
+    "/:id",
+    async ({ params: { id } }) => {
+      const response = await TicketService.get(id);
+      return response;
+    },
+    {
+      response: {
+        200: TicketModel.getResponse,
+        404: TicketModel.notFound
+      },
+    },
+  )
   .post(
     "/processPayment",
     async ({ body }) => {

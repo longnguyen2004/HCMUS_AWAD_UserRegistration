@@ -196,6 +196,59 @@ export abstract class TicketService {
     return { id: ticket.id };
   }
 
+  static async get(id: string): Promise<TicketModel.getResponse> {
+    const ticket = await Ticket.findByPk(id, {
+      include: [
+        {
+          model: Trip,
+          as: "trip",
+          include: [
+            {
+              model: TripBusStop,
+              as: "tripBusStops",
+              include: [
+                {
+                  model: BusStop,
+                  as: "busStop",
+                  include: [{ model: City, as: "city" }],
+                },
+              ],
+            },
+          ],
+        },
+        { model: Seat, as: "seat", include: [{ model: Bus, as: "bus" }] },
+      ],
+    });
+
+    if (!ticket) throw status(404, { message: "Ticket not found" });
+
+    const sortedStops = (ticket.trip?.tripBusStops || [])
+      .sort(
+          (a, b) => (a.order ?? 0) - (b.order ?? 0)
+      )
+
+    const createdAt = ticket.get("createdAt") as Date;
+
+    return {
+      id: ticket.id,
+      status: ticket.status,
+      price: ticket.price,
+      email: ticket.email,
+      phone: ticket.phone,
+      seatNumber: ticket.seat?.seatNumber,
+      busPlate: ticket.seat?.bus?.licensePlate,
+      orderId: ticket.orderId ?? undefined,
+      createdAt,
+      trip: {
+        id: ticket.tripId,
+        departure: ticket.trip?.departure as Date,
+        arrival: ticket.trip?.arrival as Date,
+        fromCity: sortedStops.at(0)!.busStop.city.name,
+        toCity: sortedStops.at(-1)!.busStop.city.name
+      },
+    } satisfies TicketModel.getResponse;
+  }
+
   static async modify(
     id: string,
     body: TicketModel.modifyBody,

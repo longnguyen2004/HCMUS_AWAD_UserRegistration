@@ -49,6 +49,26 @@ export namespace TicketModel {
   });
   export type createResponse = typeof createResponse.static;
 
+  export const getResponse = t.Object({
+    id: t.String(),
+    status: t.String(),
+    price: t.Integer(),
+    email: t.String(),
+    phone: t.String(),
+    seatNumber: t.Optional(t.String()),
+    busPlate: t.Optional(t.String()),
+    orderId: t.Optional(t.Number()),
+    createdAt: t.Date(),
+    trip: t.Object({
+      id: t.String(),
+      departure: t.Date(),
+      arrival: t.Date(),
+      fromCity: t.Optional(t.String()),
+      toCity: t.Optional(t.String()),
+    }),
+  });
+  export type getResponse = typeof getResponse.static;
+
   export const modifyBody = t.Object({
     status: t.UnionEnum(["pending", "booked"]),
   });
@@ -76,4 +96,9 @@ export namespace TicketModel {
     signature: t.String(),
   });
   export type processPaymentBody = typeof processPaymentBody.static;
+
+  export const notFound = t.Object({
+    message: t.String()
+  });
+  export type notFound = typeof notFound.static;
 }
