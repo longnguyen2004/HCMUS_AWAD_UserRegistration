@@ -83,9 +83,9 @@ export abstract class TripService {
             {
               model: Seat,
               as: "seats",
-              attributes: ["id"]
-            }
-          ]
+              attributes: ["id"],
+            },
+          ],
         },
       ],
       order: [
@@ -160,12 +160,17 @@ export abstract class TripService {
         name: el.busStop.name,
         order: el.order,
       })),
-      seats: trip.bus.seats.map((el) => ({
-        id: el.id,
-        label: el.seatNumber,
-        row: el.row,
-        col: el.col,
-      })),
+      bus: !trip.bus
+        ? undefined
+        : {
+            id: trip.bus.id,
+            seats: trip.bus.seats.map((el) => ({
+              id: el.id,
+              label: el.seatNumber,
+              row: el.row,
+              col: el.col,
+            })),
+          },
     };
   }
 

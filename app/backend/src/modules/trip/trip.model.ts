@@ -22,7 +22,7 @@ export namespace TripModel {
             order: t.Number(),
           }),
         ),
-        capacity: t.Number()
+        capacity: t.Number(),
       }),
     ),
     total: t.Integer(),
@@ -48,12 +48,17 @@ export namespace TripModel {
         order: t.Number(),
       }),
     ),
-    seats: t.Array(
+    bus: t.Optional(
       t.Object({
         id: t.String(),
-        label: t.String(),
-        row: t.Number(),
-        col: t.Number(),
+        seats: t.Array(
+          t.Object({
+            id: t.String(),
+            label: t.String(),
+            row: t.Number(),
+            col: t.Number(),
+          }),
+        ),
       }),
     ),
   });
