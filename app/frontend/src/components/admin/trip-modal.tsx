@@ -1,141 +1,125 @@
-import { useState } from "react"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Plus, Trash2 } from "lucide-react"
+import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
+// import { Card, CardContent } from "@/components/ui/card"
+import { Input } from "@/components/ui/input";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Plus, Trash2 } from "lucide-react";
+import { useSearchBusStops } from "@/lib/crud/busstop";
+import { format } from "date-fns";
 
-export interface Trip {
-  id: string
-  from: string
-  to: string
-  departure: string
-  arrival: string
-  price: number
-  busType: string
-  amenities: string[]
-  capacity: number
-  booked: number
-  status: "active" | "completed" | "cancelled"
-  stops?: Stop[]
+export interface EditingTrip {
+  id?: string;
+  departure: string;
+  arrival: string;
+  price: number;
+}
+interface Stop {
+  id: string;
 }
 
-export interface Stop {
-  id: string
-  city: string
-  arrivalTime: string
-  departureTime: string
-  order: number
+export interface TripModalProps {
+  isOpen: boolean;
+  trip?: EditingTrip & { stops: Stop[] };
+  onClose: () => void;
+  onSave: (trip: EditingTrip & { stops: Stop[] }) => void;
 }
 
-interface TripModalProps {
-  isOpen: boolean
-  trip?: Trip
-  onClose: () => void
-  onSave: (trip: Trip) => void
-}
-
-export default function TripModal({ isOpen, trip, onClose, onSave }: TripModalProps) {
-  const [formData, setFormData] = useState<Trip>(
-    trip || {
-      id: `trip-${Date.now()}`,
-      from: "",
-      to: "",
-      departure: "",
-      arrival: "",
-      price: 0,
-      busType: "Standard",
-      amenities: [],
-      capacity: 50,
-      booked: 0,
-      status: "active",
-      stops: [],
-    },
-  )
-  const [stops, setStops] = useState<Stop[]>(trip?.stops || [])
-  const [errors, setErrors] = useState<{ [key: string]: string }>({})
+export default function TripModal({
+  isOpen,
+  trip,
+  onClose,
+  onSave,
+}: TripModalProps) {
+  const { data: busStops } = useSearchBusStops({});
+  const [formData, setFormData] = useState<EditingTrip>({
+    departure: format(new Date(), "yyyy-MM-dd'T'HH:mm"),
+    arrival: format(new Date(), "yyyy-MM-dd'T'HH:mm"),
+    price: 0,
+  });
+  const [stops, setStops] = useState<Stop[]>([]);
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   const handleOpenChange = (open: boolean) => {
-    if (!open) {
-      onClose()
-      setFormData(
-        trip || {
-          id: `trip-${Date.now()}`,
-          from: "",
-          to: "",
-          departure: "",
-          arrival: "",
-          price: 0,
-          busType: "Standard",
-          amenities: [],
-          capacity: 50,
-          booked: 0,
-          status: "active",
-          stops: [],
-        },
-      )
-      setStops(trip?.stops || [])
-      setErrors({})
+    if (!open) onClose();
+  };
+  useEffect(() => {
+    if (isOpen) {
+      setFormData({
+        id: trip?.id,
+        departure: trip?.departure ?? format(new Date(), "yyyy-MM-dd'T'HH-mm"),
+        arrival: trip?.arrival ?? format(new Date(), "yyyy-MM-dd'T'HH-mm"),
+        price: trip?.price ?? 0,
+      });
+      setStops(trip?.stops || []);
+      setErrors({});
     }
-  }
+  }, [isOpen]);
 
   const validateForm = (): boolean => {
-    const newErrors: { [key: string]: string } = {}
+    const newErrors: Record<string, string> = {};
 
-    if (!formData.from.trim()) newErrors.from = "Origin is required"
-    if (!formData.to.trim()) newErrors.to = "Destination is required"
-    if (!formData.departure) newErrors.departure = "Departure time is required"
-    if (!formData.arrival) newErrors.arrival = "Arrival time is required"
-    if (formData.price <= 0) newErrors.price = "Price must be greater than 0"
-    if (formData.capacity <= 0) newErrors.capacity = "Capacity must be greater than 0"
+    if (!formData.departure) newErrors.departure = "Departure time is required";
+    if (!formData.arrival) newErrors.arrival = "Arrival time is required";
+    if (formData.price <= 0) newErrors.price = "Price must be greater than 0";
+    if (stops.length < 2) newErrors.stops = "There must be at least 2 stops";
 
-    setErrors(newErrors)
-    return Object.keys(newErrors).length === 0
-  }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleAddStop = () => {
     const newStop: Stop = {
-      id: `stop-${Date.now()}`,
-      city: "",
-      arrivalTime: "",
-      departureTime: "",
-      order: stops.length + 1,
-    }
-    setStops([...stops, newStop])
-  }
+      id: "",
+    };
+    setStops([...stops, newStop]);
+  };
 
-  const handleUpdateStop = (stopId: string, field: string, value: string) => {
-    setStops(stops.map((stop) => (stop.id === stopId ? { ...stop, [field]: value } : stop)))
-  }
+  const handleUpdateStop = (stopIndex: number, stopId: string) => {
+    const newStops = structuredClone(stops);
+    newStops[stopIndex].id = stopId;
+    setStops(newStops);
+  };
 
-  const handleRemoveStop = (stopId: string) => {
-    const updated = stops.filter((s) => s.id !== stopId)
-    setStops(updated.map((s, idx) => ({ ...s, order: idx + 1 })))
-  }
+  const handleRemoveStop = (stopIndex: number) => {
+    const newStops = structuredClone(stops);
+    newStops.splice(stopIndex, 1);
+    setStops(newStops);
+  };
 
   const handleSave = () => {
-    if (!validateForm()) return
+    if (!validateForm()) return;
 
     const tripToSave = {
       ...formData,
-      stops: stops.length > 0 ? stops : undefined,
-    }
+      stops,
+    };
 
-    onSave(tripToSave)
-    handleOpenChange(false)
-  }
+    onSave(tripToSave);
+  };
 
-  const handleAmenityToggle = (amenity: string) => {
-    setFormData((prev) => ({
-      ...prev,
-      amenities: prev.amenities.includes(amenity)
-        ? prev.amenities.filter((a) => a !== amenity)
-        : [...prev.amenities, amenity],
-    }))
-  }
+  // const handleAmenityToggle = (amenity: string) => {
+  //   setFormData((prev) => ({
+  //     ...prev,
+  //     amenities: prev.amenities.includes(amenity)
+  //       ? prev.amenities.filter((a) => a !== amenity)
+  //       : [...prev.amenities, amenity],
+  //   }))
+  // }
 
-  const amenityOptions = ["WiFi", "AC", "Charging", "Food"]
+  // const amenityOptions = ["WiFi", "AC", "Charging", "Food"]
 
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
@@ -151,47 +135,20 @@ export default function TripModal({ isOpen, trip, onClose, onSave }: TripModalPr
 
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
-                <label className="text-sm font-medium">From</label>
-                <Input
-                  placeholder="Origin city"
-                  value={formData.from}
-                  onChange={(e) => {
-                    setFormData({ ...formData, from: e.target.value })
-                    if (errors.from) setErrors({ ...errors, from: "" })
-                  }}
-                  className="bg-background"
-                />
-                {errors.from && <p className="text-xs text-destructive">{errors.from}</p>}
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-sm font-medium">To</label>
-                <Input
-                  placeholder="Destination city"
-                  value={formData.to}
-                  onChange={(e) => {
-                    setFormData({ ...formData, to: e.target.value })
-                    if (errors.to) setErrors({ ...errors, to: "" })
-                  }}
-                  className="bg-background"
-                />
-                {errors.to && <p className="text-xs text-destructive">{errors.to}</p>}
-              </div>
-            </div>
-
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
                 <label className="text-sm font-medium">Departure</label>
                 <Input
                   type="datetime-local"
                   value={formData.departure}
                   onChange={(e) => {
-                    setFormData({ ...formData, departure: e.target.value })
-                    if (errors.departure) setErrors({ ...errors, departure: "" })
+                    setFormData({ ...formData, departure: e.target.value });
+                    if (errors.departure)
+                      setErrors({ ...errors, departure: "" });
                   }}
                   className="bg-background"
                 />
-                {errors.departure && <p className="text-xs text-destructive">{errors.departure}</p>}
+                {errors.departure && (
+                  <p className="text-xs text-destructive">{errors.departure}</p>
+                )}
               </div>
 
               <div className="space-y-2">
@@ -200,12 +157,14 @@ export default function TripModal({ isOpen, trip, onClose, onSave }: TripModalPr
                   type="datetime-local"
                   value={formData.arrival}
                   onChange={(e) => {
-                    setFormData({ ...formData, arrival: e.target.value })
-                    if (errors.arrival) setErrors({ ...errors, arrival: "" })
+                    setFormData({ ...formData, arrival: e.target.value });
+                    if (errors.arrival) setErrors({ ...errors, arrival: "" });
                   }}
                   className="bg-background"
                 />
-                {errors.arrival && <p className="text-xs text-destructive">{errors.arrival}</p>}
+                {errors.arrival && (
+                  <p className="text-xs text-destructive">{errors.arrival}</p>
+                )}
               </div>
             </div>
 
@@ -218,15 +177,20 @@ export default function TripModal({ isOpen, trip, onClose, onSave }: TripModalPr
                   step="0.01"
                   value={formData.price}
                   onChange={(e) => {
-                    setFormData({ ...formData, price: Number.parseFloat(e.target.value) || 0 })
-                    if (errors.price) setErrors({ ...errors, price: "" })
+                    setFormData({
+                      ...formData,
+                      price: Number.parseFloat(e.target.value) || 0,
+                    });
+                    if (errors.price) setErrors({ ...errors, price: "" });
                   }}
                   className="bg-background"
                 />
-                {errors.price && <p className="text-xs text-destructive">{errors.price}</p>}
+                {errors.price && (
+                  <p className="text-xs text-destructive">{errors.price}</p>
+                )}
               </div>
 
-              <div className="space-y-2">
+              {/* <div className="space-y-2">
                 <label className="text-sm font-medium">Bus Type</label>
                 <Select value={formData.busType} onValueChange={(val) => setFormData({ ...formData, busType: val })}>
                   <SelectTrigger className="bg-background">
@@ -238,26 +202,11 @@ export default function TripModal({ isOpen, trip, onClose, onSave }: TripModalPr
                     <SelectItem value="Premium">Premium</SelectItem>
                   </SelectContent>
                 </Select>
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-sm font-medium">Capacity</label>
-                <Input
-                  type="number"
-                  min="1"
-                  value={formData.capacity}
-                  onChange={(e) => {
-                    setFormData({ ...formData, capacity: Number.parseInt(e.target.value) || 1 })
-                    if (errors.capacity) setErrors({ ...errors, capacity: "" })
-                  }}
-                  className="bg-background"
-                />
-                {errors.capacity && <p className="text-xs text-destructive">{errors.capacity}</p>}
-              </div>
+              </div>*/}
             </div>
 
             {/* Amenities */}
-            <div className="space-y-2">
+            {/* <div className="space-y-2">
               <label className="text-sm font-medium">Amenities</label>
               <div className="flex flex-wrap gap-2">
                 {amenityOptions.map((amenity) => (
@@ -289,85 +238,77 @@ export default function TripModal({ isOpen, trip, onClose, onSave }: TripModalPr
                 </SelectContent>
               </Select>
             </div>
-          </div>
+          </div> */}
 
-          {/* Stops Management */}
-          <div className="space-y-4 border-t pt-6">
-            <div className="flex items-center justify-between">
-              <h3 className="font-semibold text-foreground">Stops</h3>
-              <Button size="sm" onClick={handleAddStop} className="gap-2">
-                <Plus className="w-4 h-4" />
-                Add Stop
-              </Button>
-            </div>
-
-            {stops.length === 0 ? (
-              <p className="text-sm text-muted-foreground italic">No stops added. This is a direct trip.</p>
-            ) : (
-              <div className="space-y-3">
-                {stops.map((stop, idx) => (
-                  <Card key={stop.id} className="bg-muted/30">
-                    <CardContent className="pt-4">
-                      <div className="flex gap-2 items-start mb-3">
-                        <span className="text-xs font-semibold text-muted-foreground bg-muted rounded px-2 py-1">
-                          Stop {idx + 1}
-                        </span>
-                        <Button
-                          size="sm"
-                          variant="ghost"
-                          onClick={() => handleRemoveStop(stop.id)}
-                          className="ml-auto h-8 w-8 p-0"
-                        >
-                          <Trash2 className="w-4 h-4 text-destructive" />
-                        </Button>
-                      </div>
-
-                      <div className="grid grid-cols-3 gap-3">
-                        <div className="space-y-1">
-                          <label className="text-xs font-medium text-muted-foreground">City</label>
-                          <Input
-                            placeholder="Stop city"
-                            value={stop.city}
-                            onChange={(e) => handleUpdateStop(stop.id, "city", e.target.value)}
-                            className="h-8 text-sm bg-background"
-                          />
-                        </div>
-
-                        <div className="space-y-1">
-                          <label className="text-xs font-medium text-muted-foreground">Arrival</label>
-                          <Input
-                            type="time"
-                            value={stop.arrivalTime}
-                            onChange={(e) => handleUpdateStop(stop.id, "arrivalTime", e.target.value)}
-                            className="h-8 text-sm bg-background"
-                          />
-                        </div>
-
-                        <div className="space-y-1">
-                          <label className="text-xs font-medium text-muted-foreground">Departure</label>
-                          <Input
-                            type="time"
-                            value={stop.departureTime}
-                            onChange={(e) => handleUpdateStop(stop.id, "departureTime", e.target.value)}
-                            className="h-8 text-sm bg-background"
-                          />
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
+            {/* Stops Management */}
+            <div className="space-y-4 border-t pt-6">
+              <div className="flex items-center justify-between">
+                <h3 className="font-semibold text-foreground">Stops</h3>
+                <Button size="sm" onClick={handleAddStop} className="gap-2">
+                  <Plus className="w-4 h-4" />
+                  Add Stop
+                </Button>
               </div>
-            )}
+
+              {errors.stops && (
+                <p className="text-xs text-destructive">{errors.stops}</p>
+              )}
+
+              {stops.length === 0 ? (
+                <p className="text-sm text-muted-foreground italic">
+                  No stops added. Add at least one to proceed.
+                </p>
+              ) : (
+                <div className="space-y-2">
+                  {stops.map((stop, idx) => (
+                    // eslint-disable-next-line react/jsx-key
+                    <div className="flex items-center gap-2 p-2 bg-muted/30 rounded">
+                      <span className="text-xs font-semibold text-muted-foreground bg-muted rounded px-2 py-1 whitespace-nowrap">
+                        {idx === 0
+                          ? "Origin"
+                          : idx === stops.length - 1
+                            ? "Destination"
+                            : `Stop ${idx}`}
+                      </span>
+                      <Select
+                        value={stop.id}
+                        onValueChange={(value) => handleUpdateStop(idx, value)}
+                      >
+                        <SelectTrigger className="h-8 text-sm bg-background flex-1">
+                          <SelectValue placeholder="Select a stop" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {(busStops?.data ?? []).map(({ id, name }) => (
+                            <SelectItem key={id} value={id}>
+                              {name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => handleRemoveStop(idx)}
+                        className="h-8 w-8 p-0"
+                      >
+                        <Trash2 className="w-4 h-4 text-destructive" />
+                      </Button>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         </div>
-
         <DialogFooter className="gap-2">
           <Button variant="outline" onClick={() => handleOpenChange(false)}>
             Cancel
           </Button>
-          <Button onClick={handleSave}>{trip ? "Update Trip" : "Create Trip"}</Button>
+          <Button onClick={handleSave}>
+            {trip ? "Update Trip" : "Create Trip"}
+          </Button>
         </DialogFooter>
       </DialogContent>
     </Dialog>
-  )
+  );
 }

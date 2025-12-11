@@ -1,4 +1,4 @@
-import TripModal from "./trip-modal";
+import TripModal, { type EditingTrip } from "./trip-modal";
 import { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -14,18 +14,19 @@ import { Plus, Edit2, Trash2, ArrowUpDown } from "lucide-react";
 import { format } from "date-fns";
 import { useSearchTrips } from "@/lib/crud/trip";
 import { useGetCities } from "@/lib/crud/city";
+import type { TripModalProps } from "./trip-modal";
 
 export default function TripManagement() {
   const { data: cities } = useGetCities();
   const [fromCity, setFromCity] = useState("");
   const [toCity, setToCity] = useState("");
   const [date, setDate] = useState("");
-  const [page, ] = useState(1);
+  const [page] = useState(1);
   const { data: tripData } = useSearchTrips({
     from: fromCity,
     to: toCity,
     departure: date,
-    page
+    page,
   });
   const [filterStatus, setFilterStatus] = useState("all");
   const [sortBy, setSortBy] = useState("departure");
@@ -53,8 +54,17 @@ export default function TripManagement() {
     //setTrips(trips.filter((trip) => trip.id !== id));
   };
 
-  //const [editingTrip, setEditingTrip] = useState<Trip | undefined>();
-  const [tripEditOpen, ] = useState(false);
+  const handleTripSave = (trip: EditingTrip & { stops: { id: string }[] }) => {
+    if (!trip.id) {
+      console.log("new trip")
+    } else {
+      console.log("editing trip")
+    }
+    setTripEditOpen(false);
+  };
+
+  const [editingTrip, setEditingTrip] = useState<TripModalProps["trip"]>();
+  const [tripEditOpen, setTripEditOpen] = useState(false);
 
   return (
     <div className="space-y-6">
@@ -108,9 +118,7 @@ export default function TripManagement() {
               </Select>
             </div>
             <div className="space-y-2">
-              <label className="text-sm text-foreground">
-                Date
-              </label>
+              <label className="text-sm text-foreground">Date</label>
               <Input
                 type="date"
                 value={date}
@@ -200,15 +208,16 @@ export default function TripManagement() {
                     {trip.stops.at(0)?.name} → {trip.stops.at(-1)?.name}
                   </div>
                 </td>
-                <td className="px-4 py-4 text-sm">{format(trip.departure, "dd/MM/yyyy HH:mm")}</td>
+                <td className="px-4 py-4 text-sm">
+                  {format(trip.departure, "dd/MM/yyyy HH:mm")}
+                </td>
                 <td className="px-4 py-4 font-semibold text-accent">
                   ${trip.price}
                 </td>
-                {/* <td className="px-4 py-4 text-sm">{trip.busType}</td>
-                <td className="px-4 py-4 text-sm">
-                  {trip.booked}/{trip.capacity}
-                </td>
-                <td className="px-4 py-4">
+                <td></td>
+                {/* <td className="px-4 py-4 text-sm">{trip.busType}</td> */}
+                <td className="px-4 py-4 text-sm">{trip.capacity}</td>
+                {/* <td className="px-4 py-4">
                   <span
                     className={`inline-block px-3 py-1 text-xs font-medium rounded-full ${trip.status === "active"
                         ? "bg-green-100 text-green-800"
@@ -220,13 +229,26 @@ export default function TripManagement() {
                     {trip.status.charAt(0).toUpperCase() + trip.status.slice(1)}
                   </span>
                 </td> */}
-                <td></td><td></td><td></td>
+                <td></td>
                 <td className="px-4 py-4">
                   <div className="flex gap-2">
                     <Button
                       variant="outline"
                       size="sm"
                       className="gap-1 bg-transparent"
+                      onClick={() => {
+                        setEditingTrip({
+                          id: trip.id,
+                          arrival: format(trip.arrival, "yyyy-MM-dd'T'HH:mm"),
+                          departure: format(
+                            trip.departure,
+                            "yyyy-MM-dd'T'HH:mm",
+                          ),
+                          price: trip.price,
+                          stops: trip.stops,
+                        });
+                        setTripEditOpen(true);
+                      }}
                     >
                       <Edit2 className="w-4 h-4" />
                       <span className="hidden sm:inline">Edit</span>
@@ -247,7 +269,14 @@ export default function TripManagement() {
           </tbody>
         </table>
       </div>
-      <TripModal isOpen={tripEditOpen} />
+      <TripModal
+        trip={editingTrip}
+        isOpen={tripEditOpen}
+        onSave={handleTripSave}
+        onClose={() => {
+          setTripEditOpen(false);
+        }}
+      />
     </div>
   );
 }

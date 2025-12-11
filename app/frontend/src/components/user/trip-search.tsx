@@ -393,7 +393,10 @@ export default function TripSearch() {
                           available */}
                           </span>
                         </div>
-                        <Link to="/trip/$tripId/book" params={{ tripId: trip.id }}>
+                        <Link
+                          to="/trip/$tripId/book"
+                          params={{ tripId: trip.id }}
+                        >
                           <Button size="sm" className="gap-1 ml-auto">
                             Book
                             <ChevronRight className="w-3 h-3" />
