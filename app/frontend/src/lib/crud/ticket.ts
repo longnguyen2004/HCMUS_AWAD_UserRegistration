@@ -40,3 +40,12 @@ export const useGetTicket = (id: string) =>
     },
     enabled: !!id,
   });
+
+export const useInitPayment = () =>
+  useMutation({
+    mutationFn: async (ticketId: string) => {
+      const res = await backend.ticket({ id: ticketId }).initPayment.get();
+      if (res.error) throw res.error;
+      return res.data;
+    },
+  });

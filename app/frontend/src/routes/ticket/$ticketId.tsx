@@ -8,7 +8,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { useGetTicket } from "@/lib/crud/ticket";
+import { useGetTicket, useInitPayment } from "@/lib/crud/ticket";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/ticket/$ticketId")({
@@ -19,6 +19,11 @@ function RouteComponent() {
   const { ticketId } = Route.useParams();
   const { data: ticket, isLoading, isError, refetch, isFetching, error } =
     useGetTicket(ticketId);
+  const initPayment = useInitPayment();
+
+  const handleInitPayment = async () => {
+    await initPayment.mutateAsync(ticketId);
+  };
 
   const formatDateTime = (value?: Date | string) =>
     value
@@ -159,9 +164,18 @@ function RouteComponent() {
               <p className="text-sm text-muted-foreground">Status</p>
               {statusBadge(ticket.status)}
               {ticket.status !== "booked" && (
-                <p className="text-sm text-amber-700">
-                  Payment is still pending. Complete the payment to confirm your seat.
-                </p>
+                <>
+                  <p className="text-sm text-amber-700">
+                    Payment is still pending. Complete the payment to confirm your seat.
+                  </p>
+                  <Button
+                    onClick={handleInitPayment}
+                    disabled={initPayment.isSuccess || initPayment.isPending}
+                    className="mt-2"
+                  >
+                    {(initPayment.isSuccess || initPayment.isPending) ? "Processing..." : "Pay Now"}
+                  </Button>
+                </>
               )}
               {ticket.status === "booked" && (
                 <p className="text-sm text-emerald-700">Payment received. Check your email for the ticket PDF.</p>

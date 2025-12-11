@@ -127,6 +127,9 @@ importers:
       '@elysiajs/eden':
         specifier: ^1.4.4
         version: 1.4.4(elysia@1.4.15(@sinclair/typebox@0.34.41)(exact-mirror@0.2.3(@sinclair/typebox@0.34.41))(file-type@21.0.0)(openapi-types@12.1.3)(typescript@5.9.3))
+      '@payos/payos-checkout':
+        specifier: ^1.0.8
+        version: 1.0.8
       '@radix-ui/react-dialog':
         specifier: ^1.1.15
         version: 1.1.15(@types/react-dom@19.2.2(@types/react@19.2.2))(@types/react@19.2.2)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
@@ -1024,6 +1027,9 @@ packages:
 
   '@payos/node@2.0.3':
     resolution: {integrity: sha512-VDQlpLIo22mfOyFvizBSxJO8tkwxnG8J7WryQMorFNSUi9T7QrUQRBIusdzPsGCG5/DxxURMGHJ8SPNFS4puPg==}
+
+  '@payos/payos-checkout@1.0.8':
+    resolution: {integrity: sha512-9h2sZ/QeOIsOR3+6LDswDMYPfRGQ9kXiWJC4yrWFbpAzUYoI3gH84oFRHlAmx4CRFh2SCBKE1Q2pdzJ1atPRCA==}
 
   '@phc/format@1.0.0':
     resolution: {integrity: sha512-m7X9U6BG2+J+R1lSOdCiITLLrxm+cWlNI3HUFA92oLO77ObGNzaKdh8pMLqdZcshtkKuV84olNNXDfMc4FezBQ==}
@@ -5620,6 +5626,8 @@ snapshots:
   '@oxc-project/types@0.96.0': {}
 
   '@payos/node@2.0.3': {}
+
+  '@payos/payos-checkout@1.0.8': {}
 
   '@phc/format@1.0.0': {}
 
