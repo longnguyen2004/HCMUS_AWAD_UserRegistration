@@ -25,7 +25,7 @@ interface Seat {
 }
 
 const generateSeats = (
-  seats: Trip["seats"],
+  seats: NonNullable<Trip["bus"]>["seats"],
   booked: Set<string>,
   selected: string | null,
 ): Seat[] => {
@@ -79,7 +79,7 @@ export default function SeatMap({
   const { data: occupiedSeats } = useGetOccupiedSeats(trip.id);
   const [selectedSeat, setSelectedSeat] = useState(null as string | null);
   const seats = useMemo(
-    () => generateSeats(trip.seats, new Set(occupiedSeats), selectedSeat),
+    () => generateSeats(trip.bus?.seats ?? [], new Set(occupiedSeats), selectedSeat),
     [trip, occupiedSeats, selectedSeat],
   );
 
@@ -304,7 +304,7 @@ export default function SeatMap({
                         key={seat}
                         className="inline-flex items-center px-2.5 py-1 bg-primary text-primary-foreground text-xs font-semibold rounded-full"
                       >
-                        {trip.seats.filter((el) => el.id === seat)[0].label}
+                        {trip.bus?.seats.filter((el) => el.id === seat)[0].label}
                       </span>
                     ))
                   )}
