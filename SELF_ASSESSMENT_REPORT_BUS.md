@@ -104,11 +104,11 @@ Students must input minus points to every uncompleted feature in the SE column.
 |  | › View trip list | \-0.5 | 0 |  | List all trips with filters and pagination |
 |  | › Filter trips by route, date, status | \-0.25 |  |  | Search and filter trips |
 |  | › Sort trips by departure time, bookings | \-0.25 |  |  | Sortable trip list |
-|  | › Create a new trip | \-0.25 |  |  | Add trip with route, bus, departure time, price |
+|  | › Create a new trip | \-0.25 | 0 |  | Add trip with route, bus, departure time, price |
 |  | › Assign bus to trip | \-0.25 |  |  | Assign available bus to scheduled trip |
-|  | › Set pickup/dropoff points | \-0.25 |  |  | Configure pickup and dropoff locations for trip |
+|  | › Set pickup/dropoff points | \-0.25 | 0 |  | Configure pickup and dropoff locations for trip |
 |  | › Specify trip status | \-0.25 |  |  | Scheduled, In Progress, Completed, Cancelled |
-|  | › Update a trip | \-0.25 |  |  | Edit existing trip details |
+|  | › Update a trip | \-0.25 | 0 |  | Edit existing trip details |
 |  | › Cancel a trip | \-0.25 |  |  | Cancel trip with automatic refund processing |
 |  | Booking Management |  |  |  |  |
 |  | › View list of bookings | \-0.25 |  |  | Booking list sorted by creation time |
