@@ -13,7 +13,6 @@ export namespace TripModel {
       t.Object({
         id: t.String(),
         departure: t.Date(),
-        arrival: t.Date(),
         price: t.Integer(),
         stops: t.Array(
           t.Object({
@@ -40,7 +39,6 @@ export namespace TripModel {
   export const getResponse = t.Object({
     id: t.String(),
     departure: t.Date(),
-    arrival: t.Date(),
     price: t.Integer(),
     stops: t.Array(
       t.Object({
@@ -75,8 +73,7 @@ export namespace TripModel {
 
   export const createBody = t.Object({
     busId: t.Optional(t.String()),
-    departure: t.Date(),
-    arrival: t.Date(),
+    departure: t.String({ format: "date-time" }),
     price: t.Optional(t.Integer()),
     status: t.Optional(t.String()),
     stops: t.Array(t.Object({

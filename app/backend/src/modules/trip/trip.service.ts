@@ -154,7 +154,6 @@ export abstract class TripService {
     return {
       id: trip.id,
       departure: trip.departure,
-      arrival: trip.arrival,
       price: trip.price,
       stops: trip.tripBusStops.map((el) => ({
         id: el.busStopId,
@@ -201,7 +200,6 @@ export abstract class TripService {
     const payload = {
       busId: body.busId,
       departure: body.departure,
-      arrival: body.arrival,
       price: body.price ?? undefined,
       status: body.status ?? undefined,
     };
@@ -238,7 +236,6 @@ export abstract class TripService {
     const payload = {
       busId: body.busId,
       departure: body.departure,
-      arrival: body.arrival,
       price: body.price ?? undefined,
       status: body.status ?? undefined,
     };
