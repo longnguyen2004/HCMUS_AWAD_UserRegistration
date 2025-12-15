@@ -106,11 +106,11 @@ try {
   });
 
   await Promise.all([
-    TripBusStop.create({ tripId: trip1.id, busStopId: stopA1.id, order: 1 }),
-    TripBusStop.create({ tripId: trip1.id, busStopId: stopB1.id, order: 2 }),
-    TripBusStop.create({ tripId: trip1.id, busStopId: stopC1.id, order: 3 }),
-    TripBusStop.create({ tripId: trip2.id, busStopId: stopA1.id, order: 1 }),
-    TripBusStop.create({ tripId: trip2.id, busStopId: stopC1.id, order: 2 }),
+    TripBusStop.create({ tripId: trip1.id, busStopId: stopA1.id, order: 1, duration: null }),
+    TripBusStop.create({ tripId: trip1.id, busStopId: stopB1.id, order: 2, duration: 60 }),
+    TripBusStop.create({ tripId: trip1.id, busStopId: stopC1.id, order: 3, duration: 60 }),
+    TripBusStop.create({ tripId: trip2.id, busStopId: stopA1.id, order: 1, duration: null }),
+    TripBusStop.create({ tripId: trip2.id, busStopId: stopC1.id, order: 2, duration: 60 }),
   ]);
 
   // Create tickets for trip1

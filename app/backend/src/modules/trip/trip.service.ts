@@ -102,6 +102,7 @@ export abstract class TripService {
         id: el.busStopId,
         name: el.busStop.name,
         order: el.order,
+        duration: el.duration,
       })),
       capacity: trip.bus?.seats?.length ?? 0,
     }));
@@ -159,6 +160,7 @@ export abstract class TripService {
         id: el.busStopId,
         name: el.busStop.name,
         order: el.order,
+        duration: el.duration,
       })),
       bus: !trip.bus
         ? undefined

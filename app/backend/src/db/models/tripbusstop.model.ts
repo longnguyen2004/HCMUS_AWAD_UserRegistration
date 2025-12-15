@@ -19,4 +19,7 @@ export class TripBusStop extends Model {
   @PrimaryKey
   @Column({ type: DataTypes.SMALLINT })
   declare order: number;
+
+  @Column({ type: DataTypes.SMALLINT })
+  declare duration?: number;
 }

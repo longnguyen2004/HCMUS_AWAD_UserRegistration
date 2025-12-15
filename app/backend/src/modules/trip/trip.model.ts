@@ -20,6 +20,7 @@ export namespace TripModel {
             id: t.String(),
             name: t.String(),
             order: t.Number(),
+            duration: t.Optional(t.Number()),
           }),
         ),
         capacity: t.Number(),
@@ -46,6 +47,7 @@ export namespace TripModel {
         id: t.String(),
         name: t.String(),
         order: t.Number(),
+        duration: t.Optional(t.Number()),
       }),
     ),
     bus: t.Optional(
