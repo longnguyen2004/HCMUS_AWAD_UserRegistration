@@ -21,5 +21,5 @@ export class TripBusStop extends Model {
   declare order: number;
 
   @Column({ type: DataTypes.SMALLINT })
-  declare duration?: number;
+  declare duration: number | null;
 }
