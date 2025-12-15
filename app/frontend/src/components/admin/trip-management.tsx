@@ -239,7 +239,6 @@ export default function TripManagement() {
                       onClick={() => {
                         setEditingTrip({
                           id: trip.id,
-                          arrival: format(trip.arrival, "yyyy-MM-dd'T'HH:mm"),
                           departure: format(
                             trip.departure,
                             "yyyy-MM-dd'T'HH:mm",
