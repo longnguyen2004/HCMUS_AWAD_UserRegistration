@@ -1,5 +1,5 @@
 import { backend } from "../backend";
-import { useQuery, keepPreviousData } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient, keepPreviousData } from "@tanstack/react-query";
 
 type SearchTripParams = Parameters<typeof backend.trip.search.get>[0]["query"];
 export const useSearchTrips = (params: Partial<SearchTripParams>) =>
@@ -36,3 +36,32 @@ export const useGetOccupiedSeats = (id: string) =>
       return res.data;
     },
   });
+
+type CreateTripParams = Parameters<typeof backend.trip.create.post>[0];
+export const useCreateTrip = (params: CreateTripParams) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async () => {
+      const res = await backend.trip.create.post(params);
+      if (res.error) throw res.error;
+      return res.data;
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["trip"] });
+    }
+  })
+}
+
+export const useEditTrip = (id: string, params: CreateTripParams) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async () => {
+      const res = await backend.trip({ id }).post(params);
+      if (res.error) throw res.error;
+      return res.data;
+    },
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({ queryKey: ["trip"] });
+    }
+  })
+}
