@@ -23,11 +23,11 @@ import { format } from "date-fns";
 export interface EditingTrip {
   id?: string;
   departure: string;
-  arrival: string;
   price: number;
 }
 interface Stop {
   id: string;
+  duration: number | null;
 }
 
 export interface TripModalProps {
@@ -46,7 +46,6 @@ export default function TripModal({
   const { data: busStops } = useSearchBusStops({});
   const [formData, setFormData] = useState<EditingTrip>({
     departure: format(new Date(), "yyyy-MM-dd'T'HH:mm"),
-    arrival: format(new Date(), "yyyy-MM-dd'T'HH:mm"),
     price: 0,
   });
   const [stops, setStops] = useState<Stop[]>([]);
@@ -60,7 +59,6 @@ export default function TripModal({
       setFormData({
         id: trip?.id,
         departure: trip?.departure ?? format(new Date(), "yyyy-MM-dd'T'HH-mm"),
-        arrival: trip?.arrival ?? format(new Date(), "yyyy-MM-dd'T'HH-mm"),
         price: trip?.price ?? 0,
       });
       setStops(trip?.stops || []);
@@ -72,7 +70,6 @@ export default function TripModal({
     const newErrors: Record<string, string> = {};
 
     if (!formData.departure) newErrors.departure = "Departure time is required";
-    if (!formData.arrival) newErrors.arrival = "Arrival time is required";
     if (formData.price <= 0) newErrors.price = "Price must be greater than 0";
     if (stops.length < 2) newErrors.stops = "There must be at least 2 stops";
 
@@ -83,13 +80,14 @@ export default function TripModal({
   const handleAddStop = () => {
     const newStop: Stop = {
       id: "",
+      duration: null
     };
     setStops([...stops, newStop]);
   };
 
-  const handleUpdateStop = (stopIndex: number, stopId: string) => {
+  const handleUpdateStop = <T extends keyof Stop>(stopIndex: number, key: T, value: Stop[T]) => {
     const newStops = structuredClone(stops);
-    newStops[stopIndex].id = stopId;
+    newStops[stopIndex][key] = value;
     setStops(newStops);
   };
 
@@ -148,22 +146,6 @@ export default function TripModal({
                 />
                 {errors.departure && (
                   <p className="text-xs text-destructive">{errors.departure}</p>
-                )}
-              </div>
-
-              <div className="space-y-2">
-                <label className="text-sm font-medium">Arrival</label>
-                <Input
-                  type="datetime-local"
-                  value={formData.arrival}
-                  onChange={(e) => {
-                    setFormData({ ...formData, arrival: e.target.value });
-                    if (errors.arrival) setErrors({ ...errors, arrival: "" });
-                  }}
-                  className="bg-background"
-                />
-                {errors.arrival && (
-                  <p className="text-xs text-destructive">{errors.arrival}</p>
                 )}
               </div>
             </div>
@@ -272,7 +254,7 @@ export default function TripModal({
                       </span>
                       <Select
                         value={stop.id}
-                        onValueChange={(value) => handleUpdateStop(idx, value)}
+                        onValueChange={(value) => handleUpdateStop(idx, "id", value)}
                       >
                         <SelectTrigger className="h-8 text-sm bg-background flex-1">
                           <SelectValue placeholder="Select a stop" />
@@ -285,6 +267,19 @@ export default function TripModal({
                           ))}
                         </SelectContent>
                       </Select>
+                      {idx > 0 && (
+                        <div className="flex items-center gap-1">
+                          <Input
+                            type="number"
+                            min="0"
+                            value={stop.duration || 0}
+                            onChange={(e) => handleUpdateStop(idx, "duration", Number.parseInt(e.target.value) || 0)}
+                            className="h-8 w-20 text-sm bg-background"
+                            placeholder="0"
+                          />
+                          <span className="text-xs text-muted-foreground whitespace-nowrap">min</span>
+                        </div>
+                      )}
                       <Button
                         size="sm"
                         variant="ghost"
