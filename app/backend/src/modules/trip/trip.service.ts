@@ -213,9 +213,56 @@ export abstract class TripService {
           tripId: trip.id,
           busStopId: stop,
           order: i + 1,
+          duration: i == 0 ? null : stop.duration
         })),
         { transaction: t },
       );
+      return trip.id;
+    });
+
+    return { id: result };
+  }
+
+  static async edit(
+    id: string,
+    body: TripModel.createBody,
+  ): Promise<TripModel.createResponse> {
+    const trip = await Trip.findByPk(id);
+    if (!trip) throw status(404, { message: "Trip not found" });
+
+    if (body.busId) {
+      const bus = await Bus.findByPk(body.busId);
+      if (!bus) throw status(400, { message: "Bus not found" });
+    }
+
+    const payload = {
+      busId: body.busId,
+      departure: body.departure,
+      arrival: body.arrival,
+      price: body.price ?? undefined,
+      status: body.status ?? undefined,
+    };
+
+    const result = await db.transaction(async (t) => {
+      await trip.update(payload, { transaction: t });
+      
+      // Delete existing trip bus stops
+      await TripBusStop.destroy({
+        where: { tripId: trip.id },
+        transaction: t,
+      });
+      
+      // Create new trip bus stops
+      await TripBusStop.bulkCreate(
+        body.stops.map((stop, i) => ({
+          tripId: trip.id,
+          busStopId: stop,
+          order: i + 1,
+          duration: i == 0 ? null : stop.duration
+        })),
+        { transaction: t },
+      );
+      
       return trip.id;
     });
 

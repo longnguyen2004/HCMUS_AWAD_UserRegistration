@@ -59,4 +59,19 @@ export const TripController = new Elysia({ prefix: "/trip" })
         404: TripModel.notFound,
       },
     },
+  )
+  .post(
+    "/:id",
+    async ({ params: { id }, body }) => {
+      const response = await TripService.edit(id, body);
+      return response;
+    },
+    {
+      auth: true,
+      body: TripModel.createBody,
+      response: {
+        200: TripModel.createResponse,
+        404: TripModel.notFound,
+      },
+    },
   );
