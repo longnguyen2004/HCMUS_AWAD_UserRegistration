@@ -1,4 +1,4 @@
-import TripModal, { type EditingTrip } from "./trip-modal";
+import TripModal, { type EditingTrip, type Stops } from "./trip-modal";
 import { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -12,12 +12,14 @@ import {
 } from "@/components/ui/select";
 import { Plus, Edit2, Trash2, ArrowUpDown } from "lucide-react";
 import { format } from "date-fns";
-import { useSearchTrips } from "@/lib/crud/trip";
+import { useCreateTrip, useEditTrip, useSearchTrips } from "@/lib/crud/trip";
 import { useGetCities } from "@/lib/crud/city";
 import type { TripModalProps } from "./trip-modal";
 
 export default function TripManagement() {
   const { data: cities } = useGetCities();
+  const createTrip = useCreateTrip();
+  const editTrip = useEditTrip();
   const [fromCity, setFromCity] = useState("");
   const [toCity, setToCity] = useState("");
   const [date, setDate] = useState("");
@@ -54,13 +56,16 @@ export default function TripManagement() {
     //setTrips(trips.filter((trip) => trip.id !== id));
   };
 
-  const handleTripSave = (trip: EditingTrip & { stops: { id: string }[] }) => {
+  const handleTripSave = async(trip: EditingTrip & { stops: Stops[] }) => {
     if (!trip.id) {
-      console.log("new trip")
+      await createTrip.mutateAsync(trip);
+      if (createTrip.isSuccess)
+        setTripEditOpen(false);
     } else {
-      console.log("editing trip")
+      await editTrip.mutateAsync({ id: trip.id, ...trip });
+      if (editTrip.isSuccess)
+        setTripEditOpen(false);
     }
-    setTripEditOpen(false);
   };
 
   const [editingTrip, setEditingTrip] = useState<TripModalProps["trip"]>();

@@ -38,10 +38,10 @@ export const useGetOccupiedSeats = (id: string) =>
   });
 
 type CreateTripParams = Parameters<typeof backend.trip.create.post>[0];
-export const useCreateTrip = (params: CreateTripParams) => {
+export const useCreateTrip = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async () => {
+    mutationFn: async (params: CreateTripParams) => {
       const res = await backend.trip.create.post(params);
       if (res.error) throw res.error;
       return res.data;
@@ -52,11 +52,11 @@ export const useCreateTrip = (params: CreateTripParams) => {
   })
 }
 
-export const useEditTrip = (id: string, params: CreateTripParams) => {
+export const useEditTrip = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async () => {
-      const res = await backend.trip({ id }).post(params);
+    mutationFn: async (params: CreateTripParams & { id: string }) => {
+      const res = await backend.trip({ id: params.id }).post(params);
       if (res.error) throw res.error;
       return res.data;
     },

@@ -25,7 +25,7 @@ export interface EditingTrip {
   departure: string;
   price: number;
 }
-interface Stop {
+export interface Stop {
   id: string;
   duration: number | null;
 }
