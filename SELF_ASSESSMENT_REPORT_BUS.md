@@ -26,39 +26,39 @@ Students must input minus points to every uncompleted feature in the SE column.
 | ----- | :---- | ----- | :---- | :---- | :---- |
 |  |  | **Point** | **SE\*** | **TR\*** |  |
 | **1** | **Overall requirements** |  |  |  |  |
-|  | User-centered design | \-5 |  |  | Built with user experience in mind. Focus on solving real booking problems: seamless trip search, interactive seat selection, efficient booking flow, and convenient payment options |
-|  | Database design | \-1 |  |  | Database with tables: users, routes, buses, trips, seats, bookings, booking_details, payments, ratings, notifications |
-|  | Database mock data | \-1 |  |  | Sample routes, buses, trips, seats, and test bookings |
-|  | Website layout | \-2 |  |  | Two layouts: Customer booking interface and Admin dashboard |
-|  | Website architect | \-3 |  |  | Based on MVC architecture. Clear separation of concerns with controllers, services, repositories. Client-side validation, Input validation, Business rule validation |
-|  | Website stability and compatibility | \-2 |  |  | Responsive design, tested on Chrome, Safari, Firefox, and Edge |
-|  | Document | \-1 |  |  | Clear documentation for developers and users: setup guide, API endpoints (Swagger/OpenAPI), database design, system architecture, user guide |
-|  | Demo video | \-5 |  |  | Video demonstrating all features: user signup, trip search, seat selection, booking, payment, e-ticket, admin management |
-|  | Publish to public hosts | \-1 |  |  | Deployed to a public hosting service (AWS/GCP/Azure) with accessible URL |
-|  | Development progress is recorded in Github | \-7 |  |  | Git history with meaningful commits, branches for features, pull requests |
+|  | User-centered design | \-5 | 0 |  | Built with user experience in mind. Focus on solving real booking problems: seamless trip search, interactive seat selection, efficient booking flow, and convenient payment options |
+|  | Database design | \-1 | 0 |  | Database with tables: users, routes, buses, trips, seats, bookings, booking_details, payments, ratings, notifications |
+|  | Database mock data | \-1 | 0 |  | Sample routes, buses, trips, seats, and test bookings |
+|  | Website layout | \-2 | 0 |  | Two layouts: Customer booking interface and Admin dashboard |
+|  | Website architect | \-3 | 0 |  | Based on MVC architecture. Clear separation of concerns with controllers, services, repositories. Client-side validation, Input validation, Business rule validation |
+|  | Website stability and compatibility | \-2 | 0 |  | Responsive design, tested on Chrome, Safari, Firefox, and Edge |
+|  | Document | \-1 | |  | Clear documentation for developers and users: setup guide, API endpoints (Swagger/OpenAPI), database design, system architecture, user guide |
+|  | Demo video | \-5 | 0 |  | Video demonstrating all features: user signup, trip search, seat selection, booking, payment, e-ticket, admin management |
+|  | Publish to public hosts | \-1 | 0 |  | Deployed to a public hosting service (AWS/GCP/Azure) with accessible URL |
+|  | Development progress is recorded in Github | \-7 | 0 |  | Git history with meaningful commits, branches for features, pull requests |
 | **2** | **Guest features (Trip Search & Booking)** |  |  |  |  |
-|  | Home page (Search page) | \-0.25 |  |  | Trip search page with origin, destination, date selection |
+|  | Home page (Search page) | \-0.25 | 0 |  | Trip search page with origin, destination, date selection |
 |  | Search autocomplete | \-0.25 |  |  | Autocomplete suggestions for route/station selection |
-|  | View list of available trips | \-0.25 |  |  | Display available trips with departure time, arrival time, price, available seats |
+|  | View list of available trips | \-0.25 | 0 |  | Display available trips with departure time, arrival time, price, available seats |
 |  | Filter trips by |  |  |  | A combination of the criteria |
 |  | › Departure time | \-0.25 |  |  | Filter trips by departure time range |
 |  | › Bus type | \-0.25 |  |  | Filter by bus type (Sleeper, Seater, VIP, etc.) |
 |  | › Price range | \-0.25 |  |  | Filter by ticket price range |
 |  | Sort trips by price, departure time | \-0.25 |  |  | Sort available trips by price or departure time |
-|  | Trip paging | \-0.75 |  |  | Pagination for trip results. URL updated on search/filter/paging |
-|  | View trip details | \-0.25 |  |  | Trip detail page with full route info, stops, amenities, bus details |
-|  | View seat availability | \-0.25 |  |  | Display seat map with available/booked status |
+|  | Trip paging | \-0.75 | 0 |  | Pagination for trip results. URL updated on search/filter/paging |
+|  | View trip details | \-0.25 | 0 |  | Trip detail page with full route info, stops, amenities, bus details |
+|  | View seat availability | \-0.25 | 0 |  | Display seat map with available/booked status |
 |  | Show related trips | \-0.25 |  |  | Suggest alternative trips on same route or similar dates |
 |  | View list of trip reviews | \-0.5 |  |  | Customer reviews and ratings for bus operators with pagination |
 |  | Add a new trip review | \-0.25 |  |  | Logged-in customers can review trips they completed |
 |  | Seat Selection |  |  |  |  |
-|  | › Interactive seat map | \-0.25 |  |  | Visual seat selection with real-time availability updates |
-|  | › View and update selected seats | \-0.5 |  |  | Seat selection summary with prices. Update selection with auto-update totals |
+|  | › Interactive seat map | \-0.25 | 0 |  | Visual seat selection with real-time availability updates |
+|  | › View and update selected seats | \-0.5 | 0 |  | Seat selection summary with prices. Update selection with auto-update totals |
 |  | Booking and payment |  |  |  |  |
-|  | › Guest checkout | \-0.25 |  |  | Allow booking without account registration |
-|  | › Input passenger details | \-0.25 |  |  | Passenger name, phone, email, ID number |
+|  | › Guest checkout | \-0.25 | 0 |  | Allow booking without account registration |
+|  | › Input passenger details | \-0.25 | 0 |  | Passenger name, phone, email, ID number |
 |  | › Select pickup/dropoff points | \-0.25 |  |  | Choose pickup and dropoff locations along the route |
-|  | › View booking summary | \-0.25 |  |  | Booking confirmation with trip details, seats, total price |
+|  | › View booking summary | \-0.25 | 0 |  | Booking confirmation with trip details, seats, total price |
 |  | › Process payment | \-0.25 |  |  | PayOS payment gateway integration |
 |  | › Receive e-ticket | \-0.25 |  |  | E-ticket generation and delivery via email/SMS |
 |  | AI Chatbot |  |  |  |  |
@@ -67,17 +67,16 @@ Students must input minus points to every uncompleted feature in the SE column.
 |  | Real-time features |  |  |  |  |
 |  | › Real-time seat locking | \-0.5 |  |  | Concurrent booking handling with seat locking mechanism |
 |  | › WebSocket real-time updates | \-0.5 |  |  | Socket.IO for real-time: seat availability, booking confirmations, trip status notifications |
-|  | Payment system integration | \-0.5 |  |  | PayOS payment gateway integration |
+|  | Payment system integration | \-0.5 | 0 |  | PayOS payment gateway integration |
 |  | Fulltext search | \-0.25 |  |  | Fulltext search for route/station search |
 |  | E-ticket with QR code | \-0.25 |  |  | Generate e-tickets with QR code for check-in |
-|  | SMS notifications | \-0.25 |  |  | Twilio integration for booking confirmations and reminders |
 | **3** | **Authentication and authorization** |  |  |  |  |
-|  | Use a popular authentication library | \-1 |  |  | Passport.js with JWT strategy |
-|  | Registration (Customer Signup) | \-0.5 |  |  | Customer registration with email/phone/password. Real-time email availability check |
+|  | Use a popular authentication library | \-1 | 0 |  | Passport.js with JWT strategy |
+|  | Registration (Customer Signup) | \-0.5 | 0 |  | Customer registration with email/phone/password. Real-time email availability check |
 |  | Verify user input: password complexity, full name | \-0.25 |  |  | Password rules, required fields validation |
 |  | Account activation by email | \-0.25 |  |  | Email verification link sent on signup |
-|  | Social Sign-up/Sign-In | \-0.25 |  |  | Google/Facebook OAuth integration |
-|  | Login to the website | \-0.25 |  |  | JWT-based authentication for admin/users |
+|  | Social Sign-up/Sign-In | \-0.25 | 0 |  | Google/Facebook OAuth integration |
+|  | Login to the website | \-0.25 | 0 |  | JWT-based authentication for admin/users |
 |  | Authorize website features | \-0.25 |  |  | Role-based access control (Admin, Staff, Customer) |
 |  | Forgot password by email | \-0.25 |  |  | Password reset via email link |
 | **4** | **Features for logged-in users (Customers)** |  |  |  |  |
@@ -91,10 +90,7 @@ Students must input minus points to every uncompleted feature in the SE column.
 |  | › Cancel booking | \-0.25 |  |  | Cancel booking with refund policy display |
 |  | › Download e-ticket | \-0.25 |  |  | Download ticket as PDF |
 |  | › Real-time trip updates | 0.5 |  |  | WebSocket-based live trip status updates (delays, cancellations) |
-| **5** | **Super Admin features** |  |  |  |  |
-|  | Create Admin accounts | \-0.25 |  |  | Super Admin creates bus operator Admin accounts |
-|  | Manage Admin accounts | \-0.25 |  |  | View, edit, deactivate Admin accounts |
-| **6** | **Administration features (Bus Operator Admin)** |  |  |  |  |
+| **5** | **Administration features (Bus Operator Admin)** |  |  |  |  |
 |  | Update admin profile | \-0.25 |  |  | Admin profile management |
 |  | Dashboard overview | \-0.5 |  |  | Dashboard with key metrics: total bookings, revenue, upcoming trips |
 |  | Route Management |  |  |  |  |
@@ -105,7 +101,7 @@ Students must input minus points to every uncompleted feature in the SE column.
 |  | › Configure seat map | \-0.5 |  |  | Visual seat map configuration tool |
 |  | › Upload bus photos | \-0.25 |  |  | Multi-image upload for buses |
 |  | Trip Management |  |  |  |  |
-|  | › View trip list | \-0.5 |  |  | List all trips with filters and pagination |
+|  | › View trip list | \-0.5 | 0 |  | List all trips with filters and pagination |
 |  | › Filter trips by route, date, status | \-0.25 |  |  | Search and filter trips |
 |  | › Sort trips by departure time, bookings | \-0.25 |  |  | Sortable trip list |
 |  | › Create a new trip | \-0.25 |  |  | Add trip with route, bus, departure time, price |
@@ -124,12 +120,7 @@ Students must input minus points to every uncompleted feature in the SE column.
 |  | › View revenue report in time range | \-0.25 |  |  | Daily, weekly, monthly revenue reports |
 |  | › View top routes by bookings | \-0.25 |  |  | Most popular routes report |
 |  | › Show interactive chart in reports | \-0.25 |  |  | Chart.js/Recharts for analytics dashboard (bookings/day, revenue trends, popular routes) |
-| **7** | **Staff features** |  |  |  |  |
-|  | View assigned trips | \-0.25 |  |  | List of trips assigned to staff |
-|  | View passenger list | \-0.25 |  |  | List of passengers for each trip |
-|  | Check-in passengers | \-0.25 |  |  | Mark passengers as boarded |
-|  | Update trip status | \-0.25 |  |  | Mark trip as departed, arrived |
-| **8** | **Advanced features** |  |  |  |  |
+| **7** | **Advanced features** |  |  |  |  |
 |  | Use memory cache to boost performance | 0.25 |  |  | Redis for trip caching and session management |
 |  | Dockerize your project | 0.25 |  |  | Docker containers for backend, frontend, database |
 |  | CI/CD | 0.25 |  |  | Automated testing and deployment pipeline (GitHub Actions, GitLab CI, Jenkins, etc.) |
