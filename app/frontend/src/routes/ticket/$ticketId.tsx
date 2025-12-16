@@ -232,13 +232,24 @@ function RouteComponent() {
               Review your ticket status and itinerary
             </p>
           </div>
-          <Button
-            variant="outline"
-            onClick={() => refetch()}
-            disabled={isFetching}
-          >
-            {isFetching ? "Refreshing..." : "Refresh"}
-          </Button>
+          <div className="flex items-center gap-2">
+            <Button asChild variant="outline">
+              <a
+                href={`${import.meta.env.VITE_BACKEND_URL}/ticket/${ticketId}/pdf`}
+                target="_blank"
+                rel="noreferrer"
+              >
+                Download PDF
+              </a>
+            </Button>
+            <Button
+              variant="outline"
+              onClick={() => refetch()}
+              disabled={isFetching}
+            >
+              {isFetching ? "Refreshing..." : "Refresh"}
+            </Button>
+          </div>
         </div>
         {renderContent()}
       </div>
