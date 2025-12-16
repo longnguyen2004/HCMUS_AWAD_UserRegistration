@@ -1,4 +1,4 @@
-import { Elysia } from "elysia";
+import { Elysia, status } from "elysia";
 import { BusModel } from "./bus.model.js";
 import { BusService } from "./bus.service.js";
 import { authGuard } from "../auth/index.js";
@@ -7,7 +7,9 @@ export const BusController = new Elysia({ prefix: "/bus" })
   .use(authGuard)
   .post(
     "/create",
-    async ({ body }) => {
+    async ({ body, user }) => {
+      if (user.role != "admin")
+        throw status(403, "Forbidden");
       const response = await BusService.create(body);
       return response;
     },
@@ -51,7 +53,9 @@ export const BusController = new Elysia({ prefix: "/bus" })
   )
   .patch(
     "/:id",
-    async ({ params: { id }, body }) => {
+    async ({ params: { id }, body, user }) => {
+      if (user.role != "admin")
+        throw status(403, "Forbidden");
       const updated = await BusService.modify(id, body);
       return updated;
     },

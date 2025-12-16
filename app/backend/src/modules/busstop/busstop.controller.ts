@@ -1,4 +1,4 @@
-import { Elysia } from "elysia";
+import { Elysia, status } from "elysia";
 import { BusStopModel } from "./busstop.model.js";
 import { BusStopService } from "./busstop.service.js";
 import { authGuard } from "../auth/index.js";
@@ -33,7 +33,9 @@ export const BusStopController = new Elysia({ prefix: "/busstop" })
   )
   .post(
     "/create",
-    async ({ body }) => {
+    async ({ body, user }) => {
+      if (user.role != "admin")
+        throw status(403, "Forbidden");
       const response = await BusStopService.create(body);
       return response;
     },

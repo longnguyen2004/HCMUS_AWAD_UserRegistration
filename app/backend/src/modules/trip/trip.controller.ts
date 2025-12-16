@@ -1,4 +1,4 @@
-import { Elysia } from "elysia";
+import { Elysia, status } from "elysia";
 import { TripModel } from "./trip.model.js";
 import { TripService } from "./trip.service.js";
 import { authGuard } from "../auth/index.js";
@@ -47,7 +47,9 @@ export const TripController = new Elysia({ prefix: "/trip" })
   )
   .post(
     "/create",
-    async ({ body }) => {
+    async ({ body, user }) => {
+      if (user.role != "admin")
+        throw status(403, "Forbidden");
       const response = await TripService.create(body);
       return response;
     },
@@ -62,7 +64,9 @@ export const TripController = new Elysia({ prefix: "/trip" })
   )
   .post(
     "/:id",
-    async ({ params: { id }, body }) => {
+    async ({ params: { id }, body, user }) => {
+      if (user.role != "admin")
+        throw status(403, "Forbidden");
       const response = await TripService.edit(id, body);
       return response;
     },
