@@ -97,6 +97,12 @@ export namespace TicketModel {
   });
   export type processPaymentBody = typeof processPaymentBody.static;
 
+  export const createPdfResponse = t.Object({
+    filename: t.String(),
+    content: t.ArrayBuffer(),
+  });
+  export type createPdfResponse = typeof createPdfResponse.static;
+
   export const notFound = t.Object({
     message: t.String(),
   });

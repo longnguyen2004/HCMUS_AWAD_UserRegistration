@@ -54,6 +54,15 @@ export const TicketController = new Elysia({ prefix: "/ticket" })
       },
     },
   )
+  .get("/:id/pdf", async ({ params: { id } }) => {
+    const file = await TicketService.createPdf(id);
+    return new Response(file.content, {
+      headers: {
+        "Content-Type": "application/pdf",
+        "Content-Disposition": `attachment; filename="${file.filename}"`,
+      },
+    });
+  })
   .post(
     "/processPayment",
     async ({ body }) => {

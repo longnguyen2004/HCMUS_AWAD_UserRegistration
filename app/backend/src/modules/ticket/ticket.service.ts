@@ -20,6 +20,7 @@ import { status } from "elysia";
 import { PayOS } from "@payos/node";
 import { env } from "../../lib/env.js";
 import { EmailModel } from "../email/email.model.js";
+import PDFDocument from "pdfkit";
 
 const TICKET_PER_PAGE = 5;
 
@@ -314,75 +315,21 @@ export abstract class TicketService {
 
   static async sendEmailTicket(id: string) {
     try {
-      const ticket = await Ticket.findByPk(id, {
-        include: [
-          {
-            model: Trip,
-            as: "trip",
-            include: [
-              {
-                model: TripBusStop,
-                as: "tripBusStops",
-                include: [
-                  {
-                    model: BusStop,
-                    as: "busStop",
-                    include: [{ model: City, as: "city" }],
-                  },
-                ],
-              },
-            ],
-          },
-          { model: Seat, as: "seat", include: [{ model: Bus, as: "bus" }] },
-        ],
-      });
-
+      const ticket = await Ticket.findByPk(id);
       if (!ticket) throw status(404, { message: "Ticket not found" });
 
       const recipient = ticket.email;
       if (!recipient)
         throw status(400, { message: "Ticket has no email address" });
 
-      let fromCity: string | undefined = undefined;
-      let toCity: string | undefined = undefined;
-      const t = ticket.trip as unknown as
-        | {
-            tripBusStops?: Array<{ busStop?: { city?: { name?: string } } }>;
-            departure?: Date;
-            arrival?: Date;
-          }
-        | undefined;
-      if (t?.tripBusStops && t.tripBusStops.length > 0) {
-        const first = t.tripBusStops[0];
-        const last = t.tripBusStops[t.tripBusStops.length - 1];
-        fromCity = first?.busStop?.city?.name;
-        toCity = last?.busStop?.city?.name;
-      }
-
-      const pdfBody = {
-        ticketId: ticket.id,
-        passengerName: undefined,
-        tripId: ticket.tripId,
-        licensePlate: ticket.seat.bus.licensePlate,
-        seat: ticket.seat?.seatNumber,
-        departure: ticket.trip?.departure?.toISOString(),
-        arrival: ticket.trip?.arrival?.toISOString(),
-        fromCity,
-        toCity,
-        price: ticket.price,
-        orderId: ticket.orderId,
-      };
-
-      const pdf = await EmailService.createPdf(
-        pdfBody as EmailModel.createPdfBody,
-      );
+      const pdf = await TicketService.createPdf(id);
 
       const mailBody = {
         email: recipient,
         subject: `Your TravelHub Ticket ${ticket.id}`,
         text: `Thank you for booking with TravelHub.`,
         filename: pdf.filename,
-        content: pdf.content,
+        content: Buffer.from(pdf.content).toString("base64"),
       };
 
       const info = await EmailService.sendMail(mailBody as EmailModel.sendBody);
@@ -391,5 +338,110 @@ export abstract class TicketService {
       if (err && typeof err === "object" && "status" in err) throw err;
       throw status(500, { message: String(err) });
     }
+  }
+  static async createPdf(id: string): Promise<TicketModel.createPdfResponse> {
+    const ticket = await Ticket.findByPk(id, {
+      include: [
+        {
+          model: Trip,
+          as: "trip",
+          include: [
+            {
+              model: TripBusStop,
+              as: "tripBusStops",
+              include: [
+                {
+                  model: BusStop,
+                  as: "busStop",
+                  include: [{ model: City, as: "city" }],
+                },
+              ],
+            },
+          ],
+        },
+        { model: Seat, as: "seat", include: [{ model: Bus, as: "bus" }] },
+      ],
+    });
+    if (!ticket) throw status(404, { message: "Ticket not found" });
+    let fromCity: string | undefined = undefined;
+    let toCity: string | undefined = undefined;
+    const t = ticket.trip as unknown as
+      | {
+          tripBusStops?: Array<{ busStop?: { city?: { name?: string } } }>;
+          departure?: Date;
+          arrival?: Date;
+        }
+      | undefined;
+    if (t?.tripBusStops && t.tripBusStops.length > 0) {
+      const first = t.tripBusStops[0];
+      const last = t.tripBusStops[t.tripBusStops.length - 1];
+      fromCity = first?.busStop?.city?.name;
+      toCity = last?.busStop?.city?.name;
+    }
+
+    const body = {
+      ticketId: ticket.id,
+      passengerName: undefined,
+      tripId: ticket.tripId,
+      licensePlate: ticket.seat.bus.licensePlate,
+      seat: ticket.seat?.seatNumber,
+      departure: ticket.trip?.departure?.toISOString(),
+      arrival: ticket.trip?.arrival?.toISOString(),
+      fromCity,
+      toCity,
+      price: ticket.price,
+      orderId: ticket.orderId,
+    };
+    return new Promise((resolve, reject) => {
+      try {
+        const doc = new PDFDocument({ size: "A6", margin: 20 });
+        const chunks: Uint8Array[] = [];
+
+        const pad = (n: number) => String(n).padStart(2, "0");
+        const formatDate = (iso?: string) => {
+          if (!iso) return undefined;
+          const d = new Date(iso);
+          if (Number.isNaN(d.getTime())) return undefined;
+          const day = pad(d.getDate());
+          const month = pad(d.getMonth() + 1);
+          const year = String(d.getFullYear());
+          const hours = pad(d.getHours());
+          const minutes = pad(d.getMinutes());
+          const seconds = pad(d.getSeconds());
+          return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
+        };
+
+        doc.on("data", (chunk) => chunks.push(chunk));
+        doc.on("end", () => {
+          const result = Buffer.concat(chunks);
+          const filename = `ticket-${id}.pdf`;
+          resolve({ filename, content: result.buffer });
+        });
+
+        doc.fontSize(20).text("TravelHub - Ticket", { align: "center" });
+        doc.moveDown();
+
+        doc.fontSize(10).text(`Ticket ID: ${body.ticketId}`);
+        if (body.orderId) doc.text(`Order ID: ${body.orderId}`);
+        if (body.passengerName) doc.text(`Passenger: ${body.passengerName}`);
+        if (body.licensePlate)
+          doc.text(`Bus license plate: ${body.licensePlate}`);
+        if (body.seat) doc.text(`Seat: ${body.seat}`);
+        if (body.tripId) doc.text(`Trip ID: ${body.tripId}`);
+        if (body.fromCity) doc.text(`From: ${body.fromCity}`);
+        if (body.toCity) doc.text(`To: ${body.toCity}`);
+        if (body.departure)
+          doc.text(`Departure: ${formatDate(body.departure)}`);
+        if (body.arrival) doc.text(`Arrival: ${formatDate(body.arrival)}`);
+        if (body.price !== undefined) doc.text(`Price: ${body.price}`);
+
+        doc.moveDown();
+        doc.text("Thank you for booking with TravelHub.");
+
+        doc.end();
+      } catch (err) {
+        reject(err);
+      }
+    });
   }
 }
