@@ -41,10 +41,10 @@ export default function UserManagement() {
                 ? true
                 : undefined,
           sortBy: "createdAt",
-          sortDirection: sortOrder
+          sortDirection: sortOrder,
         },
       }),
-    placeholderData: keepPreviousData
+    placeholderData: keepPreviousData,
   });
 
   useEffect(() => {
@@ -92,7 +92,10 @@ export default function UserManagement() {
             </div>
             <div className="space-y-2">
               <label className="text-sm font-medium">Filter by status</label>
-              <Select value={filterStatus} onValueChange={setFilterStatus}>
+              <Select
+                value={filterStatus}
+                onValueChange={(v: typeof filterStatus) => setFilterStatus(v)}
+              >
                 <SelectTrigger>
                   <SelectValue placeholder="All Status" />
                 </SelectTrigger>
