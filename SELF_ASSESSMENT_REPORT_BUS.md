@@ -41,7 +41,7 @@ Students must input minus points to every uncompleted feature in the SE column.
 |  | Search autocomplete | \-0.25 |  |  | Autocomplete suggestions for route/station selection |
 |  | View list of available trips | \-0.25 | 0 |  | Display available trips with departure time, arrival time, price, available seats |
 |  | Filter trips by |  |  |  | A combination of the criteria |
-|  | › Departure time | \-0.25 |  |  | Filter trips by departure time range |
+|  | › Departure time | \-0.25 | 0 |  | Filter trips by departure time range |
 |  | › Bus type | \-0.25 |  |  | Filter by bus type (Sleeper, Seater, VIP, etc.) |
 |  | › Price range | \-0.25 |  |  | Filter by ticket price range |
 |  | Sort trips by price, departure time | \-0.25 |  |  | Sort available trips by price or departure time |
@@ -105,7 +105,7 @@ Students must input minus points to every uncompleted feature in the SE column.
 |  | › Filter trips by route, date, status | \-0.25 |  |  | Search and filter trips |
 |  | › Sort trips by departure time, bookings | \-0.25 |  |  | Sortable trip list |
 |  | › Create a new trip | \-0.25 | 0 |  | Add trip with route, bus, departure time, price |
-|  | › Assign bus to trip | \-0.25 |  |  | Assign available bus to scheduled trip |
+|  | › Assign bus to trip | \-0.25 | 0 |  | Assign available bus to scheduled trip |
 |  | › Set pickup/dropoff points | \-0.25 | 0 |  | Configure pickup and dropoff locations for trip |
 |  | › Specify trip status | \-0.25 |  |  | Scheduled, In Progress, Completed, Cancelled |
 |  | › Update a trip | \-0.25 | 0 |  | Edit existing trip details |
