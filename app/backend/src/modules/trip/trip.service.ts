@@ -20,9 +20,9 @@ export abstract class TripService {
     const limit = TRIP_PER_PAGE;
     const offset = (page - 1) * limit;
 
-    const { count, rows: trips } = await Trip.findAndCountAll({
-      attributes: ["id", "departure"],
-      where: literal(`
+    const where: { [Op.and]: unknown[] } = {
+      [Op.and]: [
+        literal(`
       EXISTS (
         SELECT 1 
         FROM "TripBusStops" tbs1
@@ -38,6 +38,25 @@ export abstract class TripService {
           )
       )
     `),
+      ],
+    };
+
+    if (body.departure) {
+      const startOfDay = new Date(body.departure);
+      const endOfDay = new Date(startOfDay);
+      endOfDay.setUTCDate(endOfDay.getUTCDate() + 1);
+
+      where[Op.and].push({
+        departure: {
+          [Op.gte]: startOfDay,
+          [Op.lt]: endOfDay,
+        },
+      });
+    }
+
+    const { count, rows: trips } = await Trip.findAndCountAll({
+      attributes: ["id", "departure"],
+      where,
       order: [["departure", "ASC"]],
       limit,
       offset,
