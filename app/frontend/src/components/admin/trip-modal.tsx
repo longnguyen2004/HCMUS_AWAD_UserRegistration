@@ -45,7 +45,7 @@ export default function TripModal({
 }: TripModalProps) {
   const { data: busStops } = useSearchBusStops({});
   const [formData, setFormData] = useState<EditingTrip>({
-    departure: format(new Date(), "yyyy-MM-dd'T'HH:mm"),
+    departure: format(new Date(), "yyyy-MM-dd'T'HH:mm'Z'"),
     price: 0,
   });
   const [stops, setStops] = useState<Stop[]>([]);
@@ -58,7 +58,7 @@ export default function TripModal({
     if (isOpen) {
       setFormData({
         id: trip?.id,
-        departure: trip?.departure ?? format(new Date(), "yyyy-MM-dd'T'HH-mm"),
+        departure: trip?.departure ?? format(new Date(), "yyyy-MM-dd'T'HH-mm'Z'"),
         price: trip?.price ?? 0,
       });
       setStops(trip?.stops || []);
@@ -136,9 +136,9 @@ export default function TripModal({
                 <label className="text-sm font-medium">Departure</label>
                 <Input
                   type="datetime-local"
-                  value={formData.departure}
+                  value={formData.departure.replace("Z", "")}
                   onChange={(e) => {
-                    setFormData({ ...formData, departure: e.target.value });
+                    setFormData({ ...formData, departure: e.target.value + "Z" });
                     if (errors.departure)
                       setErrors({ ...errors, departure: "" });
                   }}

@@ -1,5 +1,5 @@
 import { DataTypes } from "sequelize";
-import { Table, Model, Column, PrimaryKey } from "sequelize-typescript";
+import { Table, Model, Column, PrimaryKey, AllowNull } from "sequelize-typescript";
 import { Trip, BusStop } from "./index.js";
 
 @Table
@@ -20,6 +20,7 @@ export class TripBusStop extends Model {
   @Column({ type: DataTypes.SMALLINT })
   declare order: number;
 
+  @AllowNull
   @Column({ type: DataTypes.SMALLINT })
   declare duration: number | null;
 }

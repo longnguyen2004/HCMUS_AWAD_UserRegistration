@@ -253,7 +253,7 @@ export abstract class TripService {
       await TripBusStop.bulkCreate(
         body.stops.map((stop, i) => ({
           tripId: trip.id,
-          busStopId: stop,
+          busStopId: stop.id,
           order: i + 1,
           duration: i == 0 ? null : stop.duration
         })),

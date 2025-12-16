@@ -246,7 +246,7 @@ export default function TripManagement() {
                           id: trip.id,
                           departure: format(
                             trip.departure,
-                            "yyyy-MM-dd'T'HH:mm",
+                            "yyyy-MM-dd'T'HH:mm'Z'",
                           ),
                           price: trip.price,
                           stops: trip.stops,
