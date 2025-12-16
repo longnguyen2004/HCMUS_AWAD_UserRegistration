@@ -8,8 +8,7 @@ export const BusController = new Elysia({ prefix: "/bus" })
   .post(
     "/create",
     async ({ body, user }) => {
-      if (user.role != "admin")
-        throw status(403, "Forbidden");
+      if (user.role != "admin") throw status(403, "Forbidden");
       const response = await BusService.create(body);
       return response;
     },
@@ -54,8 +53,7 @@ export const BusController = new Elysia({ prefix: "/bus" })
   .patch(
     "/:id",
     async ({ params: { id }, body, user }) => {
-      if (user.role != "admin")
-        throw status(403, "Forbidden");
+      if (user.role != "admin") throw status(403, "Forbidden");
       const updated = await BusService.modify(id, body);
       return updated;
     },

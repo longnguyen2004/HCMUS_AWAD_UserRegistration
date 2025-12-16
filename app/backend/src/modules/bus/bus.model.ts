@@ -67,14 +67,16 @@ export namespace BusModel {
     licensePlate: t.Optional(t.String()),
     model: t.Optional(t.String()),
     status: t.Optional(t.UnionEnum(["active", "inactive"])),
-    seats: t.Optional(t.Array(
-      t.Object({
-        id: t.String(),
-        seatNumber: t.String(),
-        row: t.Number(),
-        col: t.Number(),
-      }),
-    )),
+    seats: t.Optional(
+      t.Array(
+        t.Object({
+          id: t.String(),
+          seatNumber: t.String(),
+          row: t.Number(),
+          col: t.Number(),
+        }),
+      ),
+    ),
   });
   export type modifyBody = typeof modifyBody.static;
 

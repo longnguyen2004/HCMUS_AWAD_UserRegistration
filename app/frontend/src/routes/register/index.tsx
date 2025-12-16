@@ -33,7 +33,7 @@ export const Route = createFileRoute("/register/")({
 });
 
 type Inputs = {
-  name: string
+  name: string;
   email: string;
   password: string;
 };

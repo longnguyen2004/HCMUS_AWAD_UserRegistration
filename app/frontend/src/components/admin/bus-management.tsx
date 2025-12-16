@@ -1,10 +1,15 @@
-import { useState } from "react"
-import { useCreateBus, useEditBus, useGetBus, useSearchBus } from "@/lib/crud/bus"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Plus, Trash2, ArrowUpDown } from "lucide-react"
-import BusEditor, { type EditingBus } from "./bus-editor"
+import { useState } from "react";
+import {
+  useCreateBus,
+  useEditBus,
+  useGetBus,
+  useSearchBus,
+} from "@/lib/crud/bus";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Plus, Trash2, ArrowUpDown } from "lucide-react";
+import BusEditor, { type EditingBus } from "./bus-editor";
 
 export default function BusManagement() {
   const { data: buses } = useSearchBus();
@@ -13,57 +18,66 @@ export default function BusManagement() {
   const [selectedBusId, setSelectedBusId] = useState<string>("");
   const { data: selectedBus } = useGetBus(selectedBusId);
 
-  const [searchTerm, setSearchTerm] = useState("")
-  const [sortBy, setSortBy] = useState("licensePlate")
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc")
-  
-  const [isAddingBus, setIsAddingBus] = useState(false)
-  const [newBusForm, setNewBusForm] = useState({ licensePlate: "", rows: 5, columns: 6 })
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortBy, setSortBy] = useState("licensePlate");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+
+  const [isAddingBus, setIsAddingBus] = useState(false);
+  const [newBusForm, setNewBusForm] = useState({
+    licensePlate: "",
+    rows: 5,
+    columns: 6,
+  });
 
   const toggleSort = (field: string) => {
     if (sortBy === field) {
-      setSortOrder(sortOrder === "asc" ? "desc" : "asc")
+      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
     } else {
-      setSortBy(field)
-      setSortOrder("asc")
+      setSortBy(field);
+      setSortOrder("asc");
     }
-  }
+  };
 
-  const handleAddBus = async() => {
+  const handleAddBus = async () => {
     if (!newBusForm.licensePlate.trim()) return;
     await createBus.mutateAsync({
       status: "active",
       col: newBusForm.columns,
       row: newBusForm.rows,
       licensePlate: newBusForm.licensePlate,
-      model: ""
+      model: "",
     });
-    if (createBus.isSuccess)
-    {
-      setNewBusForm({ licensePlate: "", rows: 5, columns: 6 })
-      setIsAddingBus(false)
+    if (createBus.isSuccess) {
+      setNewBusForm({ licensePlate: "", rows: 5, columns: 6 });
+      setIsAddingBus(false);
     }
-  }
+  };
 
   const handleSaveBusEdit = async (updatedBus: EditingBus) => {
     await editBus.mutateAsync({
       id: selectedBusId,
-      ...updatedBus
-    })
-  }
+      ...updatedBus,
+    });
+  };
 
   const handleDeleteBus = (id: string) => {
     console.log(id);
-  }
+  };
 
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
         <div>
           <h2 className="text-3xl font-bold text-foreground">Manage Buses</h2>
-          <p className="text-sm text-muted-foreground mt-1">{buses?.total} buses available</p>
+          <p className="text-sm text-muted-foreground mt-1">
+            {buses?.total} buses available
+          </p>
         </div>
-        <Button className="gap-2" size="lg" onClick={() => setIsAddingBus(true)}>
+        <Button
+          className="gap-2"
+          size="lg"
+          onClick={() => setIsAddingBus(true)}
+        >
           <Plus className="w-4 h-4" />
           Add Bus
         </Button>
@@ -81,7 +95,12 @@ export default function BusManagement() {
                 <Input
                   placeholder="e.g., BUS-003"
                   value={newBusForm.licensePlate}
-                  onChange={(e) => setNewBusForm({ ...newBusForm, licensePlate: e.target.value })}
+                  onChange={(e) =>
+                    setNewBusForm({
+                      ...newBusForm,
+                      licensePlate: e.target.value,
+                    })
+                  }
                 />
               </div>
               <div className="space-y-2">
@@ -91,7 +110,12 @@ export default function BusManagement() {
                   min="1"
                   max="20"
                   value={newBusForm.rows}
-                  onChange={(e) => setNewBusForm({ ...newBusForm, rows: Number.parseInt(e.target.value) })}
+                  onChange={(e) =>
+                    setNewBusForm({
+                      ...newBusForm,
+                      rows: Number.parseInt(e.target.value),
+                    })
+                  }
                 />
               </div>
               <div className="space-y-2">
@@ -101,7 +125,12 @@ export default function BusManagement() {
                   min="1"
                   max="10"
                   value={newBusForm.columns}
-                  onChange={(e) => setNewBusForm({ ...newBusForm, columns: Number.parseInt(e.target.value) })}
+                  onChange={(e) =>
+                    setNewBusForm({
+                      ...newBusForm,
+                      columns: Number.parseInt(e.target.value),
+                    })
+                  }
                 />
               </div>
               <div className="flex gap-2 items-end">
@@ -111,8 +140,8 @@ export default function BusManagement() {
                 <Button
                   variant="outline"
                   onClick={() => {
-                    setIsAddingBus(false)
-                    setNewBusForm({ licensePlate: "", rows: 5, columns: 6 })
+                    setIsAddingBus(false);
+                    setNewBusForm({ licensePlate: "", rows: 5, columns: 6 });
                   }}
                 >
                   Cancel
@@ -129,8 +158,14 @@ export default function BusManagement() {
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <label className="text-sm font-medium">Search by license plate</label>
-            <Input placeholder="Search bus..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
+            <label className="text-sm font-medium">
+              Search by license plate
+            </label>
+            <Input
+              placeholder="Search bus..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
           </div>
         </CardContent>
       </Card>
@@ -147,11 +182,18 @@ export default function BusManagement() {
                       onClick={() => toggleSort("licensePlate")}
                       className="flex items-center gap-2 hover:text-primary"
                     >
-                      License Plate {sortBy === "licensePlate" && <ArrowUpDown className="w-4 h-4" />}
+                      License Plate{" "}
+                      {sortBy === "licensePlate" && (
+                        <ArrowUpDown className="w-4 h-4" />
+                      )}
                     </button>
                   </th>
-                  <th className="px-4 py-3 text-left font-semibold text-sm">Seats</th>
-                  <th className="px-4 py-3 text-left font-semibold text-sm">Actions</th>
+                  <th className="px-4 py-3 text-left font-semibold text-sm">
+                    Seats
+                  </th>
+                  <th className="px-4 py-3 text-left font-semibold text-sm">
+                    Actions
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -159,21 +201,24 @@ export default function BusManagement() {
                   <tr
                     key={bus.id}
                     className={`border-b border-border cursor-pointer transition ${
-                      selectedBus?.id === bus.id ? "bg-accent/10" : "hover:bg-muted/50"
+                      selectedBus?.id === bus.id
+                        ? "bg-accent/10"
+                        : "hover:bg-muted/50"
                     }`}
                     onClick={() => setSelectedBusId(bus.id)}
                   >
-                    <td className="px-4 py-4 font-medium">{bus.licensePlate}</td>
-                    <td className="px-4 py-4 text-sm">
+                    <td className="px-4 py-4 font-medium">
+                      {bus.licensePlate}
                     </td>
+                    <td className="px-4 py-4 text-sm"></td>
                     <td className="px-4 py-4">
                       <div className="flex gap-1">
                         <Button
                           variant="destructive"
                           size="sm"
                           onClick={(e) => {
-                            e.stopPropagation()
-                            handleDeleteBus(bus.id)
+                            e.stopPropagation();
+                            handleDeleteBus(bus.id);
                           }}
                           className="gap-1"
                         >
@@ -189,7 +234,7 @@ export default function BusManagement() {
         </div>
 
         {/* Seat Map Configuration */}
-        {(selectedBus) && (
+        {selectedBus && (
           <div className="lg:col-span-2">
             <BusEditor
               bus={selectedBus}
@@ -200,5 +245,5 @@ export default function BusManagement() {
         )}
       </div>
     </div>
-  )
+  );
 }

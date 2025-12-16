@@ -34,8 +34,7 @@ export const BusStopController = new Elysia({ prefix: "/busstop" })
   .post(
     "/create",
     async ({ body, user }) => {
-      if (user.role != "admin")
-        throw status(403, "Forbidden");
+      if (user.role != "admin") throw status(403, "Forbidden");
       const response = await BusStopService.create(body);
       return response;
     },

@@ -48,8 +48,7 @@ export const TripController = new Elysia({ prefix: "/trip" })
   .post(
     "/create",
     async ({ body, user }) => {
-      if (user.role != "admin")
-        throw status(403, "Forbidden");
+      if (user.role != "admin") throw status(403, "Forbidden");
       const response = await TripService.create(body);
       return response;
     },
@@ -65,8 +64,7 @@ export const TripController = new Elysia({ prefix: "/trip" })
   .post(
     "/:id",
     async ({ params: { id }, body, user }) => {
-      if (user.role != "admin")
-        throw status(403, "Forbidden");
+      if (user.role != "admin") throw status(403, "Forbidden");
       const response = await TripService.edit(id, body);
       return response;
     },

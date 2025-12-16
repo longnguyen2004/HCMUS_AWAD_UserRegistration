@@ -22,7 +22,7 @@ export const useGetBus = (id: string) =>
       if (res.error) throw res.error;
       return res.data;
     },
-    enabled: !!id
+    enabled: !!id,
   });
 
 type CreateBusParams = Parameters<typeof backend.bus.create.post>[0];
@@ -32,7 +32,7 @@ export const useCreateBus = () =>
       const res = await backend.bus.create.post(params);
       if (res.error) throw res.error;
       return res.data;
-    }
+    },
   });
 
 type EditBusParams = Parameters<ReturnType<typeof backend.bus>["patch"]>[0];
@@ -42,5 +42,5 @@ export const useEditBus = () =>
       const res = await backend.bus({ id: params.id }).patch(params);
       if (res.error) throw res.error;
       return res.data;
-    }
-  })
+    },
+  });
