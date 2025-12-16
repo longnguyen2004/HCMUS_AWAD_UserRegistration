@@ -60,7 +60,7 @@ Students must input minus points to every uncompleted feature in the SE column.
 |  | › Select pickup/dropoff points | \-0.25 |  |  | Choose pickup and dropoff locations along the route |
 |  | › View booking summary | \-0.25 | 0 |  | Booking confirmation with trip details, seats, total price |
 |  | › Process payment | \-0.25 |  |  | PayOS payment gateway integration |
-|  | › Receive e-ticket | \-0.25 |  |  | E-ticket generation and delivery via email/SMS |
+|  | › Receive e-ticket | \-0.25 | 0 |  | E-ticket generation and delivery via email/SMS |
 |  | AI Chatbot |  |  |  |  |
 |  | › AI-powered trip search | \-0.25 |  |  | OpenAI-powered chatbot for trip search assistance |
 |  | › AI booking assistance | \-0.25 |  |  | Chatbot helps users complete booking flow |
@@ -77,7 +77,7 @@ Students must input minus points to every uncompleted feature in the SE column.
 |  | Account activation by email | \-0.25 |  |  | Email verification link sent on signup |
 |  | Social Sign-up/Sign-In | \-0.25 | 0 |  | Google/Facebook OAuth integration |
 |  | Login to the website | \-0.25 | 0 |  | JWT-based authentication for admin/users |
-|  | Authorize website features | \-0.25 |  |  | Role-based access control (Admin, Staff, Customer) |
+|  | Authorize website features | \-0.25 | 0 |  | Role-based access control (Admin, Staff, Customer) |
 |  | Forgot password by email | \-0.25 |  |  | Password reset via email link |
 | **4** | **Features for logged-in users (Customers)** |  |  |  |  |
 |  | Update user profile | \-0.25 |  |  | Customer can update name, phone, preferences |
@@ -88,7 +88,7 @@ Students must input minus points to every uncompleted feature in the SE column.
 |  | › View booking history | \-0.25 |  |  | List of past and upcoming bookings linked to user account |
 |  | › View booking details | \-0.25 |  |  | Full booking details with trip info, seats, payment status |
 |  | › Cancel booking | \-0.25 |  |  | Cancel booking with refund policy display |
-|  | › Download e-ticket | \-0.25 |  |  | Download ticket as PDF |
+|  | › Download e-ticket | \-0.25 | 0 |  | Download ticket as PDF |
 |  | › Real-time trip updates | 0.5 |  |  | WebSocket-based live trip status updates (delays, cancellations) |
 | **5** | **Administration features (Bus Operator Admin)** |  |  |  |  |
 |  | Update admin profile | \-0.25 |  |  | Admin profile management |
