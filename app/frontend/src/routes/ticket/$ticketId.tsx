@@ -17,8 +17,14 @@ export const Route = createFileRoute("/ticket/$ticketId")({
 
 function RouteComponent() {
   const { ticketId } = Route.useParams();
-  const { data: ticket, isLoading, isError, refetch, isFetching, error } =
-    useGetTicket(ticketId);
+  const {
+    data: ticket,
+    isLoading,
+    isError,
+    refetch,
+    isFetching,
+    error,
+  } = useGetTicket(ticketId);
   const initPayment = useInitPayment();
 
   const handleInitPayment = async () => {
@@ -56,7 +62,10 @@ function RouteComponent() {
         )}
       >
         <span
-          className={cn("size-2 rounded-full", isPaid ? "bg-emerald-500" : "bg-amber-500")}
+          className={cn(
+            "size-2 rounded-full",
+            isPaid ? "bg-emerald-500" : "bg-amber-500",
+          )}
         />
         {label}
       </span>
@@ -78,11 +87,17 @@ function RouteComponent() {
           <CardHeader>
             <CardTitle>Ticket not found</CardTitle>
             <CardDescription>
-              {error ? String((error as Error)?.message ?? error) : "We could not load this ticket. Try again."}
+              {error
+                ? String((error as Error)?.message ?? error)
+                : "We could not load this ticket. Try again."}
             </CardDescription>
           </CardHeader>
           <CardContent className="flex items-center gap-3">
-            <Button onClick={() => refetch()} disabled={isFetching} variant="outline">
+            <Button
+              onClick={() => refetch()}
+              disabled={isFetching}
+              variant="outline"
+            >
               Retry
             </Button>
           </CardContent>
@@ -96,7 +111,9 @@ function RouteComponent() {
           <CardHeader className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <CardTitle>Ticket {ticket.id}</CardTitle>
-              <CardDescription>Issued on {formatDateTime(ticket.createdAt)}</CardDescription>
+              <CardDescription>
+                Issued on {formatDateTime(ticket.createdAt)}
+              </CardDescription>
             </div>
             {statusBadge(ticket.status)}
           </CardHeader>
@@ -129,22 +146,30 @@ function RouteComponent() {
             <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">From</p>
-                <p className="text-lg font-semibold">{ticket.trip.fromCity ?? "-"}</p>
+                <p className="text-lg font-semibold">
+                  {ticket.trip.fromCity ?? "-"}
+                </p>
               </div>
               <div className="text-center text-muted-foreground">-&gt;</div>
               <div>
                 <p className="text-sm text-muted-foreground">To</p>
-                <p className="text-lg font-semibold">{ticket.trip.toCity ?? "-"}</p>
+                <p className="text-lg font-semibold">
+                  {ticket.trip.toCity ?? "-"}
+                </p>
               </div>
             </div>
             <div className="grid gap-4 sm:grid-cols-2">
               <div>
                 <p className="text-sm text-muted-foreground">Departure</p>
-                <p className="font-semibold">{formatDateTime(ticket.trip.departure)}</p>
+                <p className="font-semibold">
+                  {formatDateTime(ticket.trip.departure)}
+                </p>
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">Arrival</p>
-                <p className="font-semibold">{formatDateTime(ticket.trip.arrival)}</p>
+                <p className="font-semibold">
+                  {formatDateTime(ticket.trip.arrival)}
+                </p>
               </div>
             </div>
           </CardContent>
@@ -158,7 +183,9 @@ function RouteComponent() {
           <CardContent className="grid gap-4 sm:grid-cols-2">
             <div>
               <p className="text-sm text-muted-foreground">Amount</p>
-              <p className="text-2xl font-bold">{formatCurrency(ticket.price)}</p>
+              <p className="text-2xl font-bold">
+                {formatCurrency(ticket.price)}
+              </p>
             </div>
             <div className="flex flex-col gap-2">
               <p className="text-sm text-muted-foreground">Status</p>
@@ -166,19 +193,24 @@ function RouteComponent() {
               {ticket.status !== "booked" && (
                 <>
                   <p className="text-sm text-amber-700">
-                    Payment is still pending. Complete the payment to confirm your seat.
+                    Payment is still pending. Complete the payment to confirm
+                    your seat.
                   </p>
                   <Button
                     onClick={handleInitPayment}
                     disabled={initPayment.isSuccess || initPayment.isPending}
                     className="mt-2"
                   >
-                    {(initPayment.isSuccess || initPayment.isPending) ? "Processing..." : "Pay Now"}
+                    {initPayment.isSuccess || initPayment.isPending
+                      ? "Processing..."
+                      : "Pay Now"}
                   </Button>
                 </>
               )}
               {ticket.status === "booked" && (
-                <p className="text-sm text-emerald-700">Payment received. Check your email for the ticket PDF.</p>
+                <p className="text-sm text-emerald-700">
+                  Payment received. Check your email for the ticket PDF.
+                </p>
               )}
             </div>
           </CardContent>
@@ -193,12 +225,18 @@ function RouteComponent() {
       <div className="mx-auto max-w-5xl p-4 sm:p-6 lg:p-8">
         <div className="mb-4 flex items-center justify-between">
           <div>
-            <h2 className="text-2xl font-bold text-foreground">Ticket Information</h2>
+            <h2 className="text-2xl font-bold text-foreground">
+              Ticket Information
+            </h2>
             <p className="text-sm text-muted-foreground">
               Review your ticket status and itinerary
             </p>
           </div>
-          <Button variant="outline" onClick={() => refetch()} disabled={isFetching}>
+          <Button
+            variant="outline"
+            onClick={() => refetch()}
+            disabled={isFetching}
+          >
             {isFetching ? "Refreshing..." : "Refresh"}
           </Button>
         </div>

@@ -29,7 +29,7 @@ export namespace EmailModel {
 
   export const createPdfResponse = t.Object({
     filename: t.String(),
-    content: t.String(), 
+    content: t.String(),
   });
   export type createPdfResponse = typeof createPdfResponse.static;
 }

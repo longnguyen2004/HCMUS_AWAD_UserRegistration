@@ -1,5 +1,10 @@
 import { backend } from "../backend";
-import { useQuery, useMutation, useQueryClient, keepPreviousData } from "@tanstack/react-query";
+import {
+  useQuery,
+  useMutation,
+  useQueryClient,
+  keepPreviousData,
+} from "@tanstack/react-query";
 
 type SearchTripParams = Parameters<typeof backend.trip.search.get>[0]["query"];
 export const useSearchTrips = (params: Partial<SearchTripParams>) =>
@@ -48,9 +53,9 @@ export const useCreateTrip = () => {
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["trip"] });
-    }
-  })
-}
+    },
+  });
+};
 
 export const useEditTrip = () => {
   const queryClient = useQueryClient();
@@ -62,6 +67,6 @@ export const useEditTrip = () => {
     },
     onSuccess: async () => {
       await queryClient.invalidateQueries({ queryKey: ["trip"] });
-    }
-  })
-}
+    },
+  });
+};

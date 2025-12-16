@@ -77,10 +77,12 @@ export namespace TripModel {
     departure: t.String({ format: "date-time" }),
     price: t.Optional(t.Integer()),
     status: t.Optional(t.String()),
-    stops: t.Array(t.Object({
-      id: t.String(),
-      duration: t.Nullable(t.Number())
-    })),
+    stops: t.Array(
+      t.Object({
+        id: t.String(),
+        duration: t.Nullable(t.Number()),
+      }),
+    ),
   });
   export type createBody = typeof createBody.static;
 

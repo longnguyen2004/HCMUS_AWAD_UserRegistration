@@ -222,10 +222,9 @@ export abstract class TicketService {
 
     if (!ticket) throw status(404, { message: "Ticket not found" });
 
-    const sortedStops = (ticket.trip?.tripBusStops || [])
-      .sort(
-          (a, b) => (a.order ?? 0) - (b.order ?? 0)
-      )
+    const sortedStops = (ticket.trip?.tripBusStops || []).sort(
+      (a, b) => (a.order ?? 0) - (b.order ?? 0),
+    );
 
     const createdAt = ticket.get("createdAt") as Date;
 
@@ -244,7 +243,7 @@ export abstract class TicketService {
         departure: ticket.trip?.departure as Date,
         arrival: ticket.trip?.arrival as Date,
         fromCity: sortedStops.at(0)!.busStop.city.name,
-        toCity: sortedStops.at(-1)!.busStop.city.name
+        toCity: sortedStops.at(-1)!.busStop.city.name,
       },
     } satisfies TicketModel.getResponse;
   }

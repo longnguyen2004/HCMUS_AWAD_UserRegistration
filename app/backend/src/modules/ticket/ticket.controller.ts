@@ -50,7 +50,7 @@ export const TicketController = new Elysia({ prefix: "/ticket" })
     {
       response: {
         200: TicketModel.getResponse,
-        404: TicketModel.notFound
+        404: TicketModel.notFound,
       },
     },
   )

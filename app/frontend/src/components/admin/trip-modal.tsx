@@ -63,7 +63,8 @@ export default function TripModal({
       setFormData({
         id: trip?.id,
         busId: trip?.busId,
-        departure: trip?.departure ?? format(new Date(), "yyyy-MM-dd'T'HH-mm'Z'"),
+        departure:
+          trip?.departure ?? format(new Date(), "yyyy-MM-dd'T'HH-mm'Z'"),
         price: trip?.price ?? 0,
       });
       setStops(trip?.stops || []);
@@ -85,12 +86,16 @@ export default function TripModal({
   const handleAddStop = () => {
     const newStop: Stop = {
       id: "",
-      duration: null
+      duration: null,
     };
     setStops([...stops, newStop]);
   };
 
-  const handleUpdateStop = <T extends keyof Stop>(stopIndex: number, key: T, value: Stop[T]) => {
+  const handleUpdateStop = <T extends keyof Stop>(
+    stopIndex: number,
+    key: T,
+    value: Stop[T],
+  ) => {
     const newStops = structuredClone(stops);
     newStops[stopIndex][key] = value;
     setStops(newStops);
@@ -143,7 +148,10 @@ export default function TripModal({
                   type="datetime-local"
                   value={formData.departure.replace("Z", "")}
                   onChange={(e) => {
-                    setFormData({ ...formData, departure: e.target.value + "Z" });
+                    setFormData({
+                      ...formData,
+                      departure: e.target.value + "Z",
+                    });
                     if (errors.departure)
                       setErrors({ ...errors, departure: "" });
                   }}
@@ -195,7 +203,12 @@ export default function TripModal({
             {/* Assigned Bus */}
             <div className="space-y-2">
               <label className="text-sm font-medium">Assigned Bus</label>
-              <Select value={formData.busId} onValueChange={(val) => setFormData({ ...formData, busId: val })}>
+              <Select
+                value={formData.busId}
+                onValueChange={(val) =>
+                  setFormData({ ...formData, busId: val })
+                }
+              >
                 <SelectTrigger className="bg-background">
                   <SelectValue placeholder="Select a bus">
                     {selectedBus?.licensePlate ?? undefined}
@@ -277,7 +290,9 @@ export default function TripModal({
                       </span>
                       <Select
                         value={stop.id}
-                        onValueChange={(value) => handleUpdateStop(idx, "id", value)}
+                        onValueChange={(value) =>
+                          handleUpdateStop(idx, "id", value)
+                        }
                       >
                         <SelectTrigger className="h-8 text-sm bg-background flex-1">
                           <SelectValue placeholder="Select a stop" />
@@ -296,11 +311,19 @@ export default function TripModal({
                             type="number"
                             min="0"
                             value={stop.duration || 0}
-                            onChange={(e) => handleUpdateStop(idx, "duration", Number.parseInt(e.target.value) || 0)}
+                            onChange={(e) =>
+                              handleUpdateStop(
+                                idx,
+                                "duration",
+                                Number.parseInt(e.target.value) || 0,
+                              )
+                            }
                             className="h-8 w-20 text-sm bg-background"
                             placeholder="0"
                           />
-                          <span className="text-xs text-muted-foreground whitespace-nowrap">min</span>
+                          <span className="text-xs text-muted-foreground whitespace-nowrap">
+                            min
+                          </span>
                         </div>
                       )}
                       <Button

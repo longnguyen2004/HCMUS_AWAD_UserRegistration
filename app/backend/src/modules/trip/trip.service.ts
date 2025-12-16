@@ -231,7 +231,7 @@ export abstract class TripService {
           tripId: trip.id,
           busStopId: stop,
           order: i + 1,
-          duration: i == 0 ? null : stop.duration
+          duration: i == 0 ? null : stop.duration,
         })),
         { transaction: t },
       );
@@ -262,24 +262,24 @@ export abstract class TripService {
 
     const result = await db.transaction(async (t) => {
       await trip.update(payload, { transaction: t });
-      
+
       // Delete existing trip bus stops
       await TripBusStop.destroy({
         where: { tripId: trip.id },
         transaction: t,
       });
-      
+
       // Create new trip bus stops
       await TripBusStop.bulkCreate(
         body.stops.map((stop, i) => ({
           tripId: trip.id,
           busStopId: stop.id,
           order: i + 1,
-          duration: i == 0 ? null : stop.duration
+          duration: i == 0 ? null : stop.duration,
         })),
         { transaction: t },
       );
-      
+
       return trip.id;
     });
 

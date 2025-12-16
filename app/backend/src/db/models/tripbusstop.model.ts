@@ -1,5 +1,11 @@
 import { DataTypes } from "sequelize";
-import { Table, Model, Column, PrimaryKey, AllowNull } from "sequelize-typescript";
+import {
+  Table,
+  Model,
+  Column,
+  PrimaryKey,
+  AllowNull,
+} from "sequelize-typescript";
 import { Trip, BusStop } from "./index.js";
 
 @Table

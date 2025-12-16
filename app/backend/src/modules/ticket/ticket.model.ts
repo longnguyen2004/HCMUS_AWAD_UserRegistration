@@ -98,7 +98,7 @@ export namespace TicketModel {
   export type processPaymentBody = typeof processPaymentBody.static;
 
   export const notFound = t.Object({
-    message: t.String()
+    message: t.String(),
   });
   export type notFound = typeof notFound.static;
 }

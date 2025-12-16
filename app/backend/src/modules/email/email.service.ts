@@ -40,12 +40,14 @@ export abstract class EmailService {
         doc.fontSize(10).text(`Ticket ID: ${body.ticketId}`);
         if (body.orderId) doc.text(`Order ID: ${body.orderId}`);
         if (body.passengerName) doc.text(`Passenger: ${body.passengerName}`);
-        if (body.licensePlate) doc.text(`Bus license plate: ${body.licensePlate}`);
+        if (body.licensePlate)
+          doc.text(`Bus license plate: ${body.licensePlate}`);
         if (body.seat) doc.text(`Seat: ${body.seat}`);
         if (body.tripId) doc.text(`Trip ID: ${body.tripId}`);
         if (body.fromCity) doc.text(`From: ${body.fromCity}`);
         if (body.toCity) doc.text(`To: ${body.toCity}`);
-        if (body.departure) doc.text(`Departure: ${formatDate(body.departure)}`);
+        if (body.departure)
+          doc.text(`Departure: ${formatDate(body.departure)}`);
         if (body.arrival) doc.text(`Arrival: ${formatDate(body.arrival)}`);
         if (body.price !== undefined) doc.text(`Price: ${body.price}`);
 
@@ -60,29 +62,29 @@ export abstract class EmailService {
   }
 
   static async sendMail(body: EmailModel.sendBody) {
-      const transporter = nodemailer.createTransport({
-        service: "gmail",
-        auth: {
-          user: `${env.EMAIL_SENDER}`,
-          pass: env.GOOGLE_APP_PASSWORD,
-        },
-      });
+    const transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: `${env.EMAIL_SENDER}`,
+        pass: env.GOOGLE_APP_PASSWORD,
+      },
+    });
 
-      const info = await transporter.sendMail({
-        from: `"TravelHub"<${env.EMAIL_SENDER}>`,
-        to: `${body.email}`,
-        subject: `${body.subject}`,
-        text: body.text,
-        html: body.html,
-        attachments: [
-          {
-            filename: body.filename,
-            content: body.content,
-            encoding: "base64",
-            contentType: "application/pdf",
-          },
-        ],
-      });
-      return info;
+    const info = await transporter.sendMail({
+      from: `"TravelHub"<${env.EMAIL_SENDER}>`,
+      to: `${body.email}`,
+      subject: `${body.subject}`,
+      text: body.text,
+      html: body.html,
+      attachments: [
+        {
+          filename: body.filename,
+          content: body.content,
+          encoding: "base64",
+          contentType: "application/pdf",
+        },
+      ],
+    });
+    return info;
   }
 }

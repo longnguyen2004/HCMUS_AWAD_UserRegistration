@@ -29,7 +29,7 @@ export default function RouteComponent() {
           params: { ticketId: createTicket.data.id },
         });
       }, 2000);
-  }, [createTicket])
+  }, [createTicket]);
 
   if (isLoading) {
     return (
