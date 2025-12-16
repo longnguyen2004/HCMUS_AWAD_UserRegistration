@@ -40,6 +40,8 @@ export default function UserManagement() {
               : filterStatus === "suspended"
                 ? true
                 : undefined,
+          sortBy: "createdAt",
+          sortDirection: sortOrder
         },
       }),
     placeholderData: keepPreviousData
