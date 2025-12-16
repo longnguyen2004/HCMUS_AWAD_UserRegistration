@@ -97,8 +97,8 @@ Students must input minus points to every uncompleted feature in the SE column.
 |  | › Create, edit, deactivate routes | \-0.25 |  |  | Manage routes with origin, destination, stops, distance |
 |  | › View route list | \-0.25 |  |  | List all routes with filters and pagination |
 |  | Bus Management |  |  |  |  |
-|  | › Create, edit, deactivate buses | \-0.25 |  |  | Manage buses with plate number, type, capacity |
-|  | › Configure seat map | \-0.5 |  |  | Visual seat map configuration tool |
+|  | › Create, edit, deactivate buses | \-0.25 | 0 |  | Manage buses with plate number, type, capacity |
+|  | › Configure seat map | \-0.5 | 0 |  | Visual seat map configuration tool |
 |  | › Upload bus photos | \-0.25 |  |  | Multi-image upload for buses |
 |  | Trip Management |  |  |  |  |
 |  | › View trip list | \-0.5 | 0 |  | List all trips with filters and pagination |
