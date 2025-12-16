@@ -56,7 +56,7 @@ export default function TripManagement() {
     //setTrips(trips.filter((trip) => trip.id !== id));
   };
 
-  const handleTripSave = async(trip: EditingTrip & { stops: Stops[] }) => {
+  const handleTripSave = async (trip: EditingTrip & { stops: Stops[] }) => {
     if (!trip.id) {
       await createTrip.mutateAsync(trip);
       if (createTrip.isSuccess)
@@ -80,7 +80,7 @@ export default function TripManagement() {
             {filteredAndSortedTrips.length} trips available
           </p>
         </div>
-        <Button className="gap-2" size="lg">
+        <Button className="gap-2" size="lg" onClick={() => { setEditingTrip(undefined); setTripEditOpen(true) }}>
           <Plus className="w-4 h-4" />
           Add Trip
         </Button>
