@@ -12,6 +12,7 @@ export namespace TripModel {
     data: t.Array(
       t.Object({
         id: t.String(),
+        bus_id: t.Optional(t.String()),
         departure: t.Date(),
         price: t.Integer(),
         stops: t.Array(

@@ -114,6 +114,7 @@ export abstract class TripService {
     });
     const prettyTrips = tripsWithRoute.map((trip) => ({
       id: trip.id,
+      bus_id: trip.busId,
       departure: trip.departure,
       arrival: trip.arrival,
       price: trip.price,

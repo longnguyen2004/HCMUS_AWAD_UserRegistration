@@ -1,4 +1,4 @@
-import TripModal, { type EditingTrip, type Stops } from "./trip-modal";
+import TripModal, { type EditingTrip, type Stop } from "./trip-modal";
 import { useState, useMemo } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -56,7 +56,7 @@ export default function TripManagement() {
     //setTrips(trips.filter((trip) => trip.id !== id));
   };
 
-  const handleTripSave = async (trip: EditingTrip & { stops: Stops[] }) => {
+  const handleTripSave = async (trip: EditingTrip & { stops: Stop[] }) => {
     if (!trip.id) {
       await createTrip.mutateAsync(trip);
       if (createTrip.isSuccess)
@@ -244,6 +244,7 @@ export default function TripManagement() {
                       onClick={() => {
                         setEditingTrip({
                           id: trip.id,
+                          busId: trip.bus_id,
                           departure: format(
                             trip.departure,
                             "yyyy-MM-dd'T'HH:mm'Z'",

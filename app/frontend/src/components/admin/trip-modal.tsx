@@ -17,11 +17,13 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Plus, Trash2 } from "lucide-react";
+import { useSearchBus, useGetBus } from "@/lib/crud/bus";
 import { useSearchBusStops } from "@/lib/crud/busstop";
 import { format } from "date-fns";
 
 export interface EditingTrip {
   id?: string;
+  busId?: string;
   departure: string;
   price: number;
 }
@@ -44,12 +46,14 @@ export default function TripModal({
   onSave,
 }: TripModalProps) {
   const { data: busStops } = useSearchBusStops({});
+  const { data: buses } = useSearchBus({});
   const [formData, setFormData] = useState<EditingTrip>({
     departure: format(new Date(), "yyyy-MM-dd'T'HH:mm'Z'"),
     price: 0,
   });
   const [stops, setStops] = useState<Stop[]>([]);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const { data: selectedBus } = useGetBus(formData.busId ?? "");
 
   const handleOpenChange = (open: boolean) => {
     if (!open) onClose();
@@ -58,6 +62,7 @@ export default function TripModal({
     if (isOpen) {
       setFormData({
         id: trip?.id,
+        busId: trip?.busId,
         departure: trip?.departure ?? format(new Date(), "yyyy-MM-dd'T'HH-mm'Z'"),
         price: trip?.price ?? 0,
       });
@@ -187,6 +192,24 @@ export default function TripModal({
               </div>*/}
             </div>
 
+            {/* Assigned Bus */}
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Assigned Bus</label>
+              <Select value={formData.busId} onValueChange={(val) => setFormData({ ...formData, busId: val })}>
+                <SelectTrigger className="bg-background">
+                  <SelectValue placeholder="Select a bus">
+                    {selectedBus?.licensePlate ?? undefined}
+                  </SelectValue>
+                </SelectTrigger>
+                <SelectContent>
+                  {(buses?.data ?? []).map((bus) => (
+                    <SelectItem key={bus.id} value={bus.id}>
+                      {bus.licensePlate}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
             {/* Amenities */}
             {/* <div className="space-y-2">
               <label className="text-sm font-medium">Amenities</label>
