@@ -141,22 +141,25 @@ export abstract class BusService {
         throw status(404, { error: "Not found" });
       }
 
-      const updates: Partial<Record<string, unknown>> = {};
-      if (body.licensePlate) updates.licensePlate = body.licensePlate;
-      if (body.model) updates.model = body.model;
-      if (body.status) updates.status = body.status;
+      await db.transaction(async (tx) => {
+        const updates: Partial<Record<string, unknown>> = {};
+        if (body.licensePlate) updates.licensePlate = body.licensePlate;
+        if (body.model) updates.model = body.model;
+        if (body.status) updates.status = body.status;
 
-      await bus.update(updates);
+        await bus.update(updates, { transaction: tx });
 
-      const updated = await Bus.findByPk(id, {
-        include: [{ model: Seat, as: "seats" }],
-        order: [
-          [{ model: Seat, as: "seats" }, "row", "ASC"],
-          [{ model: Seat, as: "seats" }, "col", "ASC"],
-        ],
+        if (body.seats) {
+          for (const seat of body.seats) {
+            await Seat.update(
+              { seatNumber: seat.seatNumber, row: seat.row, col: seat.col },
+              { where: { id: seat.id, busId: id }, transaction: tx },
+            );
+          }
+        }
       });
 
-      if (!updated) throw status(500, { error: "Could not reload bus" });
+      const updated = await bus.reload();
 
       return {
         id: updated.id,
