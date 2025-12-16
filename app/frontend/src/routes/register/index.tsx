@@ -33,6 +33,7 @@ export const Route = createFileRoute("/register/")({
 });
 
 type Inputs = {
+  name: string
   email: string;
   password: string;
 };
@@ -42,7 +43,7 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
   const { register, handleSubmit } = useForm<Inputs>();
   const createAccount = useMutation({
     mutationFn: async (data: Inputs) => {
-      const res = await backendAuth.signUp.email({ ...data, name: "" });
+      const res = await backendAuth.signUp.email(data);
       if (res.error) throw res.error;
       return res;
     },
@@ -66,6 +67,16 @@ export function SignupForm({ ...props }: React.ComponentProps<typeof Card>) {
           <CardContent>
             <form onSubmit={handleSubmit(onSubmit)}>
               <FieldGroup>
+                <Field>
+                  <FieldLabel htmlFor="name">Name</FieldLabel>
+                  <Input
+                    id="name"
+                    type="text"
+                    placeholder="John Doe"
+                    required
+                    {...register("name")}
+                  />
+                </Field>
                 <Field>
                   <FieldLabel htmlFor="email">Email</FieldLabel>
                   <Input
