@@ -1,6 +1,7 @@
-"use client";
-
-import { useState, useMemo } from "react";
+import { useState, useEffect } from "react";
+import { format } from "date-fns";
+import { useQuery, keepPreviousData } from "@tanstack/react-query";
+import { backendAuth } from "@/lib/backend";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -13,105 +14,40 @@ import {
 } from "@/components/ui/select";
 import { Lock, Unlock, Trash2, ArrowUpDown } from "lucide-react";
 
-interface User {
-  id: string;
-  name: string;
-  email: string;
-  phone: string;
-  joinDate: string;
-  bookings: number;
-  spent: number;
-  status: "active" | "suspended";
-}
-
-const mockUsers: User[] = [
-  {
-    id: "1",
-    name: "John Doe",
-    email: "john@example.com",
-    phone: "+1-555-0101",
-    joinDate: "2023-06-15",
-    bookings: 12,
-    spent: 540,
-    status: "active",
-  },
-  {
-    id: "2",
-    name: "Jane Smith",
-    email: "jane@example.com",
-    phone: "+1-555-0102",
-    joinDate: "2023-08-20",
-    bookings: 8,
-    spent: 320,
-    status: "active",
-  },
-  {
-    id: "3",
-    name: "Mike Johnson",
-    email: "mike@example.com",
-    phone: "+1-555-0103",
-    joinDate: "2023-10-10",
-    bookings: 0,
-    spent: 0,
-    status: "suspended",
-  },
-  {
-    id: "4",
-    name: "Sarah Wilson",
-    email: "sarah@example.com",
-    phone: "+1-555-0104",
-    joinDate: "2023-12-01",
-    bookings: 5,
-    spent: 225,
-    status: "active",
-  },
-  {
-    id: "5",
-    name: "Tom Brown",
-    email: "tom@example.com",
-    phone: "+1-555-0105",
-    joinDate: "2024-01-05",
-    bookings: 2,
-    spent: 90,
-    status: "active",
-  },
-];
+const USERS_PER_PAGE = 10;
 
 export default function UserManagement() {
-  const [users, setUsers] = useState<User[]>(mockUsers);
+  const [page, setPage] = useState(0);
   const [searchTerm, setSearchTerm] = useState("");
-  const [filterStatus, setFilterStatus] = useState("all");
+  const [filterStatus, setFilterStatus] = useState<
+    "all" | "active" | "suspended"
+  >("all");
   const [sortBy, setSortBy] = useState("joinDate");
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
+  const { data: users, refetch: refetchUser } = useQuery({
+    queryKey: ["users", { searchTerm, filterStatus, sortOrder }],
+    queryFn: () =>
+      backendAuth.admin.listUsers({
+        query: {
+          offset: page * USERS_PER_PAGE,
+          limit: USERS_PER_PAGE,
+          searchValue: searchTerm,
+          searchOperator: "contains",
+          filterField: "banned",
+          filterValue:
+            filterStatus === "active"
+              ? false
+              : filterStatus === "suspended"
+                ? true
+                : undefined,
+        },
+      }),
+    placeholderData: keepPreviousData
+  });
 
-  const filteredAndSortedUsers = useMemo(() => {
-    const result = users.filter((user) => {
-      const matchesSearch =
-        user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        user.email.toLowerCase().includes(searchTerm.toLowerCase());
-      const matchesStatus =
-        filterStatus === "all" || user.status === filterStatus;
-      return matchesSearch && matchesStatus;
-    });
-
-    result.sort((a, b) => {
-      let aVal = a[sortBy as keyof User];
-      let bVal = b[sortBy as keyof User];
-
-      if (typeof aVal === "string" && typeof bVal === "string") {
-        aVal = aVal.toLowerCase();
-        bVal = bVal.toLowerCase();
-      }
-
-      if (sortOrder === "asc") {
-        return aVal > bVal ? 1 : -1;
-      } else {
-        return aVal < bVal ? 1 : -1;
-      }
-    });
-
-    return result;
-  }, [users, searchTerm, filterStatus, sortBy, sortOrder]);
+  useEffect(() => {
+    setPage(0);
+  }, [searchTerm, filterStatus]);
 
   const toggleSort = (field: string) => {
     if (sortBy === field) {
@@ -122,32 +58,22 @@ export default function UserManagement() {
     }
   };
 
-  const toggleUserStatus = (id: string) => {
-    setUsers(
-      users.map((user) =>
-        user.id === id
-          ? {
-              ...user,
-              status: user.status === "active" ? "suspended" : "active",
-            }
-          : user,
-      ),
-    );
+  const setUserStatus = async (id: string, banned: boolean) => {
+    if (banned) await backendAuth.admin.banUser({ userId: id });
+    else await backendAuth.admin.unbanUser({ userId: id });
+    refetchUser();
   };
 
-  const handleDelete = (id: string) => {
-    setUsers(users.filter((user) => user.id !== id));
+  const handleDelete = async (id: string) => {
+    await backendAuth.admin.removeUser({ userId: id });
+    refetchUser();
   };
 
   return (
     <div className="space-y-6">
       <div>
         <h2 className="text-3xl font-bold text-foreground">Manage Users</h2>
-        <p className="text-sm text-muted-foreground mt-1">
-          {filteredAndSortedUsers.length} users found
-        </p>
       </div>
-
       <Card>
         <CardHeader>
           <CardTitle>Filters & Search</CardTitle>
@@ -179,123 +105,142 @@ export default function UserManagement() {
         </CardContent>
       </Card>
 
-      <div className="overflow-x-auto">
-        <table className="w-full">
-          <thead>
-            <tr className="border-b border-border bg-muted/50">
-              <th className="px-4 py-3 text-left font-semibold text-sm">
-                <button
-                  onClick={() => toggleSort("name")}
-                  className="flex items-center gap-2 hover:text-primary"
-                >
-                  Name{" "}
-                  {sortBy === "name" && <ArrowUpDown className="w-4 h-4" />}
-                </button>
-              </th>
-              <th className="px-4 py-3 text-left font-semibold text-sm">
-                Email
-              </th>
-              <th className="px-4 py-3 text-left font-semibold text-sm">
-                Phone
-              </th>
-              <th className="px-4 py-3 text-left font-semibold text-sm">
-                <button
-                  onClick={() => toggleSort("joinDate")}
-                  className="flex items-center gap-2 hover:text-primary"
-                >
-                  Joined{" "}
-                  {sortBy === "joinDate" && <ArrowUpDown className="w-4 h-4" />}
-                </button>
-              </th>
-              <th className="px-4 py-3 text-left font-semibold text-sm">
-                <button
-                  onClick={() => toggleSort("bookings")}
-                  className="flex items-center gap-2 hover:text-primary"
-                >
-                  Bookings{" "}
-                  {sortBy === "bookings" && <ArrowUpDown className="w-4 h-4" />}
-                </button>
-              </th>
-              <th className="px-4 py-3 text-left font-semibold text-sm">
-                <button
-                  onClick={() => toggleSort("spent")}
-                  className="flex items-center gap-2 hover:text-primary"
-                >
-                  Spent{" "}
-                  {sortBy === "spent" && <ArrowUpDown className="w-4 h-4" />}
-                </button>
-              </th>
-              <th className="px-4 py-3 text-left font-semibold text-sm">
-                Status
-              </th>
-              <th className="px-4 py-3 text-left font-semibold text-sm">
-                Actions
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredAndSortedUsers.map((user) => (
-              <tr
-                key={user.id}
-                className="border-b border-border hover:bg-muted/50 transition"
-              >
-                <td className="px-4 py-4 font-medium">{user.name}</td>
-                <td className="px-4 py-4 text-sm text-muted-foreground">
-                  {user.email}
-                </td>
-                <td className="px-4 py-4 text-sm">{user.phone}</td>
-                <td className="px-4 py-4 text-sm">{user.joinDate}</td>
-                <td className="px-4 py-4 font-medium">{user.bookings}</td>
-                <td className="px-4 py-4 font-semibold text-accent">
-                  ${user.spent}
-                </td>
-                <td className="px-4 py-4">
-                  <span
-                    className={`inline-block px-3 py-1 text-xs font-medium rounded-full ${
-                      user.status === "active"
-                        ? "bg-green-100 text-green-800"
-                        : "bg-yellow-100 text-yellow-800"
-                    }`}
-                  >
-                    {user.status.charAt(0).toUpperCase() + user.status.slice(1)}
-                  </span>
-                </td>
-                <td className="px-4 py-4">
-                  <div className="flex gap-2">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => toggleUserStatus(user.id)}
-                      className="gap-1"
+      {!users ? (
+        <div>Loading...</div>
+      ) : users.error ? (
+        <div>Failed to load users: {users.error.message}</div>
+      ) : (
+        <>
+          <div>
+            <p className="text-sm text-muted-foreground mt-1">
+              {users?.data?.total} users found
+            </p>
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead>
+                <tr className="border-b border-border bg-muted/50">
+                  <th className="px-4 py-3 text-left font-semibold text-sm">
+                    <button
+                      onClick={() => toggleSort("name")}
+                      className="flex items-center gap-2 hover:text-primary"
                     >
-                      {user.status === "active" ? (
-                        <>
-                          <Lock className="w-4 h-4" />
-                          <span className="hidden sm:inline">Suspend</span>
-                        </>
-                      ) : (
-                        <>
-                          <Unlock className="w-4 h-4" />
-                          <span className="hidden sm:inline">Activate</span>
-                        </>
+                      Name{" "}
+                      {sortBy === "name" && <ArrowUpDown className="w-4 h-4" />}
+                    </button>
+                  </th>
+                  <th className="px-4 py-3 text-left font-semibold text-sm">
+                    Email
+                  </th>
+                  <th className="px-4 py-3 text-left font-semibold text-sm">
+                    Phone
+                  </th>
+                  <th className="px-4 py-3 text-left font-semibold text-sm">
+                    <button
+                      onClick={() => toggleSort("joinDate")}
+                      className="flex items-center gap-2 hover:text-primary"
+                    >
+                      Joined{" "}
+                      {sortBy === "joinDate" && (
+                        <ArrowUpDown className="w-4 h-4" />
                       )}
-                    </Button>
-                    <Button
-                      variant="destructive"
-                      size="sm"
-                      onClick={() => handleDelete(user.id)}
-                      className="gap-1"
+                    </button>
+                  </th>
+                  <th className="px-4 py-3 text-left font-semibold text-sm">
+                    <button
+                      onClick={() => toggleSort("bookings")}
+                      className="flex items-center gap-2 hover:text-primary"
                     >
-                      <Trash2 className="w-4 h-4" />
-                      <span className="hidden sm:inline">Delete</span>
-                    </Button>
-                  </div>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+                      Bookings{" "}
+                      {sortBy === "bookings" && (
+                        <ArrowUpDown className="w-4 h-4" />
+                      )}
+                    </button>
+                  </th>
+                  <th className="px-4 py-3 text-left font-semibold text-sm">
+                    <button
+                      onClick={() => toggleSort("spent")}
+                      className="flex items-center gap-2 hover:text-primary"
+                    >
+                      Spent{" "}
+                      {sortBy === "spent" && (
+                        <ArrowUpDown className="w-4 h-4" />
+                      )}
+                    </button>
+                  </th>
+                  <th className="px-4 py-3 text-left font-semibold text-sm">
+                    Status
+                  </th>
+                  <th className="px-4 py-3 text-left font-semibold text-sm">
+                    Actions
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {users.data.users.map((user) => (
+                  <tr
+                    key={user.id}
+                    className="border-b border-border hover:bg-muted/50 transition"
+                  >
+                    <td className="px-4 py-4 font-medium">{user.name}</td>
+                    <td className="px-4 py-4 text-sm text-muted-foreground">
+                      {user.email}
+                    </td>
+                    <td className="px-4 py-4 text-sm">0123456789</td>
+                    <td className="px-4 py-4 text-sm">
+                      {format(user.createdAt, "yyyy-MM-dd HH:mm")}
+                    </td>
+                    <td className="px-4 py-4 font-medium">1</td>
+                    <td className="px-4 py-4 font-semibold text-accent">$1</td>
+                    <td className="px-4 py-4">
+                      <span
+                        className={`inline-block px-3 py-1 text-xs font-medium rounded-full ${
+                          !user.banned
+                            ? "bg-green-100 text-green-800"
+                            : "bg-yellow-100 text-yellow-800"
+                        }`}
+                      >
+                        {user.banned ? "Suspended" : "Active"}
+                      </span>
+                    </td>
+                    <td className="px-4 py-4">
+                      <div className="flex gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setUserStatus(user.id, !user.banned)}
+                          className="gap-1"
+                        >
+                          {!user.banned ? (
+                            <>
+                              <Lock className="w-4 h-4" />
+                              <span className="hidden sm:inline">Suspend</span>
+                            </>
+                          ) : (
+                            <>
+                              <Unlock className="w-4 h-4" />
+                              <span className="hidden sm:inline">Activate</span>
+                            </>
+                          )}
+                        </Button>
+                        <Button
+                          variant="destructive"
+                          size="sm"
+                          onClick={() => handleDelete(user.id)}
+                          className="gap-1"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                          <span className="hidden sm:inline">Delete</span>
+                        </Button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </>
+      )}
     </div>
   );
 }
