@@ -11,7 +11,7 @@ export class Review extends Model {
   declare trip: Trip;
 
   @PrimaryKey
-  @Column({ type: DataTypes.STRING })
+  @Column({ type: DataTypes.TEXT })
   declare userId: string;
 
   @Column({ type: DataTypes.INTEGER })

@@ -1,8 +1,10 @@
 import { Elysia } from "elysia";
 import { ReviewModel } from "./review.model.js";
 import { ReviewService } from "./review.service.js";
+import { authGuard } from "../auth/index.js";
 
 export const ReviewController = new Elysia({ prefix: "/review" })
+  .use(authGuard)
   .get(
     "/:id",
     async ({ params: { id }, query }) => {
@@ -17,12 +19,13 @@ export const ReviewController = new Elysia({ prefix: "/review" })
     },
   )
   .post(
-    "/:tripId/:userId",
-    async ({ body, params: { tripId, userId } }) => {
-      const response = await ReviewService.create(body, tripId, userId);
+    "/:tripId",
+    async ({ body, params: { tripId }, user }) => {
+      const response = await ReviewService.create(body, tripId, user);
       return response;
     },
     {
+      auth: true,
       body: ReviewModel.createBody,
       response: {
         200: ReviewModel.createResponse,

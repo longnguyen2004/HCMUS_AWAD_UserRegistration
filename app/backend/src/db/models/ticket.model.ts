@@ -21,7 +21,7 @@ export class Ticket extends Model {
 
   declare seat: Seat;
 
-  @Column({ type: DataTypes.UUID, allowNull: true })
+  @Column({ type: DataTypes.TEXT, allowNull: true })
   declare userId?: string;
 
   @Column({ type: DataTypes.INTEGER })

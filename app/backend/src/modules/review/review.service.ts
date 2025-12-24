@@ -1,8 +1,15 @@
 import { Trip } from "../../db/models/trip.model.js";
 import { ReviewModel } from "./review.model.js";
 import { status } from "elysia";
-import { AuthService } from "../../lib/auth.js";
 import { Review } from "../../db/models/review.model.js";
+import { db } from "../../db/db.js";
+import { QueryTypes } from "sequelize";
+
+interface AuthUser {
+  id: string;
+  name?: string | null;
+  email?: string | null;
+}
 
 const REVIEWS_PER_PAGE = 5;
 
@@ -10,24 +17,24 @@ export abstract class ReviewService {
   static async create(
     body: ReviewModel.createBody,
     tripId: string,
-    userId: string,
+    user: AuthUser,
   ): Promise<ReviewModel.createResponse> {
+
     const trip = await Trip.findByPk(tripId);
     if (!trip) throw status(404, { message: "Trip not found" });
 
-    const user = await AuthService.api.getUser({ query: { id: userId } });
-    if (!user) throw status(404, { message: "User not found" });
+    console.log(user.id)
 
     const payload = {
       tripId: trip.id,
-      userId: userId,
+      userId: user.id,
       star: body.star,
-      message: body.message,
+      message: body.message ?? null,
     };
 
     const review = await Review.create(payload);
     return {
-      email: user.email,
+      name: user.name ?? user.email ?? "",
       star: review.star,
       message: review.message ?? undefined,
     };
@@ -44,31 +51,41 @@ export abstract class ReviewService {
     const per_page = REVIEWS_PER_PAGE;
     const offset = (page - 1) * per_page;
 
-    const result = await Review.findAndCountAll({
-      where: { tripId: trip.id },
-      limit: per_page,
-      offset,
-      order: [["createdAt", "DESC"]],
-    });
-
-    const rows = result.rows as Review[];
-
-    const data = await Promise.all(
-      rows.map(async (r) => {
-        let email = "";
-        const user = await AuthService.api.getUser({ query: { id: r.userId } });
-        email = user?.email ?? "";
-        return {
-          email,
-          star: r.star,
-          message: r.message ?? undefined,
-        };
-      }),
+    const countResult = await db.query<{ count: number }>(
+      `SELECT COUNT(*)::int AS count FROM "Reviews" WHERE "tripId" = :tripId`,
+      {
+        type: QueryTypes.SELECT,
+        replacements: { tripId: trip.id },
+      },
     );
+    const total = Number(countResult[0]?.count ?? 0);
+
+    const rows = await db.query<{
+      name?: string | null;
+      star: number;
+      message?: string | null;
+    }>(
+      `SELECT r.*, COALESCE(NULLIF(u.name, ''), u.email) as name
+       FROM "Reviews" r
+       LEFT JOIN "user" u ON u.id::text = r."userId"
+       WHERE r."tripId" = :tripId
+       ORDER BY r."createdAt" DESC
+       LIMIT :limit OFFSET :offset`,
+      {
+        type: QueryTypes.SELECT,
+        replacements: { tripId: trip.id, limit: per_page, offset },
+      },
+    );
+
+    const data = rows.map((r) => ({
+      name: r.name ?? "",
+      star: r.star,
+      message: r.message ?? undefined,
+    }));
 
     return {
       data,
-      total: result.count as number,
+      total,
       page,
       per_page,
     };

@@ -8,7 +8,7 @@ export namespace ReviewModel {
   export type createBody = typeof createBody.static;
 
   export const createResponse = t.Object({
-    email: t.String(),
+    name: t.String(),
     star: t.Numeric(),
     message: t.Optional(t.String()),
   });
@@ -22,7 +22,7 @@ export namespace ReviewModel {
   export const getAllResponse = t.Object({
     data: t.Array(
       t.Object({
-        email: t.String(),
+        name: t.String(),
         star: t.Numeric(),
         message: t.Optional(t.String()),
       }),
