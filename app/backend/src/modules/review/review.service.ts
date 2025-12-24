@@ -20,7 +20,7 @@ export abstract class ReviewService {
 
     const payload = {
       tripId: trip.id,
-      user: user.id,
+      userId: userId,
       star: body.star,
       message: body.message,
     };

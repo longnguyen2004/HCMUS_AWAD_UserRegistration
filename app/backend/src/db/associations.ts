@@ -12,6 +12,9 @@ export function setupAssociations() {
 
   Models.Trip.belongsTo(Models.Bus, { foreignKey: "busId", as: "bus" });
 
+  Models.Review.belongsTo(Models.Trip, { foreignKey: "tripId", as: "trip" });
+  Models.Trip.hasMany(Models.Review, { foreignKey: "tripId", as: "reviews" });
+
   Models.TripBusStop.belongsTo(Models.Trip, {
     foreignKey: "tripId",
     as: "trip",

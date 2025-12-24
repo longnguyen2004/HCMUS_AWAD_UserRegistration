@@ -13,6 +13,7 @@ export const db = new Sequelize(env.DB_CONNECTION_STRING, {
     Models.Bus,
     Models.Ticket,
     Models.Seat,
+    Models.Review
   ],
   dialect: "postgres",
   dialectModule: pg,

@@ -11,10 +11,10 @@ export class Review extends Model {
   declare trip: Trip;
 
   @PrimaryKey
-  @Column({ type: DataTypes.UUID })
+  @Column({ type: DataTypes.STRING })
   declare userId: string;
 
-  @Column({ type: DataTypes.TINYINT })
+  @Column({ type: DataTypes.INTEGER })
   declare star: number;
 
   @Column({ type: DataTypes.STRING })
