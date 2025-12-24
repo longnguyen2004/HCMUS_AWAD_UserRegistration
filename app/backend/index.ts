@@ -10,6 +10,7 @@ import { TicketController } from "./src/modules/ticket/ticket.controller.js";
 import BusController from "./src/modules/bus/bus.controller.js";
 import { EmailController } from "./src/modules/email/email.controller.js";
 import { ReviewController } from "./src/modules/review/review.controller.js";
+import { UserController } from "./src/modules/user/user.controller.js";
 
 const app = new Elysia({ adapter: node() })
   .use(cors())
@@ -21,6 +22,7 @@ const app = new Elysia({ adapter: node() })
   .use(BusController)
   .use(EmailController)
   .use(ReviewController)
+  .use(UserController)
   .listen(3000);
 
 export type App = typeof app;

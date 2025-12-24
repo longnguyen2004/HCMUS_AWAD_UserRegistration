@@ -20,6 +20,14 @@ export const AuthService = betterAuth({
     "https://hcmus-awad-busticket.vercel.app",
   ],
   plugins: [admin()],
+  user: {
+    additionalFields: {
+      phone: {
+        type: "string",
+        required: false,
+      },
+    },
+  },
 });
 
 export const auth = AuthService;
