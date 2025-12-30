@@ -15,6 +15,9 @@ export class Bus extends Model {
   declare licensePlate: string;
 
   @Column({ type: DataTypes.STRING })
+  declare image: string;
+
+  @Column({ type: DataTypes.STRING })
   declare model: string;
 
   @Column({ type: DataTypes.INTEGER })
