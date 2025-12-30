@@ -75,7 +75,7 @@ Students must input minus points to every uncompleted feature in the SE column.
 |  | Use a popular authentication library | \-1 | 0 |  | Passport.js with JWT strategy |
 |  | Registration (Customer Signup) | \-0.5 | 0 |  | Customer registration with email/phone/password. Real-time email availability check |
 |  | Verify user input: password complexity, full name | \-0.25 | 0 |  | Password rules, required fields validation |
-|  | Account activation by email | \-0.25 |  |  | Email verification link sent on signup |
+|  | Account activation by email | \-0.25 | 0 |  | Email verification link sent on signup |
 |  | Social Sign-up/Sign-In | \-0.25 | 0 |  | Google/Facebook OAuth integration |
 |  | Login to the website | \-0.25 | 0 |  | JWT-based authentication for admin/users |
 |  | Authorize website features | \-0.25 | 0 |  | Role-based access control (Admin, Customer) |
