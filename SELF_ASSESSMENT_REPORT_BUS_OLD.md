@@ -26,13 +26,13 @@ Students must input minus points to every uncompleted feature in the SE column.
 | ----- | :---- | ----- | :---- | :---- | :---- |
 |  |  | **Point** | **SE\*** | **TR\*** |  |
 | **1** | **Overall requirements** |  |  |  |  |
-|  | User-centered design | \-5 |0  |  | Built with user experience in mind. Focus on solving real booking problems: seamless trip search, interactive seat selection, efficient booking flow, and convenient payment options |
+|  | User-centered design | \-5 | 0 |  | Built with user experience in mind. Focus on solving real booking problems: seamless trip search, interactive seat selection, efficient booking flow, and convenient payment options |
 |  | Database design | \-1 | 0 |  | Database with tables: users, routes, buses, trips, seats, bookings, booking_details, payments, ratings, notifications |
 |  | Database mock data | \-1 | 0 |  | Sample routes, buses, trips, seats, and test bookings |
 |  | Website layout | \-2 | 0 |  | Two layouts: Customer booking interface and Admin dashboard |
 |  | Website architect | \-3 | 0 |  | Based on MVC architecture. Clear separation of concerns with controllers, services, repositories. Client-side validation, Input validation, Business rule validation |
-|  | Website stability and compatibility | \-4 | 0 |  | Responsive design, tested on Chrome, Safari, Firefox, and Edge |
-|  | Document | \-2 | 0 |  | Clear documentation for developers and users: setup guide, API endpoints (Swagger/OpenAPI), database design, system architecture, user guide |
+|  | Website stability and compatibility | \-2 | 0 |  | Responsive design, tested on Chrome, Safari, Firefox, and Edge |
+|  | Document | \-1 | |  | Clear documentation for developers and users: setup guide, API endpoints (Swagger/OpenAPI), database design, system architecture, user guide |
 |  | Demo video | \-5 | 0 |  | Video demonstrating all features: user signup, trip search, seat selection, booking, payment, e-ticket, admin management |
 |  | Publish to public hosts | \-1 | 0 |  | Deployed to a public hosting service (AWS/GCP/Azure) with accessible URL |
 |  | Development progress is recorded in Github | \-7 | 0 |  | Git history with meaningful commits, branches for features, pull requests |
@@ -59,26 +59,25 @@ Students must input minus points to every uncompleted feature in the SE column.
 |  | › Input passenger details | \-0.25 | 0 |  | Passenger name, phone, email, ID number |
 |  | › Select pickup/dropoff points | \-0.25 |  |  | Choose pickup and dropoff locations along the route |
 |  | › View booking summary | \-0.25 | 0 |  | Booking confirmation with trip details, seats, total price |
-|  | › Process payment | \-0.25 | 0 |  | Payment gateway integration |
-|  | › Receive e-ticket | \-0.25 | 0 |  | E-ticket generation and delivery via email |
+|  | › Process payment | \-0.25 |  |  | PayOS payment gateway integration |
+|  | › Receive e-ticket | \-0.25 | 0 |  | E-ticket generation and delivery via email/SMS |
 |  | AI Chatbot |  |  |  |  |
 |  | › AI-powered trip search | \-0.25 |  |  | OpenAI-powered chatbot for trip search assistance |
 |  | › AI booking assistance | \-0.25 |  |  | Chatbot helps users complete booking flow |
 |  | Real-time features |  |  |  |  |
 |  | › Real-time seat locking | \-0.5 |  |  | Concurrent booking handling with seat locking mechanism |
 |  | › WebSocket real-time updates | \-0.5 |  |  | Socket.IO for real-time: seat availability, booking confirmations, trip status notifications |
-|  | Payment system integration | \-0.5 | 0 |  | Payment gateway integration (Stripe, PayOS, VNPay, MoMo, etc.) |
+|  | Payment system integration | \-0.5 | 0 |  | PayOS payment gateway integration |
 |  | Fulltext search | \-0.25 |  |  | Fulltext search for route/station search |
 |  | E-ticket with QR code | \-0.25 |  |  | Generate e-tickets with QR code for check-in |
-|  | Email notifications | \-0.25 | 0 |  | Email notifications for booking confirmations and reminders |
 | **3** | **Authentication and authorization** |  |  |  |  |
 |  | Use a popular authentication library | \-1 | 0 |  | Passport.js with JWT strategy |
 |  | Registration (Customer Signup) | \-0.5 | 0 |  | Customer registration with email/phone/password. Real-time email availability check |
-|  | Verify user input: password complexity, full name | \-0.25 | 0 |  | Password rules, required fields validation |
+|  | Verify user input: password complexity, full name | \-0.25 |  |  | Password rules, required fields validation |
 |  | Account activation by email | \-0.25 |  |  | Email verification link sent on signup |
 |  | Social Sign-up/Sign-In | \-0.25 | 0 |  | Google/Facebook OAuth integration |
 |  | Login to the website | \-0.25 | 0 |  | JWT-based authentication for admin/users |
-|  | Authorize website features | \-0.25 | 0 |  | Role-based access control (Admin, Customer) |
+|  | Authorize website features | \-0.25 | 0 |  | Role-based access control (Admin, Staff, Customer) |
 |  | Forgot password by email | \-0.25 |  |  | Password reset via email link |
 | **4** | **Features for logged-in users (Customers)** |  |  |  |  |
 |  | Update user profile | \-0.25 |  |  | Customer can update name, phone, preferences |
@@ -91,7 +90,7 @@ Students must input minus points to every uncompleted feature in the SE column.
 |  | › Cancel booking | \-0.25 |  |  | Cancel booking with refund policy display |
 |  | › Download e-ticket | \-0.25 | 0 |  | Download ticket as PDF |
 |  | › Real-time trip updates | 0.5 |  |  | WebSocket-based live trip status updates (delays, cancellations) |
-| **5** | **Administration features** |  |  |  |  |
+| **5** | **Administration features (Bus Operator Admin)** |  |  |  |  |
 |  | Update admin profile | \-0.25 |  |  | Admin profile management |
 |  | Dashboard overview | \-0.5 |  |  | Dashboard with key metrics: total bookings, revenue, upcoming trips |
 |  | Route Management |  |  |  |  |
@@ -100,7 +99,7 @@ Students must input minus points to every uncompleted feature in the SE column.
 |  | Bus Management |  |  |  |  |
 |  | › Create, edit, deactivate buses | \-0.25 | 0 |  | Manage buses with plate number, type, capacity |
 |  | › Configure seat map | \-0.5 | 0 |  | Visual seat map configuration tool |
-|  | › Upload bus photos | \-0.25 | 0 |  | Multi-image upload for buses |
+|  | › Upload bus photos | \-0.25 |  |  | Multi-image upload for buses |
 |  | Trip Management |  |  |  |  |
 |  | › View trip list | \-0.5 | 0 |  | List all trips with filters and pagination |
 |  | › Filter trips by route, date, status | \-0.25 |  |  | Search and filter trips |
@@ -121,14 +120,7 @@ Students must input minus points to every uncompleted feature in the SE column.
 |  | › View revenue report in time range | \-0.25 |  |  | Daily, weekly, monthly revenue reports |
 |  | › View top routes by bookings | \-0.25 |  |  | Most popular routes report |
 |  | › Show interactive chart in reports | \-0.25 |  |  | Chart.js/Recharts for analytics dashboard (bookings/day, revenue trends, popular routes) |
-|  | User Management |  |  |  |  |
-|  | › Create admin accounts | \-0.25 |  |  | Create new admin accounts |
-|  | › Manage admin accounts | \-0.25 |  |  | View, edit, deactivate admin accounts |
-|  | Trip Operations |  |  |  |  |
-|  | › View passenger list | \-0.25 |  |  | List of passengers for each trip |
-|  | › Check-in passengers | \-0.25 |  |  | Mark passengers as boarded |
-|  | › Update trip status (operations) | \-0.25 |  |  | Mark trip as departed, arrived |
-| **6** | **Advanced features** |  |  |  |  |
+| **7** | **Advanced features** |  |  |  |  |
 |  | Use memory cache to boost performance | 0.25 |  |  | Redis for trip caching and session management |
 |  | Dockerize your project | 0.25 |  |  | Docker containers for backend, frontend, database |
 |  | CI/CD | 0.25 |  |  | Automated testing and deployment pipeline (GitHub Actions, GitLab CI, Jenkins, etc.) |
@@ -163,7 +155,7 @@ Students must input minus points to every uncompleted feature in the SE column.
 - Customers to search for bus trips with autocomplete and filtering
 - Interactive seat selection with real-time availability updates
 - Complete booking flow with passenger details and payment processing
-- E-ticket generation and delivery via email
+- E-ticket generation and delivery via email/SMS
 - Guest checkout without account registration
 - AI chatbot support for trip search and booking assistance
 - Admin dashboard for managing routes, buses, trips, and bookings
@@ -177,21 +169,21 @@ Students must input minus points to every uncompleted feature in the SE column.
 - **Backend:** NodeJS with Express/NestJS
 - **Database:** PostgreSQL
 - **Authentication:** Passport.js with JWT
-- **Payment:** Stripe, PayOS, VNPay, MoMo, or other payment gateways
+- **Payment:** PayOS Gateway
 - **Real-time:** Socket.IO / WebSocket
 - **Caching:** Redis
 - **AI:** OpenAI API for chatbot
-- **Notifications:** SendGrid, AWS SES, Nodemailer, or other email services
+- **Notifications:** SendGrid/AWS SES (Email), Twilio (SMS)
 - **Infrastructure:** Docker, GitHub Actions (CI/CD)
 - **API Documentation:** Swagger/OpenAPI
 - **Hosting:** AWS/GCP/Azure
 
 ## Key User Flows
-1. **System Setup:** Admin login -> Route Creation -> Bus Setup -> Trip Scheduling
+1. **System Setup:** Super Admin creates Admin account -> Admin login -> Route Creation -> Bus Setup -> Trip Scheduling
 2. **Customer Registration:** Sign up -> Email Verification -> Login -> Access booking history
 3. **Trip Booking:** Search Trip -> Select Trip -> Choose Seats -> Enter Details -> Payment -> Receive E-ticket
 4. **Guest Booking:** Search Trip -> Select Trip -> Choose Seats -> Enter Details (no account) -> Payment -> Receive E-ticket
-5. **Trip Management:** Admin Creates Trip -> Assigns Bus -> Configures Stops -> Trip Active -> Passengers Book -> Admin Checks-in Passengers -> Trip Departs -> Trip Completes
+5. **Trip Management:** Admin Creates Trip -> Assigns Bus -> Configures Stops -> Trip Active -> Passengers Book -> Trip Departs -> Trip Completes
 
 ## Development Timeline
 | Week | Focus | Key Deliverables |
@@ -199,7 +191,7 @@ Students must input minus points to every uncompleted feature in the SE column.
 | Week 1 | Infrastructure, auth, admin basics | Project setup, authentication, basic admin dashboard |
 | Week 2 | Trip management, search functionality | Route/bus/trip CRUD, search with filters |
 | Week 3 | Booking system, seat selection, ticketing | Seat map, booking flow, e-ticket generation |
-| Week 4 | Payments, notifications, analytics | Payment gateway integration, email notifications, reports |
+| Week 4 | Payments, notifications, analytics | PayOS integration, email/SMS, reports |
 | Week 5 | AI chatbot, testing, deployment | OpenAI chatbot, >70% test coverage, production deployment |
 
 ---
