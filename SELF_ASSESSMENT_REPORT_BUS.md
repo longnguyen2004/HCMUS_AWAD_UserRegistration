@@ -49,8 +49,8 @@ Students must input minus points to every uncompleted feature in the SE column.
 |  | View trip details | \-0.25 | 0 |  | Trip detail page with full route info, stops, amenities, bus details |
 |  | View seat availability | \-0.25 | 0 |  | Display seat map with available/booked status |
 |  | Show related trips | \-0.25 |  |  | Suggest alternative trips on same route or similar dates |
-|  | View list of trip reviews | \-0.5 |  |  | Customer reviews and ratings for bus operators with pagination |
-|  | Add a new trip review | \-0.25 |  |  | Logged-in customers can review trips they completed |
+|  | View list of trip reviews | \-0.5 | - |  | Customer reviews and ratings for bus operators with pagination |
+|  | Add a new trip review | \-0.25 | - |  | Logged-in customers can review trips they completed |
 |  | Seat Selection |  |  |  |  |
 |  | › Interactive seat map | \-0.25 | 0 |  | Visual seat selection with real-time availability updates |
 |  | › View and update selected seats | \-0.5 | 0 |  | Seat selection summary with prices. Update selection with auto-update totals |
@@ -79,21 +79,21 @@ Students must input minus points to every uncompleted feature in the SE column.
 |  | Social Sign-up/Sign-In | \-0.25 | 0 |  | Google/Facebook OAuth integration |
 |  | Login to the website | \-0.25 | 0 |  | JWT-based authentication for admin/users |
 |  | Authorize website features | \-0.25 | 0 |  | Role-based access control (Admin, Customer) |
-|  | Forgot password by email | \-0.25 |  |  | Password reset via email link |
+|  | Forgot password by email | \-0.25 | - |  | Password reset via email link |
 | **4** | **Features for logged-in users (Customers)** |  |  |  |  |
-|  | Update user profile | \-0.25 |  |  | Customer can update name, phone, preferences |
-|  | Verify user input | \-0.25 |  |  | Input validation on profile updates |
-|  | Update the user's avatar | \-0.25 |  |  | Profile photo upload |
-|  | Update password | \-0.25 |  |  | Change password with old password verification |
+|  | Update user profile | \-0.25 | - |  | Customer can update name, phone, preferences |
+|  | Verify user input | \-0.25 | - |  | Input validation on profile updates |
+|  | Update the user's avatar | \-0.25 | - |  | Profile photo upload |
+|  | Update password | \-0.25 | - |  | Change password with old password verification |
 |  | Booking history and management |  |  |  |  |
-|  | › View booking history | \-0.25 |  |  | List of past and upcoming bookings linked to user account |
-|  | › View booking details | \-0.25 |  |  | Full booking details with trip info, seats, payment status |
+|  | › View booking history | \-0.25 | - |  | List of past and upcoming bookings linked to user account |
+|  | › View booking details | \-0.25 | - |  | Full booking details with trip info, seats, payment status |
 |  | › Cancel booking | \-0.25 |  |  | Cancel booking with refund policy display |
 |  | › Download e-ticket | \-0.25 | 0 |  | Download ticket as PDF |
 |  | › Real-time trip updates | 0.5 |  |  | WebSocket-based live trip status updates (delays, cancellations) |
 | **5** | **Administration features** |  |  |  |  |
-|  | Update admin profile | \-0.25 |  |  | Admin profile management |
-|  | Dashboard overview | \-0.5 |  |  | Dashboard with key metrics: total bookings, revenue, upcoming trips |
+|  | Update admin profile | \-0.25 | - |  | Admin profile management |
+|  | Dashboard overview | \-0.5 | - |  | Dashboard with key metrics: total bookings, revenue, upcoming trips |
 |  | Route Management |  |  |  |  |
 |  | › Create, edit, deactivate routes | \-0.25 |  |  | Manage routes with origin, destination, stops, distance |
 |  | › View route list | \-0.25 |  |  | List all routes with filters and pagination |
@@ -118,18 +118,18 @@ Students must input minus points to every uncompleted feature in the SE column.
 |  | › Update booking status | \-0.25 |  |  | Confirm or cancel bookings |
 |  | › Process refunds | \-0.25 |  |  | Handle refund requests |
 |  | Reports |  |  |  |  |
-|  | › View revenue report in time range | \-0.25 |  |  | Daily, weekly, monthly revenue reports |
-|  | › View top routes by bookings | \-0.25 |  |  | Most popular routes report |
-|  | › Show interactive chart in reports | \-0.25 |  |  | Chart.js/Recharts for analytics dashboard (bookings/day, revenue trends, popular routes) |
+|  | › View revenue report in time range | \-0.25 | - |  | Daily, weekly, monthly revenue reports |
+|  | › View top routes by bookings | \-0.25 | - |  | Most popular routes report |
+|  | › Show interactive chart in reports | \-0.25 | - |  | Chart.js/Recharts for analytics dashboard (bookings/day, revenue trends, popular routes) |
 |  | User Management |  |  |  |  |
 |  | › Create admin accounts | \-0.25 |  |  | Create new admin accounts |
-|  | › Manage admin accounts | \-0.25 |  |  | View, edit, deactivate admin accounts |
+|  | › Manage admin accounts | \-0.25 | - |  | View, edit, deactivate admin accounts |
 |  | Trip Operations |  |  |  |  |
 |  | › View passenger list | \-0.25 |  |  | List of passengers for each trip |
 |  | › Check-in passengers | \-0.25 |  |  | Mark passengers as boarded |
 |  | › Update trip status (operations) | \-0.25 |  |  | Mark trip as departed, arrived |
 | **6** | **Advanced features** |  |  |  |  |
-|  | Use memory cache to boost performance | 0.25 |  |  | Redis for trip caching and session management |
+|  | Use memory cache to boost performance | 0.25 | 0.25 |  | Redis for trip caching and session management |
 |  | Dockerize your project | 0.25 |  |  | Docker containers for backend, frontend, database |
 |  | CI/CD | 0.25 |  |  | Automated testing and deployment pipeline (GitHub Actions, GitLab CI, Jenkins, etc.) |
 |  | Microservices architecture | 0.5 |  |  | Separate services for auth, booking, payment, notifications |
