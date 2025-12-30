@@ -4,6 +4,7 @@ import { db } from "../../db/db.js";
 import { BusModel } from "./bus.model.js";
 import { UniqueConstraintError } from "sequelize";
 import { status } from "elysia";
+import cloudinaryService from "../../lib/cloudinary.js";
 
 const BUS_PER_PAGE = 5;
 
@@ -187,4 +188,27 @@ export abstract class BusService {
       });
     }
   }
+
+    static async changeAvatar(
+      body: BusModel.changeAvatarBody,
+      id: string,
+    ): Promise<{ url: string }> {
+      const res = await cloudinaryService.uploadAndAutoCropSquare(
+        body.source,
+        500,
+        {
+          folder: "avatars",
+        },
+      );
+  
+      const url = res.secureUrl ?? res.url;
+  
+      await db.query(`UPDATE "Buses" b SET image = :url WHERE b.id::text = :id`, {
+        replacements: { url, id },
+      });
+  
+      return {
+        url,
+      };
+    }
 }

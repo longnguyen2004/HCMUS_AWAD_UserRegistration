@@ -1,4 +1,4 @@
-import { Elysia, status } from "elysia";
+import { Elysia, status, t } from "elysia";
 import { BusModel } from "./bus.model.js";
 import { BusService } from "./bus.service.js";
 import { authGuard } from "../auth/index.js";
@@ -65,6 +65,19 @@ export const BusController = new Elysia({ prefix: "/bus" })
         404: BusModel.errorResponse,
         409: BusModel.errorResponse,
         500: BusModel.errorResponse,
+      },
+    },
+  )
+  .patch(
+    "/avatar/:id",
+    async ({ params: { id }, body }) => {
+      const response = await BusService.changeAvatar(body, id);
+      return response;
+    },
+    {
+      body: BusModel.changeAvatarBody,
+      response: {
+        200: t.Object({ url: t.String() }),
       },
     },
   );

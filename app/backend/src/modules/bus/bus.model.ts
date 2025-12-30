@@ -88,4 +88,9 @@ export namespace BusModel {
     details: t.Optional(t.String()),
   });
   export type errorResponse = typeof errorResponse.static;
+
+  export const changeAvatarBody = t.Object({
+    source: t.String(),
+  });
+  export type changeAvatarBody = typeof changeAvatarBody.static;
 }
