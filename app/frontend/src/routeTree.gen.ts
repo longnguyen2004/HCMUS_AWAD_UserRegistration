@@ -14,6 +14,7 @@ import { Route as SearchIndexRouteImport } from './routes/search/index'
 import { Route as RegisterIndexRouteImport } from './routes/register/index'
 import { Route as ProfileIndexRouteImport } from './routes/profile/index'
 import { Route as LoginIndexRouteImport } from './routes/login/index'
+import { Route as BookingsIndexRouteImport } from './routes/bookings/index'
 import { Route as AdminIndexRouteImport } from './routes/admin/index'
 import { Route as TicketTicketIdRouteImport } from './routes/ticket/$ticketId'
 import { Route as TripTripIdBookRouteImport } from './routes/trip/$tripId/book'
@@ -43,6 +44,11 @@ const LoginIndexRoute = LoginIndexRouteImport.update({
   path: '/login/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BookingsIndexRoute = BookingsIndexRouteImport.update({
+  id: '/bookings/',
+  path: '/bookings/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/admin/',
   path: '/admin/',
@@ -63,6 +69,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/ticket/$ticketId': typeof TicketTicketIdRoute
   '/admin': typeof AdminIndexRoute
+  '/bookings': typeof BookingsIndexRoute
   '/login': typeof LoginIndexRoute
   '/profile': typeof ProfileIndexRoute
   '/register': typeof RegisterIndexRoute
@@ -73,6 +80,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/ticket/$ticketId': typeof TicketTicketIdRoute
   '/admin': typeof AdminIndexRoute
+  '/bookings': typeof BookingsIndexRoute
   '/login': typeof LoginIndexRoute
   '/profile': typeof ProfileIndexRoute
   '/register': typeof RegisterIndexRoute
@@ -84,6 +92,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/ticket/$ticketId': typeof TicketTicketIdRoute
   '/admin/': typeof AdminIndexRoute
+  '/bookings/': typeof BookingsIndexRoute
   '/login/': typeof LoginIndexRoute
   '/profile/': typeof ProfileIndexRoute
   '/register/': typeof RegisterIndexRoute
@@ -96,6 +105,7 @@ export interface FileRouteTypes {
     | '/'
     | '/ticket/$ticketId'
     | '/admin'
+    | '/bookings'
     | '/login'
     | '/profile'
     | '/register'
@@ -106,6 +116,7 @@ export interface FileRouteTypes {
     | '/'
     | '/ticket/$ticketId'
     | '/admin'
+    | '/bookings'
     | '/login'
     | '/profile'
     | '/register'
@@ -116,6 +127,7 @@ export interface FileRouteTypes {
     | '/'
     | '/ticket/$ticketId'
     | '/admin/'
+    | '/bookings/'
     | '/login/'
     | '/profile/'
     | '/register/'
@@ -127,6 +139,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   TicketTicketIdRoute: typeof TicketTicketIdRoute
   AdminIndexRoute: typeof AdminIndexRoute
+  BookingsIndexRoute: typeof BookingsIndexRoute
   LoginIndexRoute: typeof LoginIndexRoute
   ProfileIndexRoute: typeof ProfileIndexRoute
   RegisterIndexRoute: typeof RegisterIndexRoute
@@ -171,6 +184,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginIndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/bookings/': {
+      id: '/bookings/'
+      path: '/bookings'
+      fullPath: '/bookings'
+      preLoaderRoute: typeof BookingsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/': {
       id: '/admin/'
       path: '/admin'
@@ -199,6 +219,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   TicketTicketIdRoute: TicketTicketIdRoute,
   AdminIndexRoute: AdminIndexRoute,
+  BookingsIndexRoute: BookingsIndexRoute,
   LoginIndexRoute: LoginIndexRoute,
   ProfileIndexRoute: ProfileIndexRoute,
   RegisterIndexRoute: RegisterIndexRoute,

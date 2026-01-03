@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Menu, LogOut, User, LogIn } from "lucide-react";
+import { Menu, LogOut, User, LogIn, Ticket } from "lucide-react";
 import { backendAuth } from "@/lib/backend";
 import ThemeSwitcher from "./theme-switcher";
 import { Link } from "@tanstack/react-router";
@@ -29,6 +29,16 @@ export default function NavBar({ title }: NavBarProps) {
             <div className="hidden sm:flex items-center gap-3">
               {session ? (
                 <>
+                  <Link to="/bookings">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="gap-2"
+                    >
+                      <Ticket className="w-4 h-4" />
+                      My Bookings
+                    </Button>
+                  </Link>
                   <Link to="/profile">
                     <Button
                       variant="ghost"
@@ -70,6 +80,16 @@ export default function NavBar({ title }: NavBarProps) {
           <div className="mt-4 space-y-2 sm:hidden">
             {session ? (
               <>
+                <Link to="/bookings" className="block">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="w-full gap-2 justify-start"
+                  >
+                    <Ticket className="w-4 h-4" />
+                    My Bookings
+                  </Button>
+                </Link>
                 <Link to="/profile" className="block">
                   <Button
                     variant="ghost"
