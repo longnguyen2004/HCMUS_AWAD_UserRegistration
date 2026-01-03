@@ -24,8 +24,8 @@ import {
   PaginationNext,
 } from "@/components/ui/pagination";
 
-import { ChevronRight, MapPin, Users, Clock, Zap } from "lucide-react";
-import { format } from "date-fns";
+import { ChevronRight, MapPin, Users, Clock, Zap, ChevronDown } from "lucide-react";
+import { format, addMinutes } from "date-fns";
 import { Link } from "@tanstack/react-router";
 import { useGetCities } from "@/lib/crud/city";
 import { useSearchTrips } from "@/lib/crud/trip";
@@ -56,6 +56,7 @@ export default function TripSearch() {
   const [busType, setBusType] = useState("all");
   const [amenity, setAmenity] = useState("all");
   const [sortBy, setSortBy] = useState("price");
+  const [expandedStops, setExpandedStops] = useState<Set<string>>(new Set());
 
   // const filteredTrips = useMemo(() => {
   //   const result = mockTrips.filter((trip) => {
@@ -320,72 +321,120 @@ export default function TripSearch() {
             </Card>
           ) : (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-              {trips.data.data.map((trip) => (
-                <Card
-                  key={trip.id}
-                  className="overflow-hidden hover:shadow-lg hover:border-primary/50 transition-all duration-200"
-                >
-                  <CardContent className="p-0">
-                    <div className="flex flex-col p-5 gap-4">
-                      {/* Header with route and price */}
-                      <div className="flex items-start justify-between gap-4">
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2 mb-1">
-                            <MapPin className="w-4 h-4 text-primary flex-shrink-0" />
-                            <span className="font-semibold text-foreground text-sm truncate">
-                              {trip.stops.at(0)?.name} →{" "}
-                              {trip.stops.at(-1)?.name}
-                            </span>
-                          </div>
-                          <p className="text-xs text-muted-foreground ml-6">
-                            {format(trip.departure, "dd-MM-yyyy")}
-                          </p>
-                        </div>
-                        <div className="text-right">
-                          <div className="text-2xl font-bold text-accent">
-                            ${trip.price}
-                          </div>
-                          <p className="text-xs text-muted-foreground">
-                            per seat
-                          </p>
-                        </div>
-                      </div>
+              {trips.data.data.map((trip) => {
+                const totalDuration = trip.stops.reduce(
+                  (sum, stop) => sum + (stop.duration || 0),
+                  0
+                );
+                const arrivalTime = addMinutes(trip.departure, totalDuration);
+                const isExpanded = expandedStops.has(trip.id);
 
-                      {/* Time and duration */}
-                      <div className="flex items-center gap-3 px-2 py-2 bg-muted/40 rounded-lg">
-                        <Clock className="w-4 h-4 text-muted-foreground flex-shrink-0" />
-                        <div className="flex items-center justify-between flex-1 gap-2 text-sm">
-                          <div className="font-medium text-foreground">
-                            {format(trip.departure, "HH:mm")}
+                return (
+                  <Card
+                    key={trip.id}
+                    className="overflow-hidden hover:shadow-lg hover:border-primary/50 transition-all duration-200"
+                  >
+                    <CardContent className="p-0">
+                      <div className="flex flex-col p-5 gap-4">
+                        {/* Header with route and price */}
+                        <div className="flex items-start justify-between gap-4">
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2 mb-1">
+                              <MapPin className="w-4 h-4 text-primary flex-shrink-0" />
+                              <span className="font-semibold text-foreground text-sm truncate">
+                                {trip.stops.at(0)?.name} →{" "}
+                                {trip.stops.at(-1)?.name}
+                              </span>
+                            </div>
+                            <p className="text-xs text-muted-foreground ml-6">
+                              {format(trip.departure, "dd-MM-yyyy")}
+                            </p>
                           </div>
-                          <div className="flex-1 h-0.5 bg-gradient-to-r from-primary/50 to-accent/50 mx-2"></div>
-                          <div className="font-medium text-foreground">
-                            {format(trip.arrival, "HH:mm")}
+                          <div className="text-right">
+                            <div className="text-2xl font-bold text-accent">
+                              ${trip.price}
+                            </div>
+                            <p className="text-xs text-muted-foreground">
+                              per seat
+                            </p>
                           </div>
                         </div>
-                      </div>
 
-                      {/* Bus type and amenities
-                    <div className="flex flex-wrap gap-2">
-                      <span className="inline-flex items-center px-2.5 py-1 bg-primary/10 text-primary text-xs font-semibold rounded-full">
-                        {trip.busType}
-                      </span>
-                      {trip.amenities.slice(0, 2).map((amenity) => (
-                        <span
-                          key={amenity}
-                          className="inline-flex items-center px-2.5 py-1 bg-accent/10 text-accent text-xs font-semibold rounded-full"
-                        >
-                          {amenity}
-                        </span>
-                      ))}
-                      {trip.amenities.length > 2 && (
-                        <span className="inline-flex items-center px-2.5 py-1 bg-muted text-muted-foreground text-xs font-semibold rounded-full">
-                          +{trip.amenities.length - 2} more
-                        </span>
-                      )}
-                    </div> */}
+                        {/* Time and duration */}
+                        <div className="flex items-center gap-3 px-2 py-2 bg-muted/40 rounded-lg">
+                          <Clock className="w-4 h-4 text-muted-foreground flex-shrink-0" />
+                          <div className="flex items-center justify-between flex-1 gap-2 text-sm">
+                            <div className="flex flex-col">
+                              <div className="font-medium text-foreground">
+                                {format(trip.departure, "HH:mm")}
+                              </div>
+                              <div className="text-xs text-muted-foreground">Departure</div>
+                            </div>
+                            <div className="flex flex-col items-center flex-1">
+                              <div className="w-full h-0.5 bg-gradient-to-r from-primary/50 to-accent/50"></div>
+                              <div className="text-xs text-muted-foreground mt-1">
+                                {Math.floor(totalDuration / 60)}h {totalDuration % 60}m
+                              </div>
+                            </div>
+                            <div className="flex flex-col items-end">
+                              <div className="font-medium text-foreground">
+                                {format(arrivalTime, "HH:mm")}
+                              </div>
+                              <div className="text-xs text-muted-foreground">Arrival</div>
+                            </div>
+                          </div>
+                        </div>
 
-                      <div className="flex items-center justify-between gap-3 pt-2">
+                        {/* Stops section */}
+                        <div className="space-y-2">
+                          <button
+                            onClick={() => {
+                              const newExpanded = new Set(expandedStops);
+                              if (isExpanded) {
+                                newExpanded.delete(trip.id);
+                              } else {
+                                newExpanded.add(trip.id);
+                              }
+                              setExpandedStops(newExpanded);
+                            }}
+                            className="flex items-center gap-2 text-sm font-medium text-foreground hover:text-primary transition-colors"
+                          >
+                            <ChevronDown
+                              className={`w-4 h-4 transition-transform ${
+                                isExpanded ? "rotate-180" : ""
+                              }`}
+                            />
+                            View {trip.stops.length} stops
+                          </button>
+                          {isExpanded && (
+                            <div className="ml-6 space-y-2 mt-2 p-3 bg-muted/30 rounded-lg">
+                              {trip.stops.map((stop, idx) => {
+                                const stopTime = addMinutes(
+                                  trip.departure,
+                                  trip.stops
+                                    .slice(0, idx + 1)
+                                    .reduce((sum, s) => sum + (s.duration || 0), 0)
+                                );
+                                return (
+                                  <div
+                                    key={stop.id}
+                                    className="flex items-center justify-between text-sm"
+                                  >
+                                    <div className="flex items-center gap-2">
+                                      <div className="w-2 h-2 rounded-full bg-primary"></div>
+                                      <span className="font-medium">{stop.name}</span>
+                                    </div>
+                                    <span className="text-muted-foreground">
+                                      {format(stopTime, "HH:mm")}
+                                    </span>
+                                  </div>
+                                );
+                              })}
+                            </div>
+                          )}
+                        </div>
+
+                        <div className="flex items-center justify-between gap-3 pt-2">
                         <div className="flex items-center gap-1 text-xs text-muted-foreground">
                           <Users className="w-4 h-4" />
                           <span>
@@ -393,20 +442,21 @@ export default function TripSearch() {
                           available */}
                           </span>
                         </div>
-                        <Link
-                          to="/trip/$tripId/book"
-                          params={{ tripId: trip.id }}
-                        >
-                          <Button size="sm" className="gap-1 ml-auto">
-                            Book
-                            <ChevronRight className="w-3 h-3" />
-                          </Button>
-                        </Link>
+                          <Link
+                            to="/trip/$tripId/book"
+                            params={{ tripId: trip.id }}
+                          >
+                            <Button size="sm" className="gap-1 ml-auto">
+                              Book
+                              <ChevronRight className="w-3 h-3" />
+                            </Button>
+                          </Link>
+                        </div>
                       </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
+                    </CardContent>
+                  </Card>
+                );
+              })}
             </div>
           )}
 
