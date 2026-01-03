@@ -86,8 +86,8 @@ Students must input minus points to every uncompleted feature in the SE column.
 |  | Update the user's avatar | \-0.25 | - |  | Profile photo upload |
 |  | Update password | \-0.25 | 0 |  | Change password with old password verification |
 |  | Booking history and management |  |  |  |  |
-|  | › View booking history | \-0.25 | - |  | List of past and upcoming bookings linked to user account |
-|  | › View booking details | \-0.25 | - |  | Full booking details with trip info, seats, payment status |
+|  | › View booking history | \-0.25 | 0 |  | List of past and upcoming bookings linked to user account |
+|  | › View booking details | \-0.25 | 0 |  | Full booking details with trip info, seats, payment status |
 |  | › Cancel booking | \-0.25 |  |  | Cancel booking with refund policy display |
 |  | › Download e-ticket | \-0.25 | 0 |  | Download ticket as PDF |
 |  | › Real-time trip updates | 0.5 |  |  | WebSocket-based live trip status updates (delays, cancellations) |
