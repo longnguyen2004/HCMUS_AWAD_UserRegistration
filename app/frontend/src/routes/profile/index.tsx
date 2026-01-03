@@ -9,7 +9,7 @@ export const Route = createFileRoute("/profile/")({
   },
 });
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -26,8 +26,15 @@ import { User, Lock, Mail, CheckCircle2, AlertCircle } from "lucide-react";
 export default function ProfilePage() {
   const { data: session } = backendAuth.useSession();
 
-  const [name, setName] = useState(session?.user?.name || "");
-  const [email, setEmail] = useState(session?.user?.email || "");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  useEffect(() => {
+    if (session)
+    {
+      setName(session.user.name);
+      setEmail(session.user.email);
+    }
+  }, [session]);
 
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
