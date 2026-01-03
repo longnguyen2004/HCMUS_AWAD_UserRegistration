@@ -321,7 +321,7 @@ export abstract class TicketService {
     try {
       const paymentLinkResponse = await payOS.paymentRequests.create(body);
 
-      ticket.orderId = orderCode;
+      ticket.orderId = orderCode.toString();
       await ticket.save();
 
       return { paymentLinkResponse };

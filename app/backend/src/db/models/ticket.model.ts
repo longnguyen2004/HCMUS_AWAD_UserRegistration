@@ -37,5 +37,5 @@ export class Ticket extends Model {
   declare phone: string;
 
   @Column({ type: DataTypes.BIGINT, allowNull: true })
-  declare orderId?: number;
+  declare orderId?: string;
 }
