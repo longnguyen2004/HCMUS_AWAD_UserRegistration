@@ -14,6 +14,7 @@ import NavBar from "@/components/layout/nav-bar";
 import UserManagement from "@/components/admin/user-management";
 import TripManagement from "@/components/admin/trip-management";
 import BusManagement from "@/components/admin/bus-management";
+import TicketManagement from "@/components/admin/ticket-management";
 
 export default function AdminDashboard() {
   return (
@@ -21,10 +22,11 @@ export default function AdminDashboard() {
       <NavBar title="Admin Dashboard" />
       <div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8">
         <Tabs defaultValue="users" className="space-y-4">
-          <TabsList className="grid w-full grid-cols-3 max-w-md">
+          <TabsList className="grid w-full grid-cols-4 max-w-2xl">
             <TabsTrigger value="users">User Management</TabsTrigger>
             <TabsTrigger value="trips">Trip Management</TabsTrigger>
             <TabsTrigger value="buses">Bus Management</TabsTrigger>
+            <TabsTrigger value="tickets">Ticket Management</TabsTrigger>
           </TabsList>
           <TabsContent value="users" className="space-y-4">
             <UserManagement />
@@ -34,6 +36,9 @@ export default function AdminDashboard() {
           </TabsContent>
           <TabsContent value="buses" className="space-y-4">
             <BusManagement />
+          </TabsContent>
+          <TabsContent value="tickets" className="space-y-4">
+            <TicketManagement />
           </TabsContent>
         </Tabs>
       </div>

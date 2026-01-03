@@ -37,12 +37,16 @@ export abstract class TicketService {
     const offset = (page - 1) * limit;
 
     const where: WhereOptions = {};
-    const include: IncludeOptions[] = [];
+    const countInclude: IncludeOptions[] = [];
 
     if (body.price) where.price = body.price;
     if (body.status) where.status = body.status;
     if (body.phone) where.phone = body.phone;
     if (body.email) where.email = body.email;
+
+    // Build Trip include with conditional where clause for counting
+    const tripWhere: WhereOptions = {};
+    const whereClauses: ReturnType<typeof literal>[] = [];
 
     if (body.departure) {
       const parsed = new Date(String(body.departure));
@@ -70,24 +74,14 @@ export abstract class TicketService {
           ),
         );
 
-        include.push({
-          model: Trip,
-          as: "trip",
-          where: {
-            departure: {
-              [Op.between]: [start.toISOString(), end.toISOString()],
-            },
-          },
-          required: false,
-        });
+        tripWhere.departure = {
+          [Op.between]: [start.toISOString(), end.toISOString()],
+        };
       }
     }
 
     if (body.from && body.to) {
-      include.push({
-        model: Trip,
-        as: "trip",
-        where: literal(`
+      whereClauses.push(literal(`
       EXISTS (
         SELECT 1 
         FROM "TripBusStops" tbs1
@@ -102,27 +96,30 @@ export abstract class TicketService {
               AND bs2."cityId" = '${body.to}'
           )
       )
-    `),
-        include: [
-          {
-            model: TripBusStop,
-            as: "tripBusStops",
-            include: [
-              {
-                model: BusStop,
-                as: "busStop",
-                include: [{ model: City, as: "city" }],
-              },
-            ],
-          },
-        ],
-        required: true,
-      });
+    `));
     }
 
-    const result = await Ticket.findAndCountAll({
+    // Combine where clauses
+    const finalTripWhere = whereClauses.length > 0 
+      ? { [Op.and]: [...whereClauses, tripWhere] }
+      : tripWhere;
+
+    // Include Trip for counting (without nested includes to avoid inflating count)
+    countInclude.push({
+      model: Trip,
+      as: "trip",
+      where: Object.keys(finalTripWhere).length > 0 ? finalTripWhere : undefined,
+      attributes: [], // Don't select any attributes for counting
+      required: body.from && body.to ? true : false,
+    });
+
+    // First query: Get count and IDs
+    const countResult = await Ticket.findAndCountAll({
       where,
-      include,
+      include: countInclude,
+      attributes: ['id'],
+      distinct: true,
+      col: 'id',
       limit,
       offset,
       order: [
@@ -135,9 +132,46 @@ export abstract class TicketService {
       ],
     });
 
+    // Extract ticket IDs
+    const ticketIds = countResult.rows.map(t => t.id);
+
+    // Second query: Fetch full ticket data with all joins
+    const tickets = ticketIds.length > 0 
+      ? await Ticket.findAll({
+          where: { id: { [Op.in]: ticketIds } },
+          include: [
+            {
+              model: Trip,
+              as: "trip",
+              include: [
+                {
+                  model: TripBusStop,
+                  as: "tripBusStops",
+                  include: [
+                    {
+                      model: BusStop,
+                      as: "busStop",
+                      include: [{ model: City, as: "city" }],
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+          order: [
+            [
+              "createdAt",
+              body?.order && String(body.order).toUpperCase() === "ASC"
+                ? "ASC"
+                : "DESC",
+            ],
+          ],
+        })
+      : [];
+
     type TicketRow = Ticket & { trip?: Trip; createdAt?: Date };
 
-    const data = result.rows.map((t: TicketRow) => {
+    const data = tickets.map((t: TicketRow) => {
       const trip = t.trip;
       const departure = trip?.departure ?? trip?.departure ?? undefined;
       const arrival = trip?.arrival ?? trip?.arrival ?? undefined;
@@ -157,7 +191,7 @@ export abstract class TicketService {
 
     return {
       data,
-      total: result.count as number,
+      total: countResult.count as number,
       page,
       per_page: limit,
     } as TicketModel.searchResponse;
