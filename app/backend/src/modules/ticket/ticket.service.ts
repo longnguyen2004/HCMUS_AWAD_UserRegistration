@@ -199,6 +199,7 @@ export abstract class TicketService {
 
   static async create(
     body: TicketModel.createBody,
+    userId?: string,
   ): Promise<TicketModel.createResponse> {
     const trip = await Trip.findByPk(body.tripId);
     if (!trip) throw new Error("Trip not found");
@@ -221,7 +222,7 @@ export abstract class TicketService {
       tripId: body.tripId,
       seatId: body.seatId,
       price: trip.price,
-      userId: body.userId ?? null,
+      userId: userId ?? null,
       email: body.email,
       phone: body.phone,
     };
@@ -477,5 +478,76 @@ export abstract class TicketService {
         reject(err);
       }
     });
+  }
+
+  static async getUserBookings(
+    userId: string,
+    query: TicketModel.getUserBookingsQuery,
+  ): Promise<TicketModel.getUserBookingsResponse> {
+    const page = query.page ?? 1;
+    const limit = TICKET_PER_PAGE;
+    const offset = (page - 1) * limit;
+
+    const where: WhereOptions = { userId };
+    if (query.status) where.status = query.status;
+
+    const { count, rows } = await Ticket.findAndCountAll({
+      where,
+      include: [
+        {
+          model: Trip,
+          as: "trip",
+          include: [
+            {
+              model: TripBusStop,
+              as: "tripBusStops",
+              include: [
+                {
+                  model: BusStop,
+                  as: "busStop",
+                  include: [{ model: City, as: "city" }],
+                },
+              ],
+            },
+          ],
+        },
+        {
+          model: Seat,
+          as: "seat",
+        },
+      ],
+      order: [["createdAt", "DESC"]],
+      limit,
+      offset,
+    });
+
+    const data = rows.map((ticket) => {
+      const trip = ticket.trip;
+      const stops = trip?.tripBusStops || [];
+      const fromCity = stops[0]?.busStop?.city?.name;
+      const toCity = stops[stops.length - 1]?.busStop?.city?.name;
+
+      return {
+        id: ticket.id,
+        tripId: ticket.tripId,
+        status: ticket.status,
+        price: ticket.price,
+        seatNumber: ticket.seat?.seatNumber,
+        createdAt: ticket.createdAt,
+        trip: {
+          departure: trip?.departure ?? new Date(),
+          arrival: trip?.arrival ?? new Date(),
+          fromCity,
+          toCity,
+        },
+      };
+    });
+
+    return {
+      data,
+      total: count,
+      page,
+      per_page: limit,
+    };
   }
 }

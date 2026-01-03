@@ -38,7 +38,6 @@ export namespace TicketModel {
   export const createBody = t.Object({
     tripId: t.String(),
     seatId: t.String(),
-    userId: t.Optional(t.String()),
     email: t.String({ format: "email" }),
     phone: t.String({ pattern: "^[0-9\\s\\-]{7,20}$" }),
   });
@@ -96,6 +95,35 @@ export namespace TicketModel {
     signature: t.String(),
   });
   export type processPaymentBody = typeof processPaymentBody.static;
+
+  export const getUserBookingsQuery = t.Object({
+    page: t.Optional(t.Integer()),
+    status: t.Optional(t.String()),
+  });
+  export type getUserBookingsQuery = typeof getUserBookingsQuery.static;
+
+  export const getUserBookingsResponse = t.Object({
+    data: t.Array(
+      t.Object({
+        id: t.String(),
+        tripId: t.String(),
+        status: t.String(),
+        price: t.Integer(),
+        seatNumber: t.Optional(t.String()),
+        createdAt: t.Date(),
+        trip: t.Object({
+          departure: t.Date(),
+          arrival: t.Date(),
+          fromCity: t.Optional(t.String()),
+          toCity: t.Optional(t.String()),
+        }),
+      }),
+    ),
+    total: t.Integer(),
+    page: t.Integer(),
+    per_page: t.Integer(),
+  });
+  export type getUserBookingsResponse = typeof getUserBookingsResponse.static;
 
   export const createPdfResponse = t.Object({
     filename: t.String(),

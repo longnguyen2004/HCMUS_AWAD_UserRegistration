@@ -1,8 +1,25 @@
 import { Elysia } from "elysia";
 import { TicketModel } from "./ticket.model.js";
 import { TicketService } from "./ticket.service.js";
+import { AuthService } from "../../lib/auth.js";
+import { authGuard } from "../auth/index.js";
 
 export const TicketController = new Elysia({ prefix: "/ticket" })
+  .use(authGuard)
+  .get(
+    "/my-bookings",
+    async ({ user, query }) => {
+      const response = await TicketService.getUserBookings(user.id, query);
+      return response;
+    },
+    {
+      auth: true,
+      query: TicketModel.getUserBookingsQuery,
+      response: {
+        200: TicketModel.getUserBookingsResponse,
+      },
+    },
+  )
   .get(
     "/search",
     async ({ query }) => {
@@ -18,8 +35,11 @@ export const TicketController = new Elysia({ prefix: "/ticket" })
   )
   .post(
     "/create",
-    async ({ body }) => {
-      const response = await TicketService.create(body);
+    async ({ body, request: { headers } }) => {
+      const session = await AuthService.api.getSession({
+        headers,
+      });
+      const response = await TicketService.create(body, session?.user.id);
       return response;
     },
     {
