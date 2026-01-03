@@ -56,7 +56,7 @@ export namespace TicketModel {
     phone: t.String(),
     seatNumber: t.Optional(t.String()),
     busPlate: t.Optional(t.String()),
-    orderId: t.Optional(t.Number()),
+    orderId: t.Optional(t.String()),
     createdAt: t.Date(),
     trip: t.Object({
       id: t.String(),
