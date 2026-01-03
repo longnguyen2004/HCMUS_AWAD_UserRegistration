@@ -103,7 +103,7 @@ Students must input minus points to every uncompleted feature in the SE column.
 |  | › Upload bus photos | \-0.25 | 0 |  | Multi-image upload for buses |
 |  | Trip Management |  |  |  |  |
 |  | › View trip list | \-0.5 | 0 |  | List all trips with filters and pagination |
-|  | › Filter trips by route, date, status | \-0.25 |  |  | Search and filter trips |
+|  | › Filter trips by route, date, status | \-0.25 | 0 |  | Search and filter trips |
 |  | › Sort trips by departure time, bookings | \-0.25 |  |  | Sortable trip list |
 |  | › Create a new trip | \-0.25 | 0 |  | Add trip with route, bus, departure time, price |
 |  | › Assign bus to trip | \-0.25 | 0 |  | Assign available bus to scheduled trip |
