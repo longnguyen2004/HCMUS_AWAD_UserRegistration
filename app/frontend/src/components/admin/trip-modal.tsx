@@ -55,6 +55,13 @@ export default function TripModal({
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const { data: selectedBus } = useGetBus(formData.busId ?? "");
 
+  // Merge selected bus with buses list if not already present
+  const availableBuses = buses?.data ?? [];
+  const busListWithSelected =
+    selectedBus && !availableBuses.find((b) => b.id === selectedBus.id)
+      ? [selectedBus, ...availableBuses]
+      : availableBuses;
+
   const handleOpenChange = (open: boolean) => {
     if (!open) onClose();
   };
@@ -70,7 +77,7 @@ export default function TripModal({
       setStops(trip?.stops || []);
       setErrors({});
     }
-  }, [isOpen]);
+  }, [isOpen, trip]);
 
   const validateForm = (): boolean => {
     const newErrors: Record<string, string> = {};
@@ -210,12 +217,10 @@ export default function TripModal({
                 }
               >
                 <SelectTrigger className="bg-background">
-                  <SelectValue placeholder="Select a bus">
-                    {selectedBus?.licensePlate ?? undefined}
-                  </SelectValue>
+                  <SelectValue placeholder="Select a bus" />
                 </SelectTrigger>
                 <SelectContent>
-                  {(buses?.data ?? []).map((bus) => (
+                  {busListWithSelected.map((bus) => (
                     <SelectItem key={bus.id} value={bus.id}>
                       {bus.licensePlate}
                     </SelectItem>
