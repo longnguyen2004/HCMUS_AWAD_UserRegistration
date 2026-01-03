@@ -81,10 +81,10 @@ Students must input minus points to every uncompleted feature in the SE column.
 |  | Authorize website features | \-0.25 | 0 |  | Role-based access control (Admin, Customer) |
 |  | Forgot password by email | \-0.25 | - |  | Password reset via email link |
 | **4** | **Features for logged-in users (Customers)** |  |  |  |  |
-|  | Update user profile | \-0.25 | - |  | Customer can update name, phone, preferences |
-|  | Verify user input | \-0.25 | - |  | Input validation on profile updates |
+|  | Update user profile | \-0.25 | 0 |  | Customer can update name, phone, preferences |
+|  | Verify user input | \-0.25 | 0 |  | Input validation on profile updates |
 |  | Update the user's avatar | \-0.25 | - |  | Profile photo upload |
-|  | Update password | \-0.25 | - |  | Change password with old password verification |
+|  | Update password | \-0.25 | 0 |  | Change password with old password verification |
 |  | Booking history and management |  |  |  |  |
 |  | › View booking history | \-0.25 | - |  | List of past and upcoming bookings linked to user account |
 |  | › View booking details | \-0.25 | - |  | Full booking details with trip info, seats, payment status |
@@ -112,9 +112,9 @@ Students must input minus points to every uncompleted feature in the SE column.
 |  | › Update a trip | \-0.25 | 0 |  | Edit existing trip details |
 |  | › Cancel a trip | \-0.25 |  |  | Cancel trip with automatic refund processing |
 |  | Booking Management |  |  |  |  |
-|  | › View list of bookings | \-0.25 |  |  | Booking list sorted by creation time |
-|  | › Filter bookings by status, date | \-0.25 |  |  | Filter: Pending, Confirmed, Cancelled, Completed |
-|  | › View booking details | \-0.25 |  |  | Full booking details with passenger info, payment status |
+|  | › View list of bookings | \-0.25 | 0 |  | Booking list sorted by creation time |
+|  | › Filter bookings by status, date | \-0.25 | 0 |  | Filter: Pending, Confirmed, Cancelled, Completed |
+|  | › View booking details | \-0.25 | 0 |  | Full booking details with passenger info, payment status |
 |  | › Update booking status | \-0.25 |  |  | Confirm or cancel bookings |
 |  | › Process refunds | \-0.25 |  |  | Handle refund requests |
 |  | Reports |  |  |  |  |
@@ -123,7 +123,7 @@ Students must input minus points to every uncompleted feature in the SE column.
 |  | › Show interactive chart in reports | \-0.25 | - |  | Chart.js/Recharts for analytics dashboard (bookings/day, revenue trends, popular routes) |
 |  | User Management |  |  |  |  |
 |  | › Create admin accounts | \-0.25 |  |  | Create new admin accounts |
-|  | › Manage admin accounts | \-0.25 | - |  | View, edit, deactivate admin accounts |
+|  | › Manage admin accounts | \-0.25 | 0 |  | View, edit, deactivate admin accounts |
 |  | Trip Operations |  |  |  |  |
 |  | › View passenger list | \-0.25 |  |  | List of passengers for each trip |
 |  | › Check-in passengers | \-0.25 |  |  | Mark passengers as boarded |
