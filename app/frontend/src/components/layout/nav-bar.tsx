@@ -29,10 +29,16 @@ export default function NavBar({ title }: NavBarProps) {
             <div className="hidden sm:flex items-center gap-3">
               {session ? (
                 <>
-                  <div className="flex items-center gap-2 text-sm">
-                    <User className="w-4 h-4" />
-                    <span className="font-medium">{session.user.email}</span>
-                  </div>
+                  <Link to="/profile">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="gap-2"
+                    >
+                      <User className="w-4 h-4" />
+                      <span className="font-medium">{session.user.email}</span>
+                    </Button>
+                  </Link>
                   <Button
                     variant="outline"
                     size="sm"
@@ -64,10 +70,16 @@ export default function NavBar({ title }: NavBarProps) {
           <div className="mt-4 space-y-2 sm:hidden">
             {session ? (
               <>
-                <div className="flex items-center gap-2 text-sm p-2">
-                  <User className="w-4 h-4" />
-                  <span className="font-medium">{session.user.email}</span>
-                </div>
+                <Link to="/profile" className="block">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="w-full gap-2 justify-start"
+                  >
+                    <User className="w-4 h-4" />
+                    <span className="font-medium">{session.user.email}</span>
+                  </Button>
+                </Link>
                 <Button
                   variant="outline"
                   size="sm"
