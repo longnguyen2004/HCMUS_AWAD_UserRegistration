@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { AlertCircle, Check, MapPin } from "lucide-react";
-import { format } from "date-fns";
+import { addMinutes, format } from "date-fns";
 import { backendAuth } from "@/lib/backend";
 import { useGetOccupiedSeats } from "@/lib/crud/trip";
 import type { useGetTrip } from "@/lib/crud/trip";
@@ -88,14 +88,24 @@ export default function SeatMap({
     [trip, occupiedSeats, selectedSeat],
   );
 
+  const arrivalTime = useMemo(() => {
+    const totalDuration = trip.stops.reduce(
+      (sum, stop) => sum + (stop.duration ?? 0),
+      0,
+    );
+    return addMinutes(new Date(trip.departure), totalDuration);
+  }, [trip.departure, trip.stops]);
+
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [error, setError] = useState("");
+  let autofilled = false;
   useEffect(() => {
-    if (session) {
-      if (!name) setName(session.user.name);
-      if (!email) setName(session.user.email);
+    if (session && !autofilled) {
+      autofilled = true;
+      setName(session.user.name);
+      setEmail(session.user.email);
     }
   }, [session]);
 
@@ -369,7 +379,7 @@ export default function SeatMap({
               <div className="space-y-2 text-xs text-muted-foreground border-t border-border pt-4">
                 <p>Bus • {formatFromTo(trip.stops)}</p>
                 <p>Departure: {format(trip.departure, "dd/MM/yyyy HH:mm")}</p>
-                <p>Arrival: {format(trip.arrival, "dd/MM/yyyy HH:mm")}</p>
+                <p>Arrival: {format(arrivalTime, "dd/MM/yyyy HH:mm")}</p>
               </div>
             </CardContent>
           </Card>
